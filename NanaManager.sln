@@ -1,0 +1,31 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.29609.76
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanaManager", "NanaManager\NanaManager.csproj", "{C34AF0C1-6F3E-4F24-BB66-997725BC818F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NanaManagerAPI", "NanaManagerAPI\NanaManagerAPI.csproj", "{9E324DB4-9AA6-4422-9E53-69D1A8E678CB}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{C34AF0C1-6F3E-4F24-BB66-997725BC818F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C34AF0C1-6F3E-4F24-BB66-997725BC818F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C34AF0C1-6F3E-4F24-BB66-997725BC818F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C34AF0C1-6F3E-4F24-BB66-997725BC818F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9E324DB4-9AA6-4422-9E53-69D1A8E678CB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9E324DB4-9AA6-4422-9E53-69D1A8E678CB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9E324DB4-9AA6-4422-9E53-69D1A8E678CB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9E324DB4-9AA6-4422-9E53-69D1A8E678CB}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {727A6558-F549-48E6-A753-BA539C5769A9}
+	EndGlobalSection
+EndGlobal
