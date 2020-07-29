@@ -12,15 +12,28 @@ namespace NanaManagerAPI.UI
 		/// <summary>
 		/// A dictionary of all data types currently supported with the index related to the viewer that adds them
 		/// </summary>
-		public static Dictionary<string, int> SupportedDataTypes = new Dictionary<string, int>();
+		public readonly static Dictionary<string, int> SupportedDataTypes = new Dictionary<string, int>();
 		/// <summary>
 		/// A list of all viewers currently loaded
 		/// </summary>
-		public static List<IMediaViewer> Viewers = new List<IMediaViewer>();
+		public readonly static List<IMediaViewer> Viewers = new List<IMediaViewer>();
 		/// <summary>
 		/// A dictionary of all catagories for the importer
 		/// </summary>
-		public static Dictionary<string, List<string>> Catagories = new Dictionary<string, List<string>>();
+		public readonly static Dictionary<string, List<string>> Catagories = new Dictionary<string, List<string>>();
+		/// <summary>
+		/// A dictionary with all of the settings tabs
+		/// </summary>
+		internal readonly static Dictionary<string, SettingsTab> SettingsTabs = new Dictionary<string, SettingsTab>();
+
+		/// <summary>
+		/// Adds the settings tab to the dictionary
+		/// </summary>
+		/// <param name="Tab">The <see cref="SettingsTab"/> to add</param>
+		public static void RegisterSettings(SettingsTab Tab) {
+			SettingsTabs.Add( Tab.ID, Tab );
+        }
+
 		/// <summary>
 		/// Registers a class to handle its specified file types
 		/// </summary>

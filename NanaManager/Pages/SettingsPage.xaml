@@ -5,10 +5,70 @@
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
+      d:DesignHeight="425" d:DesignWidth="800"
       Title="SettingsPage">
-
-    <Grid>
-        
-    </Grid>
+	<Grid>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition/>
+			<ColumnDefinition Width="8*"/>
+		</Grid.ColumnDefinitions>
+		<Frame x:Name="frmSettings" Grid.ColumnSpan="2"/>
+		<Grid>
+			<Grid.ColumnDefinitions>
+				<ColumnDefinition Width="18*"/>
+				<ColumnDefinition/>
+				<ColumnDefinition/>
+			</Grid.ColumnDefinitions>
+			<Grid.RowDefinitions>
+				<RowDefinition/>
+				<RowDefinition/>
+				<RowDefinition/>
+			</Grid.RowDefinitions>
+			<Border x:Name="bdrSettings" Background="{DynamicResource BlackGlass}" CornerRadius="0,15,15,0" Grid.RowSpan="3" Grid.ColumnSpan="2">
+				<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+					<Grid.RowDefinitions>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
+					</Grid.RowDefinitions>
+					<Grid.ColumnDefinitions>
+						<ColumnDefinition Width="9*"/>
+						<ColumnDefinition/>
+					</Grid.ColumnDefinitions>
+					<!--#region Themes and Colours-->
+					<Border Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,0,0,2"/>
+					<ToggleButton Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,0,0,5"/>
+					<Viewbox Grid.ColumnSpan="2" IsHitTestVisible="False">
+						<StackPanel IsHitTestVisible="False">
+							<Label Content="Themes and" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+							<Label Content="Colours" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+						</StackPanel>
+					</Viewbox>
+					<Ellipse Grid.Row="1" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Grid.ColumnSpan="2" IsHitTestVisible="False" Margin="5">
+						<Ellipse.Fill>
+							<RadialGradientBrush>
+								<GradientStop Color="Red" Offset="0.14285714"/>
+								<GradientStop Color="Yellow" Offset="0.285714"/>
+								<GradientStop Color="Cyan" Offset="0.4285714"/>
+								<GradientStop Color="Lime" Offset="0.571428"/>
+								<GradientStop Color="Blue" Offset="0.7142"/>
+								<GradientStop Color="Magenta" Offset="0.85714"/>
+								<GradientStop Color="Red" Offset="1.0"/>
+							</RadialGradientBrush>
+						</Ellipse.Fill>
+					</Ellipse>
+					<Ellipse Grid.Row="1" Margin="5" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Fill="{DynamicResource DarkGlass}" Grid.ColumnSpan="2" IsHitTestVisible="False"/>
+					<!--#endregion-->
+				</Grid>
+			</Border>
+			<Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" CornerRadius="5,10,10,5" Background="{DynamicResource LightGlass}"/>
+		</Grid>
+	</Grid>
 </Page>

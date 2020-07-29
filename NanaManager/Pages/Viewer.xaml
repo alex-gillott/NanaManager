@@ -56,7 +56,7 @@
         <Image Margin="382,11" Grid.Row="1" Source="pack://siteoforigin:,,,/Resources/MenuBars.png" Grid.RowSpan="1" Cursor="Hand" MouseDown="image_MouseDown" MouseEnter="image_MouseEnter" MouseUp="image_MouseUp" MouseLeave="image_MouseLeave"/>
         <Button x:Name="btnExport" Style="{DynamicResource Menu Button}" IsEnabled="False" Content="Export" FontSize="14" Height="Auto" Margin="0,10,10,10" Grid.Row="1" HorizontalAlignment="Right" Width="96" Click="btnExport_Click"/>
         <Button x:Name="btnEdit" Style="{DynamicResource Menu Button}" IsEnabled="False" Content="Edit" FontSize="14" Height="Auto" Margin="0,10,111,10" Grid.Row="1" HorizontalAlignment="Right" Width="96" Click="btnEdit_Click"/>
-        <Button x:Name="btnSettings" Style="{DynamicResource Menu Button}" Content="Settings" FontSize="14" Height="Auto" Margin="10,10,0,10" Grid.Row="1" HorizontalAlignment="Left" Width="96"/>
+        <Button x:Name="btnSettings" Style="{DynamicResource Menu Button}" Content="Settings" FontSize="14" Height="Auto" Margin="10,10,0,10" Grid.Row="1" HorizontalAlignment="Left" Width="96" Click="btnSettings_Click"/>
         <Button x:Name="btnTags" Style="{DynamicResource Menu Button}" Content="Tags" FontSize="14" Height="Auto" Margin="111,10,0,10" Grid.Row="1" HorizontalAlignment="Left" Width="96" Click="btnTags_Click"/>
         <StackPanel x:Name="stkMenu" HorizontalAlignment="Left" Width="130" Grid.RowSpan="2" Background="{DynamicResource BlackGlass}" >
 			<StackPanel.RenderTransform>

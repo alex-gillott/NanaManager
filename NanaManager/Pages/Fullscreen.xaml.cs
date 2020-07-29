@@ -15,12 +15,12 @@ namespace NanaManager
     /// </summary>
     public partial class Fullscreen : Page
     {
-        int[] searchTerms;
-        string[] searched;
-        int idx;
-        string current;
-        Storyboard hideMenu;
-        bool editing = false;
+        private int[] searchTerms;
+        private string[] searched;
+        private int idx;
+        private string current;
+        private readonly Storyboard hideMenu;
+        private bool editing = false;
 
         public Fullscreen() {
             InitializeComponent();

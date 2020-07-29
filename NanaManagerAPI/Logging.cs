@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 
 using NanaManagerAPI.IO;
+using System.Diagnostics;
 
 namespace NanaManagerAPI
 {
@@ -14,7 +15,7 @@ namespace NanaManagerAPI
 	{
 		private const string FORMAT = "[{3}:{4}:{5}.{6} D{2}] [{1}] [{7}] {0}";
 		private const string NUM_FORMAT = "[{8}] [{3}:{4}:{5}.{6} D{2}] [{1}] [{7}] {0}";
-		private const string ERROR_FORMAT = "An Exception occurred at {0}: {1}\n\nA Stack Trace of the error follows:\n{2}";
+		private const string ERROR_FORMAT = "A {3} occurred at {0}: {1}\n\nA Stack Trace of the error follows:\n{2}";
 		private static Queue<string> logs;
 
 		/// <summary>
@@ -49,6 +50,7 @@ namespace NanaManagerAPI
 			if ( !Initialised )
 				throw new InvalidOperationException( "The logger was not initialised. Call Logging.Init() to initialise." );
 			logs.Enqueue( Message );
+			Debug.WriteLine( Message );
 			NewMessage?.Invoke( Message );
 		}
 		/// <summary>
@@ -59,8 +61,8 @@ namespace NanaManagerAPI
 		public static void Write( string Message, string Location ) {
 			try {
 				Write( string.Format( FORMAT, Message, Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, "Debug" ) );
-			} catch ( InvalidOperationException ex ) {
-				throw ex;
+			} catch ( InvalidOperationException ) {
+				throw;
 			}
 		}
 		/// <summary>
@@ -72,8 +74,8 @@ namespace NanaManagerAPI
 		public static void Write( string Message, string Location, LogLevel Level ) {
 			try {
 				Write( string.Format( FORMAT, Message, Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ) );
-			} catch ( InvalidOperationException ex ) {
-				throw ex;
+			} catch ( InvalidOperationException ) {
+				throw;
 			}
 		}
 		/// <summary>
@@ -86,8 +88,8 @@ namespace NanaManagerAPI
 		public static void Write( string Message, string Location, LogLevel Level, int LogCode ) {
 			try {
 				Write( string.Format( NUM_FORMAT, Message, Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ), Convert.ToString( LogCode, 16 ) );
-			} catch ( InvalidOperationException ex ) {
-				throw ex;
+			} catch ( InvalidOperationException ) {
+				throw;
 			}
 		}
 		/// <summary>
@@ -98,8 +100,8 @@ namespace NanaManagerAPI
 		public static void Write( Exception Error, string Location ) {
 			try {
 				Write( Error, Location, LogLevel.Error );
-			} catch ( InvalidOperationException ex ) {
-				throw ex;
+			} catch ( InvalidOperationException ) {
+				throw;
 			}
 		}
 		/// <summary>
@@ -110,9 +112,9 @@ namespace NanaManagerAPI
 		/// <param name="Level">The severity of the error</param>
 		public static void Write( Exception Error, string Location, LogLevel Level ) {
 			try {
-				Write( string.Format( FORMAT, string.Format( ERROR_FORMAT, Error.Source, Error.Message, Error.StackTrace ), Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ) );
-			} catch ( InvalidOperationException ex ) {
-				throw ex;
+				Write( string.Format( FORMAT, string.Format( ERROR_FORMAT, Error.Source, Error.Message, Error.StackTrace, Error.GetType().Name ), Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ) );
+			} catch ( InvalidOperationException ) {
+				throw;
 			}
 		}
 

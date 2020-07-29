@@ -163,6 +163,8 @@ namespace NanaManager
         private void lstImages_PreviewMouseDown( object sender, MouseButtonEventArgs e ) => lstImages.SelectedIndex = -1;
         private void lstImages_SelectionChanged( object sender, SelectionChangedEventArgs e ) => btnEdit.IsEnabled = btnExport.IsEnabled = lstImages.SelectedIndex != -1;
         private void btnTags_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.TagManager );
+        private void btnSettings_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.Settings );
         #endregion
+
     }
 }

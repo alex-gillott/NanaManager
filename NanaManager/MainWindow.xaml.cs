@@ -12,6 +12,7 @@ using System.Windows.Media.Animation;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+//using NanaManager.Settings;
 
 namespace NanaManager
 {
@@ -78,6 +79,7 @@ namespace NanaManager
 			Paging.AddPage( Pages.TagManager, new TagManager() );
 			Paging.AddPage( Pages.Viewer, new Viewer() );
 			Paging.AddPage( Pages.Welcome, new Welcome() );
+			//Registry.RegisterSettings( new SettingsTab("hydroxa.nanaManager:pg_colourtheme", "Colours and Themes", new ColourThemeSettings() ) );
 
 			Paging.PageChanged += onNewPage;
 			Globals.Fullscreen += toggleFullscreen;

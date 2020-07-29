@@ -69,6 +69,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\BackgroundWorker.cs" />
     <Compile Include="UI\Registry.cs" />
+    <Compile Include="UI\SettingsTab.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

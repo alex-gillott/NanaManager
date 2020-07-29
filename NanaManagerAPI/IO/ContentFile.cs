@@ -89,7 +89,7 @@ namespace NanaManagerAPI.IO
 				return Ionic.Zip.ZipFile.CheckZip( ContentPath );
 			} catch ( Exception e ) {
 				Logging.Write( e, "Content", LogLevel.Error );
-				return false;
+				throw e;
 			}
 		}
 		/// <summary>
@@ -193,7 +193,7 @@ namespace NanaManagerAPI.IO
 		}
 
 		/// <summary>
-		/// Encrypts the content file using <see cref="EncryptionFunction"/>
+		/// Encrypts the content file using <see cref="Globals.CryptographyProvider"/>
 		/// </summary>
 		/// <param name="Password">The password to encrypt the data with</param>
 		public static void Encrypt( string Password ) {
@@ -216,7 +216,7 @@ namespace NanaManagerAPI.IO
 			}
 		}
 		/// <summary>
-		/// Decrypts the content file using <see cref="DecryptionFunction"/>
+		/// Decrypts the content file using <see cref="Globals.CryptographyProvider"/>
 		/// </summary>
 		/// <param name="Password">The password to decrypt the data with</param>
 		public static void Decrypt( string Password ) {
@@ -228,9 +228,11 @@ namespace NanaManagerAPI.IO
 				//Path is null or byte array was empty
 				Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
 				throw e;
-			} catch ( DirectoryNotFoundException ) {
+			} catch ( DirectoryNotFoundException e ) {
 				Logging.Write( "The Content Path was not found. Attempting to generate new files.", "ContentDecryption", LogLevel.Error );
 				LoadEnvironment();
+				if ( !File.Exists( ContentPath ) )
+					throw e;
 			} catch ( PathTooLongException e ) {
 				//Path was too long
 				Logging.Write( $"Content Path was too long: \"{ContentPath}\"", "ContentDecrpytion", LogLevel.Fatal );

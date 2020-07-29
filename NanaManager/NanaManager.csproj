@@ -80,7 +80,7 @@
     <Compile Include="Pages\Import.xaml.cs">
       <DependentUpon>Import.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Pages\Paging.cs" />
+    <Compile Include="Pages\Pages.cs" />
     <Compile Include="Pages\TagManager.xaml.cs">
       <DependentUpon>TagManager.xaml</DependentUpon>
     </Compile>
@@ -203,6 +203,9 @@
       <Project>{9e324db4-9aa6-4422-9e53-69d1a8e678cb}</Project>
       <Name>NanaManagerAPI</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Pages\Settings\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

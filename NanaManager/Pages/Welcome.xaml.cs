@@ -21,7 +21,7 @@ namespace NanaManager
     {
         public static bool Complete;
 
-        private BackgroundWorker bgWork = new BackgroundWorker();
+        private readonly BackgroundWorker bgWork = new BackgroundWorker();
         private Thread waitThread;
         public Welcome() {
             InitializeComponent();
