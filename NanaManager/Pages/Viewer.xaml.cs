@@ -15,6 +15,7 @@ using System.Windows.Media.Animation;
 
 using NanaManagerAPI;
 using NanaManagerAPI.IO;
+using NanaManagerAPI.UI;
 using NanaManagerAPI.Data;
 using NanaManagerAPI.Media;
 
@@ -29,11 +30,11 @@ namespace NanaManager
             InitializeComponent();
 
             StringBuilder filter = new StringBuilder( "Compatible Files|" );
-            foreach ( KeyValuePair<string, int> s in Globals.SupportedDataTypes )
+            foreach ( KeyValuePair<string, int> s in NanaManagerAPI.UI.Registry.SupportedDataTypes )
                 filter.Append( $"*{s.Key};" );
             filter.Remove( filter.Length - 1, 1 );
 
-            foreach ( KeyValuePair<string, List<string>> c in Globals.Catagories ) {
+            foreach ( KeyValuePair<string, List<string>> c in NanaManagerAPI.UI.Registry.Catagories ) {
                 filter.Append( $"|{c.Key}|" );
                 foreach ( string s in c.Value )
                     filter.Append( $"*{s};" );
@@ -155,8 +156,8 @@ namespace NanaManager
         private void btnExport_Click( object sender, RoutedEventArgs e ) {
             if ( lstImages.SelectedIndex > -1 ) {
                 IMedia m = Globals.Media[(string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag];
-                File.WriteAllBytes( Path.Combine( Globals.ExportPath, m.ID + m.FileType ), ContentFile.ReadFile( m.ID ) );
-                Process.Start( Globals.ExportPath );
+                File.WriteAllBytes( Path.Combine( ContentFile.ExportPath, m.ID + m.FileType ), ContentFile.ReadFile( m.ID ) );
+                Process.Start( ContentFile.ExportPath );
             }
         }
         private void lstImages_PreviewMouseDown( object sender, MouseButtonEventArgs e ) => lstImages.SelectedIndex = -1;

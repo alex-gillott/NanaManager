@@ -5,7 +5,7 @@ using System.Windows.Controls;
 using System.Security.Cryptography;
 
 using NanaManagerAPI.IO;
-using NanaManagerAPI;
+using NanaManagerAPI.UI;
 
 namespace NanaManager
 {

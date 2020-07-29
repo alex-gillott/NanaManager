@@ -5,8 +5,10 @@ using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
-using NanaManagerAPI;
+
 using NanaManagerAPI.Media;
+using NanaManagerAPI.UI;
+using NanaManagerAPI;
 
 namespace NanaManager.MediaHandlers
 {
@@ -31,7 +33,7 @@ namespace NanaManager.MediaHandlers
         public Images() {
             ID = "hydroxa.nanabrowser.media.imageHandler";
             compatibleTypes = new string[] { ".jpg", ".jpeg", ".gif", ".png", ".webp", ".tif", ".bmp" };
-            Globals.AddToCatagory( "Image Files", compatibleTypes );
+            Registry.AddToCatagory( "Image Files", compatibleTypes );
         }
     }
 }

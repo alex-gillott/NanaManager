@@ -9,6 +9,7 @@ using System.Threading;
 
 using NanaManagerAPI;
 using NanaManagerAPI.IO;
+using NanaManagerAPI.UI;
 using NanaManagerAPI.Threading;
 
 namespace NanaManager

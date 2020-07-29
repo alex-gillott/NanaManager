@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Windows.Media.Animation;
 
 using NanaManagerAPI.IO;
+using NanaManagerAPI.UI;
 using NanaManagerAPI;
 
 namespace NanaManager

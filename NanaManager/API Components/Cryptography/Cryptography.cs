@@ -1,6 +1,6 @@
 ﻿using System.Text;
 
-using NanaManagerAPI.Cryptography;
+using NanaManagerAPI.IO.Cryptography;
 
 namespace NanaManager.Cryptography
 {

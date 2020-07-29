@@ -8,3 +8,13 @@ C:\Users\Hydro\source\repos\NanaBrowser\NanaManagerAPI\bin\Debug\DotNetZip.xml
 C:\Users\Hydro\source\repos\NanaBrowser\NanaManagerAPI\obj\Debug\NanaManagerAPI.csproj.CopyComplete
 C:\Users\Hydro\source\repos\NanaBrowser\NanaManagerAPI\obj\Debug\NanaManagerAPI.dll
 C:\Users\Hydro\source\repos\NanaBrowser\NanaManagerAPI\obj\Debug\NanaManagerAPI.pdb
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\NanaManagerAPI.dll
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\NanaManagerAPI.pdb
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\DotNetZip.dll
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\DotNetZip.pdb
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\DotNetZip.xml
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.csprojAssemblyReference.cache
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.csproj.CoreCompileInputs.cache
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.csproj.CopyComplete
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.dll
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.pdb

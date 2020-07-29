@@ -56,18 +56,19 @@
     <Compile Include="Globals.cs" />
     <Compile Include="IO\ContentFile.cs" />
     <Compile Include="Logging.cs" />
-    <Compile Include="Paging.cs" />
+    <Compile Include="UI\Paging.cs" />
     <Compile Include="TagData.cs" />
     <Compile Include="Data\Image.cs" />
     <Compile Include="Data\Tag.cs" />
     <Compile Include="IO\DataDecoder.cs" />
     <Compile Include="IO\DataEncoder.cs" />
-    <Compile Include="Cryptography\ICryptographyProvider.cs" />
+    <Compile Include="IO\Cryptography\ICryptographyProvider.cs" />
     <Compile Include="IO\IEncoder.cs" />
     <Compile Include="Media\IMedia.cs" />
     <Compile Include="Media\IMediaViewer.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Threading\BackgroundWorker.cs" />
+    <Compile Include="UI\Registry.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

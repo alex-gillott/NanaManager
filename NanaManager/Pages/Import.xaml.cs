@@ -8,11 +8,12 @@ using System.Windows.Input;
 using System.IO.Compression;
 using System.Windows.Controls;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 using System.Windows.Controls.Primitives;
 
 using NanaManager.Properties;
 using NanaManagerAPI.Media;
+using NanaManagerAPI.IO;
+using NanaManagerAPI.UI;
 using NanaManagerAPI;
 
 namespace NanaManager
@@ -99,7 +100,7 @@ namespace NanaManager
 			renderIndex();
 		}
 		private void btnAdd_Click( object sender, RoutedEventArgs e ) {
-			using ZipArchive archive = ZipFile.Open( Globals.ContentPath, ZipArchiveMode.Update );
+			using ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update );
 			bool saved = false;
 			if ( Editing != null ) {
 				Globals.Media[Editing] = new NanaManagerAPI.Data.Image( Editing, editTags.ToArray(), Globals.Media[Editing].FileType );
@@ -292,9 +293,9 @@ namespace NanaManager
 		private void renderIndex() {
 			if ( Editing != null ) {
 				string fileType = Globals.Media[Editing].FileType;
-				if ( Globals.SupportedDataTypes.ContainsKey( fileType ) ) {
-					int toLoad = Globals.SupportedDataTypes[fileType];
-					IMediaViewer viewer = Globals.Viewers[toLoad];
+				if ( Registry.SupportedDataTypes.ContainsKey( fileType ) ) {
+					int toLoad = Registry.SupportedDataTypes[fileType];
+					IMediaViewer viewer = Registry.Viewers[toLoad];
 					viewer.LoadMedia( Editing, true );
 					if ( currentViewer != toLoad )
 						frmPreview.Content = viewer.Display;
@@ -305,10 +306,10 @@ namespace NanaManager
 			else {
 				string path = toImport[index];
 				string ext = Path.GetExtension( path ).ToLower();
-				if ( Globals.SupportedDataTypes.ContainsKey( ext ) ) {
+				if ( Registry.SupportedDataTypes.ContainsKey( ext ) ) {
 					try {
-						int toLoad = Globals.SupportedDataTypes[ext];
-						IMediaViewer viewer = Globals.Viewers[toLoad];
+						int toLoad = Registry.SupportedDataTypes[ext];
+						IMediaViewer viewer = Registry.Viewers[toLoad];
 						viewer.LoadMedia( path, false );
 						if ( currentViewer != toLoad )
 							frmPreview.Content = viewer.Display;
@@ -341,7 +342,7 @@ namespace NanaManager
 		private List<string> scanDir( string dir ) {
 			List<string> toAppend = new List<string>();
 			foreach ( string s in Directory.GetFiles( dir ) )
-				if ( Globals.SupportedDataTypes.ContainsKey( Path.GetExtension( s ) ) )
+				if ( Registry.SupportedDataTypes.ContainsKey( Path.GetExtension( s ) ) )
 					toAppend.Add( s );
 			foreach ( string s in Directory.GetDirectories( dir ) )
 				foreach ( string f in scanDir( s ) )

@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 
-using NanaManagerAPI;
+using NanaManagerAPI.UI;
 
 namespace NanaManager
 {

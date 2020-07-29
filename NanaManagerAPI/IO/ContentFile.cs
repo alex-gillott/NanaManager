@@ -4,13 +4,50 @@ using System.Security;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
+using System.Windows;
 
 [assembly: InternalsVisibleTo("NanaManager")]
 
 namespace NanaManagerAPI.IO
 {
+	/// <summary>
+	/// Information and handling for the user's content
+	/// </summary>
 	public static class ContentFile
 	{
+		private const int ERROR_DRIVE_MISSING = 0x001;
+		private const int ERROR_INVALID_PATH = 0x002;
+		private const int ERROR_GENERIC_IO = 0x003;
+
+		/// <summary>
+		/// The directory containing application data for all Hydroxa programs
+		/// </summary>
+		public static readonly string HydroxaPath = Path.Combine( Environment.GetFolderPath( Environment.SpecialFolder.ApplicationData ), "Hydroxa" );
+		/// <summary>
+		/// The file path to the NanaManager directory
+		/// </summary>
+		public static readonly string RootPath = Path.Combine( HydroxaPath, "NanaManager" );
+		/// <summary>
+		/// The file location of the Content file
+		/// </summary>
+		public static readonly string ContentPath = Path.Combine( RootPath, "content.nana" );
+		/// <summary>
+		/// The file path to the Temp directory
+		/// </summary>
+		public static readonly string TempPath = Path.Combine( RootPath, "temp" );
+		/// <summary>
+		/// The file path to the Logs directory
+		/// </summary>
+		public static readonly string LogPath = Path.Combine( RootPath, "logs" );
+		/// <summary>
+		/// The directory where media exports go to
+		/// </summary>
+		public static readonly string ExportPath = Path.Combine( RootPath, "exports" );
+		/// <summary>
+		/// The file location of the latest.log file
+		/// </summary>
+		public static readonly string LatestLogPath = Path.Combine( LogPath, "latest.log" );
+
 		private static readonly byte[] ZIP_SIGNATURE = new byte[] { 80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 		/// <summary>
@@ -18,18 +55,29 @@ namespace NanaManagerAPI.IO
 		/// </summary>
 		public static readonly List<IEncoder> ActiveEncoders = new List<IEncoder>();
 		internal static void LoadEnvironment() {
-			if ( !Directory.Exists( Globals.HydroxaPath ) )
-				Directory.CreateDirectory( Globals.HydroxaPath );
-			if ( !Directory.Exists( Globals.RootPath ) )
-				Directory.CreateDirectory( Globals.RootPath );
-			if ( !Directory.Exists( Globals.TempPath ) )
-				Directory.CreateDirectory( Globals.TempPath );
-			if ( !Directory.Exists( Globals.LogPath ) )
-				Directory.CreateDirectory( Globals.LogPath );
-			if ( !Directory.Exists( Globals.ExportPath ) )
-				Directory.CreateDirectory( Globals.ExportPath );
-			if ( !File.Exists( Globals.ContentPath ) )
-				File.WriteAllBytes( Globals.ContentPath, ZIP_SIGNATURE ); //Blank signature for a zip file
+			try {
+				if ( !Directory.Exists( HydroxaPath ) )
+					Directory.CreateDirectory( HydroxaPath );
+				if ( !Directory.Exists( RootPath ) )
+					Directory.CreateDirectory( RootPath );
+				if ( !Directory.Exists( TempPath ) )
+					Directory.CreateDirectory( TempPath );
+				if ( !Directory.Exists( LogPath ) )
+					Directory.CreateDirectory( LogPath );
+				if ( !Directory.Exists( ExportPath ) )
+					Directory.CreateDirectory( ExportPath );
+				if ( !File.Exists( ContentPath ) )
+					File.WriteAllBytes( ContentPath, ZIP_SIGNATURE ); //Blank signature for a zip file
+			} catch ( NotSupportedException e ) {
+				MessageBox.Show( $"The expected drive was not found (Check the connection)\nMessage: {e.Message}", "Nana Manager Pre-load Error", MessageBoxButton.OK, MessageBoxImage.Error );
+				Environment.Exit( ERROR_DRIVE_MISSING );
+			} catch ( DirectoryNotFoundException e ) {
+				MessageBox.Show( e.Message, "Nana Manager Pre-load Error", MessageBoxButton.OK, MessageBoxImage.Error );
+				Environment.Exit( ERROR_INVALID_PATH );
+			} catch ( IOException e ) {
+				MessageBox.Show( e.Message, "Nana Manager Pre-load Error", MessageBoxButton.OK, MessageBoxImage.Error );
+				Environment.Exit( ERROR_GENERIC_IO );
+			}
 		}
 
 		/// <summary>
@@ -38,13 +86,12 @@ namespace NanaManagerAPI.IO
 		/// <returns>Returns true if the content file can be read. False if corrupt or encrypted</returns>
 		public static bool CheckValidity() {
 			try {
-				return Ionic.Zip.ZipFile.CheckZip( Globals.ContentPath );
-            } catch ( Exception e ) {
-				Logging.Write( e, "Content" );
+				return Ionic.Zip.ZipFile.CheckZip( ContentPath );
+			} catch ( Exception e ) {
+				Logging.Write( e, "Content", LogLevel.Error );
 				return false;
 			}
 		}
-
 		/// <summary>
 		/// Reads a file from the content file 
 		/// </summary>
@@ -54,13 +101,13 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-			using ZipArchive archive = ZipFile.OpenRead( Globals.ContentPath );
+			using ZipArchive archive = ZipFile.OpenRead( ContentPath );
 
 			ZipArchiveEntry entry = archive.GetEntry( Name );
 			if ( entry == null )
 				throw new FileNotFoundException( "The specified file was not found within the database", Name );
 			else {
-				string location = Path.Combine( Globals.TempPath, Name );
+				string location = Path.Combine( TempPath, Name );
 				entry.ExtractToFile( location ); //TODO - HANDLE ERRORS
 				byte[] data = File.ReadAllBytes( location );
 				File.Delete( location );
@@ -77,16 +124,16 @@ namespace NanaManagerAPI.IO
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
 			if ( Exists( Name ) )
-				using ( ZipArchive archive = ZipFile.Open( Globals.ContentPath, ZipArchiveMode.Update ) ) {
+				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
 					ZipArchiveEntry entry = archive.GetEntry( Name );
 					using Stream entryStream = entry.Open();
 					using StreamWriter writer = new StreamWriter( entryStream );
 					writer.Write( Data );
 				}
 			else
-				using ( ZipArchive archive = ZipFile.Open( Globals.ContentPath, ZipArchiveMode.Update ) ) {
+				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
 					//TODO - HANDLE ERRORS
-					string location = Path.Combine( Globals.TempPath, Name );
+					string location = Path.Combine( TempPath, Name );
 					File.WriteAllText( location, Data );
 					archive.CreateEntryFromFile( location, Name );
 					File.Delete( location );
@@ -102,15 +149,15 @@ namespace NanaManagerAPI.IO
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
 			if ( Exists( Name ) )
-				using ( ZipArchive archive = ZipFile.Open( Globals.ContentPath, ZipArchiveMode.Update ) ) {
+				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
 					ZipArchiveEntry entry = archive.GetEntry( Name );
 					using Stream entryStream = entry.Open();
 					using StreamWriter writer = new StreamWriter( entryStream );
 					writer.Write( Data );
 				}
 			else
-				using ( ZipArchive archive = ZipFile.Open( Globals.ContentPath, ZipArchiveMode.Update ) ) {
-					string location = Path.Combine( Globals.TempPath, Name );
+				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
+					string location = Path.Combine( TempPath, Name );
 					File.WriteAllBytes( location, Data );
 					archive.CreateEntryFromFile( location, Name );
 					File.Delete( location );
@@ -125,7 +172,7 @@ namespace NanaManagerAPI.IO
 		public static bool Exists( string Name ) {
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
-			using ZipArchive archive = ZipFile.OpenRead( Globals.ContentPath );
+			using ZipArchive archive = ZipFile.OpenRead( ContentPath );
 			ZipArchiveEntry entry = archive.GetEntry( Name );
 			return entry != null;
 		}
@@ -144,6 +191,7 @@ namespace NanaManagerAPI.IO
 			foreach ( IEncoder encoder in ActiveEncoders )
 				encoder.LoadData();
 		}
+
 		/// <summary>
 		/// Encrypts the content file using <see cref="EncryptionFunction"/>
 		/// </summary>
@@ -151,7 +199,7 @@ namespace NanaManagerAPI.IO
 		public static void Encrypt( string Password ) {
 			try {
 				Globals.CryptographyProvider.Initialise( Password );
-				File.WriteAllBytes( Globals.ContentPath, Globals.CryptographyProvider.Encrypt( File.ReadAllBytes( Globals.ContentPath ) ) );
+				File.WriteAllBytes( ContentPath, Globals.CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
 				Globals.CryptographyProvider.Terminate();
 			} catch ( IOException e ) {
 				//TODO - HANDLE I/O ERROR
@@ -174,19 +222,39 @@ namespace NanaManagerAPI.IO
 		public static void Decrypt( string Password ) {
 			try {
 				Globals.CryptographyProvider.Initialise( Password );
-				File.WriteAllBytes( Globals.ContentPath, Globals.CryptographyProvider.Decrypt( File.ReadAllBytes( Globals.ContentPath ) ) );
+				File.WriteAllBytes( ContentPath, Globals.CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
 				Globals.CryptographyProvider.Terminate();
+			} catch ( ArgumentNullException e ) {
+				//Path is null or byte array was empty
+				Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
+				throw e;
+			} catch ( DirectoryNotFoundException ) {
+				Logging.Write( "The Content Path was not found. Attempting to generate new files.", "ContentDecryption", LogLevel.Error );
+				LoadEnvironment();
+			} catch ( PathTooLongException e ) {
+				//Path was too long
+				Logging.Write( $"Content Path was too long: \"{ContentPath}\"", "ContentDecrpytion", LogLevel.Fatal );
+				throw e;
+			} catch ( SecurityException e ) {
+				//TODO - Does not have required permissions
+
+				throw e;
 			} catch ( IOException e ) {
-				//TODO - HANDLE I/O ERROR
+				Logging.Write( $"Could not decrypt file ({e.Message})\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
 				throw e;
 			} catch ( UnauthorizedAccessException e ) {
 				//TODO - HANDLE ERROR
-				//File that is readonly
-				//File that is hidden
-				//Do not have permission
-				throw e;
-			} catch ( SecurityException e ) {
-				//TODO - HANDLE ACCESS ERROR
+				if ( Directory.Exists( ContentPath ) )
+					Logging.Write( $"Content Path was a directory: \"{ContentPath}\"", "ContentDecryption", LogLevel.Fatal );
+				else {
+					FileInfo fi = new FileInfo( ContentPath );
+
+					if ( fi.IsReadOnly )
+						Logging.Write( $"Content Path was read only: \"{ContentPath}\"", "ContentDecryption", LogLevel.Fatal );
+					//File that is readonly
+					//File that is hidden
+					//Do not have permission
+				}
 				throw e;
 			}
 		}

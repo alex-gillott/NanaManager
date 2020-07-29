@@ -8,6 +8,7 @@ using System.Windows.Controls;
 using System.Collections.Generic;
 
 using NanaManagerAPI.Data;
+using NanaManagerAPI.UI;
 using NanaManagerAPI;
 
 namespace NanaManager

@@ -3,17 +3,24 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 
+using NanaManagerAPI.IO;
+
 namespace NanaManagerAPI
 {
 	/// <summary>
 	/// The log manager. It saves it to the log files, as well as outputting to the debug output
 	/// </summary>
-	public static class Logging {
+	public static class Logging
+	{
 		private const string FORMAT = "[{3}:{4}:{5}.{6} D{2}] [{1}] [{7}] {0}";
+		private const string NUM_FORMAT = "[{8}] [{3}:{4}:{5}.{6} D{2}] [{1}] [{7}] {0}";
 		private const string ERROR_FORMAT = "An Exception occurred at {0}: {1}\n\nA Stack Trace of the error follows:\n{2}";
-		private static bool initialised;
 		private static Queue<string> logs;
 
+		/// <summary>
+		/// Is true if the Logger is active and accepting writes
+		/// </summary>
+		public static bool Initialised { get; private set; }
 		/// <summary>
 		/// Handles new Log entries
 		/// </summary>
@@ -31,7 +38,7 @@ namespace NanaManagerAPI
 			StringBuilder sb = new StringBuilder();
 			for ( int i = 0; i < logs.Count; i++ )
 				sb.AppendLine( logs.Dequeue() );
-			File.AppendAllText(Globals.LatestLogPath, sb.ToString());
+			File.AppendAllText( ContentFile.LatestLogPath, sb.ToString() );
 		}
 
 		/// <summary>
@@ -39,8 +46,8 @@ namespace NanaManagerAPI
 		/// </summary>
 		/// <param name="Message">The message to add to the logs</param>
 		public static void Write( string Message ) {
-			if ( !initialised )
-				throw new InvalidOperationException("The logger was not initialised. Call Logging.Init() to initialise.");
+			if ( !Initialised )
+				throw new InvalidOperationException( "The logger was not initialised. Call Logging.Init() to initialise." );
 			logs.Enqueue( Message );
 			NewMessage?.Invoke( Message );
 		}
@@ -65,9 +72,23 @@ namespace NanaManagerAPI
 		public static void Write( string Message, string Location, LogLevel Level ) {
 			try {
 				Write( string.Format( FORMAT, Message, Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ) );
-            } catch (InvalidOperationException ex) {
+			} catch ( InvalidOperationException ex ) {
 				throw ex;
-            }
+			}
+		}
+		/// <summary>
+		/// Writes a message to the logs from the specified location at the specified severity level, prefixing with the supplied LogCode
+		/// </summary>
+		/// <param name="Message">The message to display</param>
+		/// <param name="Location">The location the message came from</param>
+		/// <param name="Level">The severity of the message</param>
+		/// <param name="LogCode">The code of the message. Used for watching for specific logs</param>
+		public static void Write( string Message, string Location, LogLevel Level, int LogCode ) {
+			try {
+				Write( string.Format( NUM_FORMAT, Message, Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ), Convert.ToString( LogCode, 16 ) );
+			} catch ( InvalidOperationException ex ) {
+				throw ex;
+			}
 		}
 		/// <summary>
 		/// Writes an error to the logs from the specified location
@@ -77,10 +98,9 @@ namespace NanaManagerAPI
 		public static void Write( Exception Error, string Location ) {
 			try {
 				Write( Error, Location, LogLevel.Error );
-				
-            } catch (InvalidOperationException ex) {
+			} catch ( InvalidOperationException ex ) {
 				throw ex;
-            }
+			}
 		}
 		/// <summary>
 		/// Writes an error to the logs from the specified location at the specified severity level
@@ -91,29 +111,49 @@ namespace NanaManagerAPI
 		public static void Write( Exception Error, string Location, LogLevel Level ) {
 			try {
 				Write( string.Format( FORMAT, string.Format( ERROR_FORMAT, Error.Source, Error.Message, Error.StackTrace ), Location, DateTime.Now.Day, DateTime.Now.Hour, DateTime.Now.Minute, DateTime.Now.Second, DateTime.Now.Millisecond, Enum.GetName( typeof( LogLevel ), Level ) ) );
-			} catch (InvalidOperationException ex) {
+			} catch ( InvalidOperationException ex ) {
 				throw ex;
-            }
+			}
 		}
 
+		/// <summary>
+		/// Initialises the logger. The Logger is often initialised before plugins, though this may not always be the case
+		/// </summary>
 		public static void Init() {
+			if ( Initialised )
+				return;
 			logs = new Queue<string>();
-			if ( File.Exists( Globals.LatestLogPath ) ) {
-				string[] data = File.ReadAllLines( Globals.LatestLogPath );
-				File.WriteAllLines( Path.Combine( Globals.LogPath, data[0] ), data );
+			if ( File.Exists( ContentFile.LatestLogPath ) ) {
+				string[] data = File.ReadAllLines( ContentFile.LatestLogPath );
+				File.WriteAllLines( Path.Combine( ContentFile.LogPath, data[0] ), data );
 			}
 			DateTime now = DateTime.Now;
-			File.WriteAllText(Globals.LatestLogPath, $"{now.Year}.{now.Month}.{now.Day}-{now.Hour}.{now.Minute}.{now.Second}.{now.Millisecond}.log\n");
-			initialised = true;
+			File.WriteAllText( ContentFile.LatestLogPath, $"{now.Year}.{now.Month}.{now.Day}-{now.Hour}.{now.Minute}.{now.Second}.{now.Millisecond}.log\n" );
+			Initialised = true;
 			Write( "Logger initialised!", "Logger", LogLevel.Info );
 		}
 	}
 	public enum LogLevel : byte
 	{
+		/// <summary>
+		/// The default Log Level. Often filtered out by log displays. Dump as much as you want here
+		/// </summary>
 		Debug = 0,
+		/// <summary>
+		/// The information Log Level. This is to let debuggers know about categorised tasks. Like Debug, but less spam
+		/// </summary>
 		Info,
+		/// <summary>
+		/// The warning Log Level. This is to alert of something that should not necessarily be the case, but isn't too detrimental.
+		/// </summary>
 		Warn,
+		/// <summary>
+		/// The error Log Level. This is to alert of something bad, but not crash-worthy. Often used in recoverable errors
+		/// </summary>
 		Error,
+		/// <summary>
+		/// The fatal Log Level. Irrecoverable issue that requires the application to crash or use a long duration error handler. These are automatically handled by the error page.
+		/// </summary>
 		Fatal
 	}
 }

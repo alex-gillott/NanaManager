@@ -4,8 +4,8 @@ using System.Windows.Controls.Primitives;
 using System.Windows.Input;
 using System.Windows.Media.Animation;
 
-using NanaManager.MediaHandlers;
 using NanaManagerAPI.Media;
+using NanaManagerAPI.UI;
 using NanaManagerAPI;
 
 namespace NanaManager
@@ -31,7 +31,7 @@ namespace NanaManager
             current = path;
 
             IMedia media = Globals.Media[path];
-            IMediaViewer viewer = Globals.Viewers[Globals.SupportedDataTypes[media.FileType]];
+            IMediaViewer viewer = Registry.Viewers[Registry.SupportedDataTypes[media.FileType]];
             viewer.LoadMedia( path, true );
             frmViewer.Content = viewer.Display;
 

@@ -4,7 +4,7 @@
 winexe
 C#
 .cs
-C:\Users\Hydro\source\repos\NanaBrowser\NanaManager\obj\Debug\
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\
 NanaManager
 none
 false
@@ -13,7 +13,7 @@ DEBUG;TRACE
 12760119628
 31204107025
 201236729433
-21421206422
+21-1339767237
 App.xaml;Pages\Fullscreen.xaml;Pages\ImageViewer.xaml;Pages\Error.xaml;Pages\Import.xaml;Pages\Login.xaml;MainWindow.xaml;Pages\Register.xaml;Pages\TagManager.xaml;Pages\Viewer.xaml;Pages\Welcome.xaml;Pages\SettingsPage.xaml;
 
 False

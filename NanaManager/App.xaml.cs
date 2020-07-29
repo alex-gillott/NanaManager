@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 
 using NanaManagerAPI.IO;
+using NanaManagerAPI.UI;
 using NanaManagerAPI;
 
 namespace NanaManager
@@ -21,15 +22,13 @@ namespace NanaManager
 		static void Main( string[] args ) {
 #pragma warning restore IDE1006 // Naming Styles
 
-			//MessageBox.Show( typeof( App ).Assembly.GetName().Name );
-
 			ContentFile.LoadEnvironment();
 			Logging.Init();
 			Logging.Write( "Loading API components", "Init", LogLevel.Info );
 			Logging.Write( "Registering Data Encoders", "Init" );
 			ContentFile.ActiveEncoders.Add( new FileEncoders.BaseEncoder1_1() );
 			Logging.Write( "Registering Media Viewers", "Init" );
-			Globals.RegisterMediaViewer( new MediaHandlers.Images() );
+			Registry.RegisterMediaViewer( new MediaHandlers.Images() );
 			Logging.Write( "Registering Cryptography Providers", "Init" );
 			Globals.CryptographyProvider = new Cryptography.Cryptography();
 
@@ -64,7 +63,7 @@ namespace NanaManager
 			MainWindow wnd = new MainWindow( instruction ); //Load and run the application
 			app.Run( wnd );
 
-			string[] logs = Directory.GetFiles( Globals.LogPath );
+			string[] logs = Directory.GetFiles( ContentFile.LogPath );
 			if ( logs.Length > 5 ) {
 				for ( int i = logs.Length - 1; i > 4; i-- )
 					File.Delete( logs[i] );
