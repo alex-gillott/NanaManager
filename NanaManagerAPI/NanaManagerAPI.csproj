@@ -41,8 +41,11 @@
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
+    <Reference Include="System.Windows.Forms" />
+    <Reference Include="System.Xaml" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -53,9 +56,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Attributes\EntryPointAttribute.cs" />
+    <Compile Include="EventArgs\TagCheckEventArgs.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="IO\ContentFile.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="UI\Controls\TagSelector.xaml.cs">
+      <DependentUpon>TagSelector.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Paging.cs" />
     <Compile Include="TagData.cs" />
     <Compile Include="Data\Image.cs" />
@@ -74,6 +81,11 @@
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Page Include="UI\Controls\TagSelector.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

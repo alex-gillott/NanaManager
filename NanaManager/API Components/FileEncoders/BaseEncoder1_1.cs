@@ -1,12 +1,10 @@
 ﻿using System.Collections.Generic;
-using System.Threading;
 
-using NanaManagerAPI;
-using NanaManagerAPI.Data;
 using NanaManagerAPI.Media;
+using NanaManagerAPI.Data;
 using NanaManagerAPI.IO;
-using System.Windows.Forms.VisualStyles;
-using System;
+using NanaManagerAPI.UI;
+using NanaManagerAPI;
 
 namespace NanaManager.FileEncoders
 {
@@ -15,7 +13,7 @@ namespace NanaManager.FileEncoders
 		public string Name { get; } = "Nana Encoder";
 		public string InternalName { get; } = "hydroxa.nanaBrowser.baseEncoder-1.2";
 		public int VersionMajor { get; } = 1;
-		public int VersionMinor { get; } = 1;
+		public int VersionMinor { get; } = 2;
 		public string Description { get; } = "The default data writer of Nana Browser. This encodes and stores the data within the vanilla application";
 		public EncoderType Type { get; } = EncoderType.Data;
 
@@ -54,13 +52,14 @@ namespace NanaManager.FileEncoders
 				double operations = groupCount + tagCount + imageCount;
 				double progress = 0;
 
-				TagData.Groups = new string[groupCount];
+				TagData.TagLocations.Clear();
+				TagData.Groups.Clear();
 				TagData.Tags = new Tag[tagCount];
 
 				Globals.SetStatus( $"Loading Data - Getting Groups 0/{groupCount}", progress, operations );
 				//Groups
 				for ( int i = 0; i < groupCount; i++ ) {
-					TagData.Groups[i] = decoder.ReadString(); //Groups are just names
+					TagData.Groups[decoder.ReadInt32()] = decoder.ReadString(); //Groups are just names and an ID
 					Globals.SetStatus( $"Loading Data - Getting Groups {i + 1}/{groupCount}", progress++, operations );
 				}
 

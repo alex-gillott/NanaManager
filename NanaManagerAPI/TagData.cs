@@ -17,9 +17,9 @@ namespace NanaManagerAPI
 		/// </summary>
 		public static readonly Dictionary<int, int> TagLocations = new Dictionary<int, int>();
 		/// <summary>
-		/// An array of all loaded group names
+		/// A dictionary of all loaded group names
 		/// </summary>
-		public static string[] Groups = Array.Empty<string>();
+		public static readonly Dictionary<int, string> Groups = new Dictionary<int, string>();
 		/// <summary>
 		/// An array of tags to be hidden unless specified
 		/// </summary>

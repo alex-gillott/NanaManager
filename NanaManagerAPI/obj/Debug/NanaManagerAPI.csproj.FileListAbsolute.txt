@@ -18,3 +18,7 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.csproj.CopyComplete
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.dll
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.pdb
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\UI\Controls\TagSelector.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI_MarkupCompile.cache
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI_MarkupCompile.lref
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\UI\Controls\TagSelector.baml

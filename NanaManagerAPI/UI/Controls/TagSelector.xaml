@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="NanaManagerAPI.UI.Controls.TagSelector"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:NanaManagerAPI.UI.Controls"
+			 Name="tagSelectorWindow"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+	<UserControl.Resources>
+		<Style x:Key="Tag Groupbox" TargetType="{x:Type GroupBox}">
+			<Setter Property="Margin" Value="7, 0, 0, 0"/>
+			<Setter Property="Background" Value="{Binding GroupBoxBrush, ElementName=tagSelectorWindow}"/>
+			<Setter Property="Foreground" Value="{Binding Foreground, ElementName=tagSelectorWindow}"/>
+		</Style>
+		<Style x:Key="Tag Button" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Background" Value="{x:Null}"/>
+			<Setter Property="Foreground" Value="{DynamicResource LightText}"/>
+			<Setter Property="FontFamily" Value="Segoe UI"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Focusable" Value="False"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Background="{TemplateBinding Background}" CornerRadius="8">
+							<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsChecked" Value="True">
+					<Setter Property="Background" Value="{DynamicResource Highlight}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+	</UserControl.Resources>
+	<Grid>
+		<Border Background="{Binding LoadingBrush, ElementName=tagSelectorWindow}">
+			<Viewbox>
+				<Label Content="Loading.." Foreground="{Binding Foreground, ElementName=tagSelectorWindow}"/>
+			</Viewbox>
+		</Border>
+		<ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+			<StackPanel x:Name="stkGroups" Orientation="Horizontal"/>
+		</ScrollViewer>
+	</Grid>
+</UserControl>

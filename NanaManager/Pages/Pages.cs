@@ -14,5 +14,6 @@ namespace NanaManager
         public const string Fullscreen = "hydroxa.nanaManager:pg_fsc";
         public const string ThemesAndColoursSettings = "hydroxa.nanaManager:pg_tacsets";
         public const string LanguagesSettings = "hydroxa.nanaManager:pg_langsets";
+        public const string TagsSettings = "hydroxa.nanaManager:pg_tagsets";
     }
 }
