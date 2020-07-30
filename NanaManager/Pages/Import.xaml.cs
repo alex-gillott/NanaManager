@@ -15,6 +15,7 @@ using NanaManagerAPI.Media;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+using System.Threading;
 
 namespace NanaManager
 {
@@ -30,6 +31,8 @@ namespace NanaManager
 		internal readonly List<string> toImport = new List<string>();
 		private readonly List<List<int>> checkedTags = new List<List<int>>();
 		private List<int> editTags = new List<int>();
+
+		private Thread renderThread;
 
 		public Import() {
 			InitializeComponent();
@@ -50,19 +53,6 @@ namespace NanaManager
 							checkedTags.Add( scanForTags( s ) );
 						}
 
-			//UIElement[] toClear = new UIElement[stkTags.Children.Count];
-			//stkTags.Children.CopyTo( toClear, 0 );
-			//foreach ( GroupBox gb in toClear )
-			//	if ( (string)gb.Header != "Misc" )
-			//		stkTags.Children.Remove( gb );
-
-			//generateGroups();
-			//lsbMisc.Items.Clear();
-
-			//foreach ( NanaManagerAPI.Data.Tag t in TagData.Tags )
-			//	if ( !TagData.HiddenTags.Contains( t.Index ) || Globals.ShowHiddenTags )
-			//		addTag( t.Index );
-
 			index = toImport.Count - 1;
 			btnBack.IsEnabled = false;
 			if ( index == 0 )
@@ -82,7 +72,6 @@ namespace NanaManager
 				btnAdd.Content = "Add";
 				cbxCopy.Visibility = Visibility.Visible;
 			}
-
 			renderIndex();
 		}
 		private void btnSkip_Click( object sender, RoutedEventArgs e ) {
@@ -103,7 +92,7 @@ namespace NanaManager
 			using ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update );
 			bool saved = false;
 			if ( Editing != null ) {
-				Globals.Media[Editing] = (IMedia)Registry.MediaConstructors[Globals.Media[Editing].FileType].Invoke( new object[] { Editing, tslEditor.GetCheckedTagsIndicies(), Globals.Media[Editing].FileType } );
+				Globals.Media[Editing] = (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Globals.Media[Editing].FileType]].Invoke( new object[] { Editing, tslEditor.GetCheckedTagsIndicies(), Globals.Media[Editing].FileType } );
 				Paging.LoadPreviousPage();
 				return;
 			}
@@ -112,7 +101,7 @@ namespace NanaManager
 					byte[] data = File.ReadAllBytes( toImport[index] );
 					string uID = Guid.NewGuid().ToString();
 					archive.CreateEntryFromFile( toImport[index], uID );
-					Globals.Media.Add( uID, new NanaManagerAPI.Data.Image( uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) ) );;
+					Globals.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) );;
 
 					saved = true;
 
@@ -197,6 +186,9 @@ namespace NanaManager
 				}
 				else {
 					Globals.Media.Remove( Editing );
+					using ( ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update ) ) {
+						archive.GetEntry( Editing ).Delete();
+					}
 					frmPreview.Content = null;
 					Editing = null;
 					Paging.LoadPreviousPage();
@@ -212,79 +204,14 @@ namespace NanaManager
 		#endregion
 
 		#region Tags
-		///// <summary>
-		///// Sets whether each tag is ticked or not
-		///// </summary>
-		//private void checkTags() {
-		//	List<int> toCheck;
-		//	if ( Editing != null )
-		//		toCheck = editTags;
-		//	else
-		//		toCheck = checkedTags[index];
-		//	foreach ( int i in toCheck )
-		//		foreach ( ToggleButton t in getListBox( TagData.Tags[TagData.TagLocations[i]].Group ).Items )
-		//			if ( (int)t.Tag == i ) {
-		//				t.IsChecked = true;
-		//				if ( Editing == null && !checkedTags[index].Contains( i ) )
-		//					checkedTags[index].Add( i );
-		//				else if ( !editTags.Contains( i ) )
-		//					editTags.Add( i );
-		//			}
-		//}
-		//private void checkTag( int tag ) {
-		//	foreach ( ToggleButton t in getListBox( TagData.Tags[TagData.TagLocations[tag]].Group ).Items )
-		//		if ( (int)t.Tag == tag ) {
-		//			t.IsChecked = true;
-		//			if ( Editing == null && !checkedTags[index].Contains( tag ) )
-		//				checkedTags[index].Add( tag );
-		//			else if ( !editTags.Contains( tag ) )
-		//				editTags.Add( tag );
-		//		}
-		//}
 
-		//private void generateGroups() {
-		//	foreach ( string s in TagData.Groups ) {
-		//		GroupBox gb = new GroupBox() { Header = s, Style = (Style)Application.Current.Resources["Tag Groupbox"], Margin = new Thickness( 10, 0, 0, 10 ), Width = 171, FontSize = 18 };
-		//		ListBox content = new ListBox() { Background = Theme.Transparent, BorderThickness = new Thickness( 0 ), Foreground = (Brush)Application.Current.Resources["DarkText"], HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
-		//		content.SelectionChanged += ( _, _ ) => content.SelectedIndex = -1;
-		//		gb.Content = content;
-		//		stkTags.Children.Add( gb );
-		//	}
-		//}
-		//private void addTag( int t ) {
-		//	ToggleButton tag = new ToggleButton() { Content = TagData.Tags[TagData.TagLocations[t]].Name, Style = (Style)Application.Current.Resources["Tag Button"], Tag = t };
-		//	tag.Checked += ( s, ev ) =>
-		//	{
-		//		int id = (int)((ToggleButton)s).Tag;
-		//		if ( Editing == null && !checkedTags[index].Contains( id ) ) {
-		//			checkedTags[index].Add( id );
-		//			foreach ( int t in TagData.Tags[TagData.TagLocations[id]].GetAliases() )
-		//				checkTag( t );
-		//		}
-		//		else if ( !editTags.Contains( id ) ) {
-		//			editTags.Add( id );
-		//			foreach ( int t in TagData.Tags[TagData.TagLocations[id]].GetAliases() )
-		//				checkTag( t );
-		//		}
-		//	};
-		//	tag.Unchecked += ( s, ev ) =>
-		//	{
-		//		int id = (int)((ToggleButton)s).Tag;
-		//		if ( Editing == null && checkedTags[index].Contains( id ) )
-		//			checkedTags[index].Remove( id );
-		//		else if ( editTags.Contains( id ) )
-		//			editTags.Remove( id );
-		//	};
-		//	getListBox( TagData.Tags[TagData.TagLocations[t]].Group ).Items.Add( tag );
-		//}
-		///// <summary>
-		///// Returns the group under the specified index
-		///// </summary>
-		///// <param name="index">The internal index of the group. Use -1 for Misc</param>
-		//private ListBox getListBox( int index ) => (stkTags.Children[index + 1] as GroupBox).Content as ListBox;
-		private void checkTags(int[] toCheck) {
-			tslEditor.ClearTags();
-			tslEditor.CheckTags( toCheck );
+		private void checkTags( int[] toCheck ) {
+			renderThread = new Thread( () =>
+			{
+				tslEditor.ClearTags();
+				tslEditor.CheckTags( toCheck );
+			} );
+			renderThread.Start();
         }
 		#endregion
 
@@ -301,7 +228,7 @@ namespace NanaManager
 						frmPreview.Content = viewer.Display;
 				}
 				lblIndex.Content = "";
-				checkTags(media.GetTags());
+				checkTags(editTags.ToArray());
 			}
 			else {
 				string path = toImport[index];
@@ -312,7 +239,7 @@ namespace NanaManager
 						IMediaViewer viewer = Registry.Viewers[toLoad];
 						viewer.LoadMedia( path, false );
 						if ( currentViewer != toLoad )
-							frmPreview.Content = viewer.Display;
+							Dispatcher.Invoke(() => frmPreview.Content = viewer.Display);
 						lblIndex.Content = $"{toImport.Count - index}/{toImport.Count}";
 						checkTags(checkedTags[index].ToArray());
 					} catch ( Exception ) {
@@ -353,9 +280,9 @@ namespace NanaManager
 		private List<int> scanForTags( string name ) {
 			string smolName = name.ToLower();
 			List<int> found = new List<int>();
-			for ( int i = 0; i < TagData.Tags.Length; i++ )
-				if ( smolName.Contains( TagData.Tags[TagData.TagLocations[i]].Name.ToLower() ) )
-					found.Add( i );
+			foreach (KeyValuePair<int, int> kvp in TagData.TagLocations)
+				if ( smolName.Contains( TagData.Tags[kvp.Value].Name.ToLower() ) )
+					found.Add( kvp.Value );
 			return found;
 		}
 		#endregion

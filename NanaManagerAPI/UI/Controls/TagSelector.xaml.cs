@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -26,6 +27,7 @@ namespace NanaManagerAPI.UI.Controls
     public partial class TagSelector : UserControl
     {
         private bool clearing = false;
+        private bool init = false;
 
         /// <summary>
         /// A delegate which handles when a tag is checked inside a <see cref="TagSelector"/>
@@ -69,6 +71,7 @@ namespace NanaManagerAPI.UI.Controls
                 if ( !TagData.HiddenTags.Contains( t.Index ) || Globals.ShowHiddenTags )
                     addTag( t.Index ); //Index may not necessarily be the same as location
             Dispatcher.Invoke( () => bdrLoading.Visibility = Visibility.Collapsed );
+            init = true;
         }
         private void addGroup( int key, string name ) {
             GroupBox gb = new GroupBox() { Header = name, Style = (Style)Resources["Tag Groupbox"], Margin = new Thickness( 10, 0, 0, 10 ), Width = 171, FontSize = 18 };
@@ -87,7 +90,7 @@ namespace NanaManagerAPI.UI.Controls
                     checkedTags.Add( id );
                     TagChecked?.Invoke( this, new TagCheckEventArgs() { IsActive = true, TagIndex = id } );
                     foreach ( int t in TagData.Tags[TagData.TagLocations[id]].GetAliases() )
-                        addTag( t );
+                        CheckTags( t );
                 }
             };
             tag.Unchecked += ( s, ev ) =>
@@ -104,6 +107,7 @@ namespace NanaManagerAPI.UI.Controls
         #endregion
         #region Events
         private void UserControl_Loaded( object sender, RoutedEventArgs e ) {
+            init = false;
             stkGroups.Children.Clear();
             groups.Clear();
             addGroup( -1, "Misc" );
@@ -139,25 +143,33 @@ namespace NanaManagerAPI.UI.Controls
         /// Checks all tags within the list
         /// </summary>
         /// <param name="ToCheck">The tags to check</param>
-        public void CheckTags(params int[] ToCheck) {
-            foreach ( int i in ToCheck )
-                foreach ( ToggleButton tb in groups[TagData.Tags[TagData.TagLocations[i]].Group].Items )
-                    if ( (int)tb.Tag == i ) {
-                        tb.IsChecked = true;
-                        break;
-                    }
+        public void CheckTags( params int[] ToCheck ) {
+            SpinWait.SpinUntil( () => init );
+            Dispatcher.Invoke( () =>
+             {
+                 foreach ( int i in ToCheck )
+                     foreach ( ToggleButton tb in groups[TagData.Tags[TagData.TagLocations[i]].Group].Items )
+                         if ( (int)tb.Tag == i ) {
+                             tb.IsChecked = true;
+                             break;
+                         }
+             } );
         }
         /// <summary>
         /// Unchecks all tags within the list
         /// </summary>
         /// <param name="ToUncheck">The tags to uncheck</param>
-        public void UncheckTags(params int[] ToUncheck) {
-            foreach ( int i in ToUncheck )
-                foreach ( ToggleButton tb in groups[TagData.Tags[TagData.TagLocations[i]].Group].Items )
-                    if ( (int)tb.Tag == i ) {
-                        tb.IsChecked = false;
-                        break;
-                    }
+        public void UncheckTags( params int[] ToUncheck ) {
+            SpinWait.SpinUntil( () => init );
+            Dispatcher.Invoke( () =>
+            {
+                foreach ( int i in ToUncheck )
+                    foreach ( ToggleButton tb in groups[TagData.Tags[TagData.TagLocations[i]].Group].Items )
+                        if ( (int)tb.Tag == i ) {
+                            tb.IsChecked = false;
+                            break;
+                        }
+            } );
         }
         #endregion
     }

@@ -26,13 +26,18 @@ namespace NanaManager
 			ContentFile.LoadEnvironment();
 			Logging.Init();
 			Logging.Write( "Loading API components", "Init", LogLevel.Info );
+
 			Logging.Write( "Registering Data Encoders", "Init", LogLevel.Info );
 			ContentFile.ActiveEncoders.Add( new FileEncoders.BaseEncoder1_1() );
+
 			Logging.Write( "Registering Media Constructors", "Init", LogLevel.Info );
 			Registry.RegisterMediaConstructor( typeof( Image ), Image.CTOR_ID );
+
 			Logging.Write( "Registering Media Viewers", "Init", LogLevel.Info );
 			MediaHandlers.Images imhnd = new MediaHandlers.Images();
 			Registry.RegisterMediaViewer( imhnd.ID, imhnd );
+			Registry.RegisterExtensions( "Image Files", Image.CTOR_ID, imhnd.ID, imhnd.GetCompatibleTypes() );
+
 			Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
 			Globals.CryptographyProvider = new Cryptography.Cryptography();
 

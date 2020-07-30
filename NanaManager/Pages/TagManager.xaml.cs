@@ -190,7 +190,13 @@ namespace NanaManager
 					dragparent = parent;
 					object data = getDataFromListBox( dragparent, ev.GetPosition( parent ) );
 					if ( data != null )
-						Dispatcher.BeginInvoke( (Action<ListView, object>)(( p, d ) => { try { DragDrop.DoDragDrop( p, d, DragDropEffects.Move ); } catch ( Exception e ) { Logging.Write( e, "Tag Manager" ); } }), parent, data );
+						Dispatcher.BeginInvoke( (Action<ListView, object>)(( p, d ) => { 
+							try { 
+								DragDrop.DoDragDrop( p, d, DragDropEffects.Move ); 
+							} catch ( Exception e ) { 
+								Logging.Write( e, "Tag Manager" ); 
+							} 
+						}), parent, data );
 				}
 			};
 			gbContent.PreviewMouseDown += ( sender, ev ) =>

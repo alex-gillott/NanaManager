@@ -14,10 +14,10 @@ namespace NanaManager.MediaHandlers
 {
     public class Images : IMediaViewer
     {
-        public string ID { get; }
+        public string ID { get; } = "hydroxa.nanabrowser.media.imageHandler";
         public Page Display { get; set; }
 
-        private readonly string[] compatibleTypes;
+        private readonly string[] compatibleTypes = new string[] { ".jpg", ".jpeg", ".gif", ".png", ".webp", ".tif", ".bmp" };
 
         public string[] GetCompatibleTypes() {
             return compatibleTypes;
@@ -28,13 +28,6 @@ namespace NanaManager.MediaHandlers
         public void LoadMedia( string Path, bool Editing ) {
             Display = new ImageViewer( this );
             RenderMedia.Invoke( Path, Editing );
-        }
-
-        public Images() {
-            ID = "hydroxa.nanabrowser.media.imageHandler";
-            compatibleTypes = new string[] { ".jpg", ".jpeg", ".gif", ".png", ".webp", ".tif", ".bmp" };
-            Registry.RegisterMediaViewer( ID, this );
-            Registry.RegisterExtensions( "Image Files", NanaManagerAPI.Data.Image.CTOR_ID, ID, compatibleTypes );
         }
     }
 }
