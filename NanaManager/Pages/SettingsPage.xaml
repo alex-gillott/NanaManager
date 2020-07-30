@@ -6,13 +6,13 @@
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
       d:DesignHeight="425" d:DesignWidth="800"
-      Title="SettingsPage">
+      Title="SettingsPage" Loaded="Page_Loaded">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
 			<ColumnDefinition Width="8*"/>
 		</Grid.ColumnDefinitions>
-		<Frame x:Name="frmSettings" Grid.ColumnSpan="2"/>
+		<Frame x:Name="frmSettings" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" Grid.Column="1" Margin="5,0,0,0"/>
 		<Grid>
 			<Grid.ColumnDefinitions>
 				<ColumnDefinition Width="18*"/>
@@ -25,7 +25,7 @@
 				<RowDefinition/>
 			</Grid.RowDefinitions>
 			<Border x:Name="bdrSettings" Background="{DynamicResource BlackGlass}" CornerRadius="0,15,15,0" Grid.RowSpan="3" Grid.ColumnSpan="2">
-				<Grid HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
+				<Grid x:Name="grdSettings" HorizontalAlignment="Stretch" VerticalAlignment="Stretch">
 					<Grid.RowDefinitions>
 						<RowDefinition/>
 						<RowDefinition/>
@@ -37,21 +37,46 @@
 						<RowDefinition/>
 						<RowDefinition/>
 						<RowDefinition/>
+						<RowDefinition/>
+						<RowDefinition/>
 					</Grid.RowDefinitions>
-					<Grid.ColumnDefinitions>
-						<ColumnDefinition Width="9*"/>
-						<ColumnDefinition/>
-					</Grid.ColumnDefinitions>
-					<!--#region Themes and Colours-->
-					<Border Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,0,0,2"/>
-					<ToggleButton Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,0,0,5"/>
-					<Viewbox Grid.ColumnSpan="2" IsHitTestVisible="False">
-						<StackPanel IsHitTestVisible="False">
-							<Label Content="Themes and" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
-							<Label Content="Colours" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
-						</StackPanel>
+					<!--#region Back button-->
+					<Button Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,0,0,5" Click="Button_Click">
+						<Button.Style>
+							<Style TargetType="{x:Type Button}">
+								<Setter Property="Background" Value="Transparent"/>
+								<Setter Property="BorderThickness" Value="0"/>
+								<Setter Property="Template">
+									<Setter.Value>
+										<ControlTemplate TargetType="{x:Type Button}">
+											<Border Background="{TemplateBinding Background}" BorderBrush="{x:Null}" >
+												<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center"/>
+											</Border>
+										</ControlTemplate>
+									</Setter.Value>
+								</Setter>
+								<Style.Triggers>
+									<Trigger Property="IsPressed" Value="True">
+										<Setter Property="Background" Value="{DynamicResource TranslucentHighlight}"/>
+									</Trigger>
+									<Trigger Property="IsMouseOver" Value="True">
+										<Setter Property="Background" Value="{DynamicResource GlassHighlight}"/>
+									</Trigger>
+								</Style.Triggers>
+							</Style>
+						</Button.Style>
+					</Button>
+					<Viewbox Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="1" IsHitTestVisible="False">
+						<Label Content="Back" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
-					<Ellipse Grid.Row="1" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Grid.ColumnSpan="2" IsHitTestVisible="False" Margin="5">
+					<!--#endregion-->
+					<!--#region Themes and Colours-->
+					<Border Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
+					<ToggleButton x:Name="btnTaC" Grid.Row="2" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_tacsets"/>
+					<Viewbox Grid.Row="2" Grid.ColumnSpan="2" IsHitTestVisible="False">
+						<Label Content="Themes" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+					</Viewbox>
+					<Ellipse Grid.Row="3" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Grid.ColumnSpan="2" IsHitTestVisible="False" Margin="0,0,0,5">
 						<Ellipse.Fill>
 							<RadialGradientBrush>
 								<GradientStop Color="Red" Offset="0.14285714"/>
@@ -64,11 +89,38 @@
 							</RadialGradientBrush>
 						</Ellipse.Fill>
 					</Ellipse>
-					<Ellipse Grid.Row="1" Margin="5" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Fill="{DynamicResource DarkGlass}" Grid.ColumnSpan="2" IsHitTestVisible="False"/>
+					<Ellipse Grid.Row="3" Margin="0,0,0,5" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Fill="{DynamicResource DarkGlass}" Grid.ColumnSpan="2" IsHitTestVisible="False"/>
+					<!--#endregion-->
+					<!--#region Languages-->
+					<Border Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
+					<ToggleButton Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets"/>
+					<Viewbox Grid.Row="4" Grid.ColumnSpan="2" IsHitTestVisible="False">
+						<Label Content="Languages" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+					</Viewbox>
+					<!--#endregion-->
+					<!--#region Tags&Groups-->
+					<Border Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
+					<ToggleButton Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets"/>
+					<Viewbox Grid.Row="6" Grid.ColumnSpan="2" IsHitTestVisible="False">
+						<Label Content="Tags" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+					</Viewbox>
+					<!--#endregion-->
+					<!--#region Advanced-->
+					<Border Grid.Row="8" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
+					<ToggleButton Grid.Row="8" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets"/>
+					<Viewbox Grid.Row="8" Grid.ColumnSpan="2" IsHitTestVisible="False">
+						<Label Content="Advanced" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+					</Viewbox>
+					<!--#endregion-->
+					<!--#region Plugins-->
+					<Border Grid.Row="10" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,0"/>
+					<ToggleButton Grid.Row="10" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,3" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets"/>
+					<Viewbox Grid.Row="10" Grid.ColumnSpan="2" IsHitTestVisible="False">
+						<Label Content="Plugins" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
+					</Viewbox>
 					<!--#endregion-->
 				</Grid>
 			</Border>
-			<Border Grid.Row="1" Grid.ColumnSpan="2" Grid.Column="1" CornerRadius="5,10,10,5" Background="{DynamicResource LightGlass}"/>
 		</Grid>
 	</Grid>
 </Page>

@@ -136,3 +136,7 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\NanaManager.Proper
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\NanaManager.csproj.GenerateResource.cache
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\NanaManager.csproj.CoreCompileInputs.cache
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\NanaManager.csproj.CopyComplete
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\ThemesAndColours.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\ThemesAndColours.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Languages.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Languages.baml

@@ -10,11 +10,11 @@ none
 false
 DEBUG;TRACE
 
-12760119628
+141154316181
 31204107025
-20233750371
+22-1850950195
 21-1339767237
-App.xaml;Pages\Fullscreen.xaml;Pages\ImageViewer.xaml;Pages\Error.xaml;Pages\Import.xaml;Pages\Login.xaml;MainWindow.xaml;Pages\Register.xaml;Pages\TagManager.xaml;Pages\Viewer.xaml;Pages\Welcome.xaml;Pages\SettingsPage.xaml;
+App.xaml;Pages\Fullscreen.xaml;Pages\ImageViewer.xaml;Pages\Error.xaml;Pages\Import.xaml;Pages\Login.xaml;MainWindow.xaml;Pages\Register.xaml;Pages\TagManager.xaml;Pages\Viewer.xaml;Pages\Welcome.xaml;Pages\SettingsPage.xaml;SettingsPages\Languages.xaml;SettingsPages\ThemesAndColours.xaml;
 
 False
 
