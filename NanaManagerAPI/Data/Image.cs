@@ -4,6 +4,7 @@ using System.Windows.Media.Imaging;
 
 using NanaManagerAPI.Media;
 using NanaManagerAPI.IO;
+using System.Linq.Expressions;
 
 namespace NanaManagerAPI.Data
 {
@@ -12,6 +13,8 @@ namespace NanaManagerAPI.Data
 	/// </summary>
 	public class Image : IMedia
 	{
+        public const string CTOR_ID = "hydroxa.nanaManager:data_Image";
+
 		private readonly int[] tags;
 
         public string ID { get; }

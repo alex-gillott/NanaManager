@@ -5,6 +5,7 @@ using System.Windows;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+using NanaManagerAPI.Data;
 
 namespace NanaManager
 {
@@ -25,11 +26,14 @@ namespace NanaManager
 			ContentFile.LoadEnvironment();
 			Logging.Init();
 			Logging.Write( "Loading API components", "Init", LogLevel.Info );
-			Logging.Write( "Registering Data Encoders", "Init" );
+			Logging.Write( "Registering Data Encoders", "Init", LogLevel.Info );
 			ContentFile.ActiveEncoders.Add( new FileEncoders.BaseEncoder1_1() );
-			Logging.Write( "Registering Media Viewers", "Init" );
-			Registry.RegisterMediaViewer( new MediaHandlers.Images() );
-			Logging.Write( "Registering Cryptography Providers", "Init" );
+			Logging.Write( "Registering Media Constructors", "Init", LogLevel.Info );
+			Registry.RegisterMediaConstructor( typeof( Image ), Image.CTOR_ID );
+			Logging.Write( "Registering Media Viewers", "Init", LogLevel.Info );
+			MediaHandlers.Images imhnd = new MediaHandlers.Images();
+			Registry.RegisterMediaViewer( imhnd.ID, imhnd );
+			Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
 			Globals.CryptographyProvider = new Cryptography.Cryptography();
 
 			if ( NanaManager.Properties.Settings.Default.ToImport == null ) { //Instantiate Import Collection if non-existent

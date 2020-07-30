@@ -1,5 +1,6 @@
-﻿using System.Collections.Generic;
-
+﻿using System;
+using System.Collections.Generic;
+using System.Reflection;
 using NanaManagerAPI.Media;
 
 namespace NanaManagerAPI.UI
@@ -9,22 +10,110 @@ namespace NanaManagerAPI.UI
     /// </summary>
     public static class Registry
     {
+		private static readonly Type[] MediaConstructorFormat = { typeof(string), typeof(int[]), typeof(string) };
+
 		/// <summary>
-		/// A dictionary of all data types currently supported with the index related to the viewer that adds them
+		/// A dictionary of all data types currently supported with the ID related to the viewer that adds them
 		/// </summary>
-		public readonly static Dictionary<string, int> SupportedDataTypes = new Dictionary<string, int>();
+		public readonly static Dictionary<string, string> SupportedDataTypes = new Dictionary<string, string>();
 		/// <summary>
 		/// A list of all viewers currently loaded
 		/// </summary>
-		public readonly static List<IMediaViewer> Viewers = new List<IMediaViewer>();
+		public readonly static Dictionary<string, IMediaViewer> Viewers = new Dictionary<string, IMediaViewer>();
 		/// <summary>
-		/// A dictionary of all catagories for the importer
+		/// A dictionary of all file extensions and locations of the constructors that build them
 		/// </summary>
-		public readonly static Dictionary<string, List<string>> Catagories = new Dictionary<string, List<string>>();
+		public readonly static Dictionary<string, string> ExtensionConstructors = new Dictionary<string, string>();
+		/// <summary>
+		/// A list of all constructors used to construct media types
+		/// </summary>
+		public readonly static Dictionary<string, ConstructorInfo> MediaConstructors = new Dictionary<string, ConstructorInfo>();
+		/// <summary>
+		/// A dictionary of all categories for the importer
+		/// </summary>
+		public readonly static Dictionary<string, List<string>> Categories = new Dictionary<string, List<string>>();
 		/// <summary>
 		/// A dictionary with all of the settings tabs
 		/// </summary>
 		internal readonly static Dictionary<string, SettingsTab> SettingsTabs = new Dictionary<string, SettingsTab>();
+
+		/// <summary>
+		/// Returns true if the provided extension has a constructor
+		/// </summary>
+		/// <param name="Extension">The extention to check</param>
+		public static bool ExtensionIsRegistered( string Extension ) => ExtensionConstructors.ContainsKey( Extension );
+		/// <summary>
+		/// Returns true if the Media Constructor exists
+		/// </summary>
+		/// <param name="ID">The ID of the Media Constructor</param>
+		/// <returns></returns>
+		public static bool MediaConstructorExists( string ID ) => MediaConstructors.ContainsKey( ID );
+		/// <summary>
+		/// Returns true if the Media Viewer exists
+		/// </summary>
+		/// <param name="ID">The ID of the viewer</param>
+		/// <returns></returns>
+		public static bool MediaViewerExists( string ID ) => Viewers.ContainsKey( ID );
+
+		/// <summary>
+		/// Registers the class as a media constructor
+		/// </summary>
+		/// <param name="MediaType">The <see cref="Type"/> to get the constructor from</param>
+		public static void RegisterMediaConstructor( Type MediaType, string ID ) {
+			if ( MediaType.GetInterface( nameof( IMedia ) ) == null )
+				throw new ArgumentException( $"The provided class did not inherit the {nameof( IMedia )} interface", nameof( MediaType ) );
+
+			ConstructorInfo ctor = MediaType.GetConstructor(MediaConstructorFormat);
+			if ( ctor == null )
+				throw new ArgumentException( $"The provided class did not contain a constructor with the parameters of {typeof(string).Name}, {typeof(int[]).Name} and {typeof(string).Name}", nameof( MediaType ) );
+			MediaConstructors.Add( ID, ctor );
+			Logging.Write( $"Registered Constructor \"{ID}\"", "Registry" );
+		}
+
+		/// <summary>
+		/// Registers a collection of extensions as compatible
+		/// </summary>
+		/// <param name="Category">The category the extensions fit under. Will be created if non-existant</param>
+		/// <param name="ConstructorID">The ID of the constructor to be used for the extensions</param>
+		/// <param name="ViewerID">The viewer that handles the extensions</param>
+		/// <param name="Extensions">The collection of extensions to register</param>
+		public static void RegisterExtensions( string Category, string ConstructorID, string ViewerID, params string[] Extensions ) {
+			try {
+				foreach ( string ext in Extensions )
+					RegisterExtension( ext, Category, ConstructorID, ViewerID );
+			} catch ( Exception ) {
+				throw;
+			}
+        }
+
+		/// <summary>
+		/// Registers a file extension as compatible
+		/// </summary>
+		/// <param name="Extension">The file extension to register</param>
+		/// <param name="Category">The category the extension fits under. Will be created if non-existent</param>
+		/// <param name="ConstructorID">The ID of the constructor that is used for the extension</param>
+		/// <param name="ViewerID">The Viewer that handles the file extension</param>
+		public static void RegisterExtension( string Extension, string Category, string ConstructorID, string ViewerID ) {
+			if ( SupportedDataTypes.ContainsKey( Extension ) )
+				throw new ArgumentException( "The extension was already registered", nameof( Extension ) );
+			else if ( string.IsNullOrWhiteSpace( Extension ) )
+				throw new ArgumentNullException( "The extension provided had no valid content", nameof( Extension ) );
+			else if ( !MediaConstructorExists( ConstructorID ) )
+				throw new ArgumentOutOfRangeException( nameof( ConstructorID ), "The Constructor provided did not exist" );
+			else if ( string.IsNullOrWhiteSpace( ViewerID ) )
+				throw new ArgumentNullException( nameof( ViewerID ), "The provided Viewer was null" );
+			else if ( !MediaViewerExists( ViewerID ) )
+				throw new ArgumentOutOfRangeException( nameof( ViewerID ), "The Viewer provided did not exist" );
+
+			if ( !Categories.ContainsKey( Category ) )
+				Categories.Add( Category, new List<string>() { Extension } );
+			else
+				Categories[Category].Add(Extension);
+
+			ExtensionConstructors.Add( Extension, ConstructorID );
+			SupportedDataTypes.Add( Extension, ViewerID );
+			Logging.Write( $"Registered Extension \"{Extension}\"", "Registry" );
+		}
 
 		/// <summary>
 		/// Adds the settings tab to the dictionary
@@ -32,42 +121,24 @@ namespace NanaManagerAPI.UI
 		/// <param name="Tab">The <see cref="SettingsTab"/> to add</param>
 		public static void RegisterSettings(SettingsTab Tab) {
 			SettingsTabs.Add( Tab.ID, Tab );
+			Logging.Write( $"Registered Setting \"{Tab.ID}\"", "Registry" );
         }
 
 		/// <summary>
 		/// Registers a class to handle its specified file types
 		/// </summary>
 		/// <param name="Viewer">The class to act as the handler</param>
-		public static void RegisterMediaViewer( IMediaViewer Viewer ) {
-			int location = Viewers.Count;
-			Viewers.Add( Viewer );
-			foreach ( string format in Viewer.GetCompatibleTypes() )
-				if ( SupportedDataTypes.ContainsKey( format ) )
-					SupportedDataTypes[format] = location;
-				else
-					SupportedDataTypes.Add( format, location );
-		}
-		/// <summary>
-		/// Adds an extension to a catagory
-		/// </summary>
-		/// <param name="Catagory">The catagory to add to</param>
-		/// <param name="Extension">The extension to add</param>
-		public static void AddToCatagory( string Catagory, string Extension ) {
-			if ( Catagories.ContainsKey( Catagory ) )
-				Catagories[Catagory].Add( Extension );
-			else
-				Catagories.Add( Catagory, new List<string>() { Extension } );
-		}
-		/// <summary>
-		/// Adds the specified extensions to a filetype catagory
-		/// </summary>
-		/// <param name="Name">The name of the catagory to add to</param>
-		/// <param name="Extensions">The extensions to add</param>
-		public static void AddToCatagory( string Name, string[] Extensions ) {
-			if ( !Catagories.ContainsKey( Name ) )
-				Catagories.Add( Name, new List<string>() );
-			foreach ( string ext in Extensions )
-				Catagories[Name].Add( ext );
+		/// <param name="ID">The ID of the viewer</param>
+		public static void RegisterMediaViewer( string ID, IMediaViewer Viewer ) {
+			if ( string.IsNullOrWhiteSpace( ID ) )
+				throw new ArgumentNullException( nameof( ID ), "The ID had no valid content" );
+			try {
+				Viewers.Add( ID, Viewer );
+				Logging.Write( $"Registered Media Viewer \"{ID}\"", "Registry" );
+			} catch ( Exception e ) {
+				Logging.Write( e, "Registry" );
+				throw;
+			}
 		}
 	}
 }

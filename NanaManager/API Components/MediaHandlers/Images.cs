@@ -33,7 +33,8 @@ namespace NanaManager.MediaHandlers
         public Images() {
             ID = "hydroxa.nanabrowser.media.imageHandler";
             compatibleTypes = new string[] { ".jpg", ".jpeg", ".gif", ".png", ".webp", ".tif", ".bmp" };
-            Registry.AddToCatagory( "Image Files", compatibleTypes );
+            Registry.RegisterMediaViewer( ID, this );
+            Registry.RegisterExtensions( "Image Files", NanaManagerAPI.Data.Image.CTOR_ID, ID, compatibleTypes );
         }
     }
 }

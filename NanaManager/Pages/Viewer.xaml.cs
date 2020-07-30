@@ -30,11 +30,11 @@ namespace NanaManager
             InitializeComponent();
 
             StringBuilder filter = new StringBuilder( "Compatible Files|" );
-            foreach ( KeyValuePair<string, int> s in NanaManagerAPI.UI.Registry.SupportedDataTypes )
+            foreach ( KeyValuePair<string, string> s in NanaManagerAPI.UI.Registry.SupportedDataTypes )
                 filter.Append( $"*{s.Key};" );
             filter.Remove( filter.Length - 1, 1 );
 
-            foreach ( KeyValuePair<string, List<string>> c in NanaManagerAPI.UI.Registry.Catagories ) {
+            foreach ( KeyValuePair<string, List<string>> c in NanaManagerAPI.UI.Registry.Categories ) {
                 filter.Append( $"|{c.Key}|" );
                 foreach ( string s in c.Value )
                     filter.Append( $"*{s};" );

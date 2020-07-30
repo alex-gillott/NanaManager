@@ -97,26 +97,28 @@ namespace NanaManager.FileEncoders
 			DataEncoder encoder = new DataEncoder();
 
 			//Versioning
-			encoder.Write( VersionMajor ); //                                             4b
-			encoder.Write( VersionMinor ); //                                             4b
+			encoder.Write( VersionMajor );
+			encoder.Write( VersionMinor );
 
 			//Group and Tag Count
-			encoder.Write( TagData.Groups.Length ); //32-bit integer                   4b
-			encoder.Write( TagData.Tags.Length ); //32-bit integer                     4b
-			encoder.Write( Globals.Media.Count ); //32-bit integer                    4b
+			encoder.Write( TagData.Groups.Count );
+			encoder.Write( TagData.Tags.Length );
+			encoder.Write( Globals.Media.Count );
 
 			//Groups
-			foreach ( string name in TagData.Groups )
-				encoder.Write( name ); //32-bit integer defining length + string          4b+name.Length
+			foreach ( KeyValuePair<int, string> name in TagData.Groups ) {
+				encoder.Write( name.Key );
+				encoder.Write( name.Value );
+			}
 			//Tags
 			foreach ( Tag t in TagData.Tags ) {
-				encoder.Write( t.Index ); //                                              4b
-				encoder.Write(t.Name); //32-bit integer defining length + string          4b+name.Length
-				int[] aliases = t.GetAliases(); //Get aliases
-				encoder.Write( aliases.Length ); //32-bit integer defining alias quantity 4b
+				encoder.Write( t.Index );
+				encoder.Write(t.Name);
+				int[] aliases = t.GetAliases();
+				encoder.Write( aliases.Length );
 				foreach ( int a in aliases )
-					encoder.Write( a ); //32-bit integer referring to alias               4b
-				encoder.Write( t.Group ); //32-bit integer referring to group             4b
+					encoder.Write( a );
+				encoder.Write( t.Group );
 			}
 			//Images
 			foreach ( KeyValuePair<string, IMedia> img in Globals.Media) {
@@ -124,9 +126,9 @@ namespace NanaManager.FileEncoders
 					encoder.Write( img.Key );
 					encoder.Write( img.Value.FileType );
 					int[] tags = img.Value.GetTags();
-					encoder.Write( tags.Length ); //32-bit integer defining tag quantity      4b
+					encoder.Write( tags.Length );
 					foreach ( int t in tags )
-						encoder.Write( t ); //32-bit integer referring to a tag               4b
+						encoder.Write( t );
 				}
 			}
 

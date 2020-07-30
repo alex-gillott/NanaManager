@@ -30,8 +30,8 @@ namespace NanaManager
 			stkGroups.Children.Clear();
 			groupNames.Clear();
 			createGroup( "Misc" );
-			foreach ( string s in TagData.Groups )
-				createGroup( s );
+			foreach ( KeyValuePair<int, string> s in TagData.Groups )
+				createGroup( s.Value );
 
 			foreach ( Tag t in TagData.Tags )
 				addTag( getContent( t.Group == -1 ? "Misc" : TagData.Groups[t.Group] ), t.Name, new tagData( t.Index, t.GetAliases() ) );
@@ -111,7 +111,7 @@ namespace NanaManager
 
 			TagData.Tags = new Tag[toReplaceT.Count];
 			TagData.TagLocations.Clear();
-			TagData.Groups = new string[toReplaceG.Count];
+			TagData.Groups.Clear();
 			int c = 0;
 			foreach ( KeyValuePair<int, Tag> i in toReplaceT ) {
 				TagData.TagLocations.Add( i.Key, c );

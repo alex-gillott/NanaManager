@@ -37,7 +37,7 @@
 		</Style>
 	</UserControl.Resources>
 	<Grid>
-		<Border Background="{Binding LoadingBrush, ElementName=tagSelectorWindow}">
+		<Border x:Name="bdrLoading" Background="{Binding LoadingBrush, ElementName=tagSelectorWindow}">
 			<Viewbox>
 				<Label Content="Loading.." Foreground="{Binding Foreground, ElementName=tagSelectorWindow}"/>
 			</Viewbox>

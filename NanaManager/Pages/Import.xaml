@@ -3,6 +3,7 @@
 	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
 	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
 	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  xmlns:nmapi="clr-namespace:NanaManagerAPI.UI.Controls;assembly=NanaManagerAPI"
 	  xmlns:local="clr-namespace:NanaManager"
 	  mc:Ignorable="d" 
 	  d:DesignHeight="425" d:DesignWidth="800"
@@ -19,13 +20,7 @@
 		</Grid.ColumnDefinitions>
 		<Frame x:Name="frmPreview" Grid.Column="1" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Grid.RowSpan="3" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden" />
 		<Border HorizontalAlignment="Stretch" Margin="2,10,0,100" VerticalAlignment="Stretch" BorderBrush="#FF959595" BorderThickness="2" CornerRadius="4" Grid.RowSpan="2">
-			<ScrollViewer VerticalScrollBarVisibility="Disabled" HorizontalScrollBarVisibility="Auto" Margin="0,8,2,0">
-				<StackPanel x:Name="stkTags" HorizontalAlignment="Stretch" Margin="0" VerticalAlignment="Stretch" Orientation="Horizontal" ScrollViewer.CanContentScroll="True" ScrollViewer.HorizontalScrollBarVisibility="Auto" ScrollViewer.VerticalScrollBarVisibility="Disabled">
-					<GroupBox Header="Misc" Margin="10,0,0,10" Width="171" Foreground="White" FontSize="18" Background="#22FFFFFF">
-						<ListBox x:Name="lsbMisc" Margin="0" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" BorderThickness="0" Background="{x:Null}"/>
-					</GroupBox>
-				</StackPanel>
-			</ScrollViewer>
+			<nmapi:TagSelector x:Name="tslEditor" Foreground="{DynamicResource LightText}" GroupBoxBrush="{DynamicResource LightGlass}" LoadingBrush="{DynamicResource BlackGlass}" />
 		</Border>
 		<Label x:Name="lblIndex" Content="0/0" HorizontalAlignment="Stretch" Margin="161,0,161,4" Grid.Row="2" VerticalAlignment="Bottom" Foreground="White" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" Height="23"/>
 		<Button Style="{DynamicResource Menu Button}" x:Name="btnCancel" Content="Cancel" HorizontalAlignment="Left" Height="25" Margin="2,0,0,2" VerticalAlignment="Bottom" Width="83" Grid.Row="2" Click="btnCancel_Click"/>
