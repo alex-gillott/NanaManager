@@ -8,6 +8,10 @@
 		<Color x:Key="BackgroundEdge">#FF200C27</Color>
 		<Color x:Key="ListViewColor">#44AE006B</Color>
 		<Color x:Key="ListViewSelectColor">#88AE006B</Color>
+		<Color x:Key="PrimaryHighlightColor">#CF228D</Color>
+		<Color x:Key="PrimaryPressedColor">#9D005A</Color>
+		<Color x:Key="PrimaryIdleColor">#AE006B</Color>
+		<Color x:Key="PrimaryDisabledColor">#7D205A</Color>
         <RadialGradientBrush x:Key="Background">
             <GradientStop Color="{DynamicResource BackgroundCentre}" Offset="0"/>
             <GradientStop Color="{DynamicResource BackgroundEdge}" Offset="1"/>
@@ -26,10 +30,10 @@
 		<SolidColorBrush x:Key="Highlight" Color="#AE006B"/>
 		<SolidColorBrush x:Key="TranslucentHighlight" Color="#88AE006B"/>
 		<SolidColorBrush x:Key="GlassHighlight" Color="#22AE006B"/>
-		<SolidColorBrush x:Key="PrimaryIdle" Color="#AE006B"/>
-		<SolidColorBrush x:Key="PrimaryHighlight" Color="#CF228D"/>
-		<SolidColorBrush x:Key="PrimaryPressed" Color="#9D005A"/>
-		<SolidColorBrush x:Key="PrimaryDisabled" Color="#7D205A"/>
+		<SolidColorBrush x:Key="PrimaryIdle" Color="{DynamicResource PrimaryDisabledColor}"/>
+		<SolidColorBrush x:Key="PrimaryHighlight" Color="{DynamicResource PrimaryHighlightColor}"/>
+		<SolidColorBrush x:Key="PrimaryPressed" Color="{DynamicResource PrimaryPressedColor}"/>
+		<SolidColorBrush x:Key="PrimaryDisabled" Color="{DynamicResource PrimaryDisabledColor}"/>
 		<SolidColorBrush x:Key="DisabledText" Color="#7D7D7D"/>
 		<SolidColorBrush x:Key="NavButtonIdle" Color="#4C646464"/>
 		<SolidColorBrush x:Key="NavButtonHighlight" Color="#4C747474"/>
@@ -39,6 +43,7 @@
 		<SolidColorBrush x:Key="TextSelectColor" Color="#FF424242"/>
 		<SolidColorBrush x:Key="CaretColor" Color="#FFF"/>
 		<SolidColorBrush x:Key="TagRejectColor" Color="#88ff1212"/>
+		<SolidColorBrush x:Key="CheckGlyphColor" Color="Black"/>
 
 		<!--#region Templates-->
 		<ItemsPanelTemplate x:Key="tagViewer">
@@ -46,6 +51,74 @@
 		</ItemsPanelTemplate>
 		<!--#endregion-->
 		<!--#region Styles-->
+		<Style x:Key="{x:Type CheckBox}"
+       TargetType="{x:Type CheckBox}">
+			<Setter Property="SnapsToDevicePixels"
+          Value="true" />
+			<Setter Property="OverridesDefaultStyle"
+          Value="true" />
+			<Setter Property="FocusVisualStyle"
+          Value="{DynamicResource CheckBoxFocusVisual}" />
+			<Setter Property="Foreground" Value="{DynamicResource LightText}"/>
+			<Setter Property="FontSize" Value="14"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type CheckBox}">
+						<BulletDecorator Background="Transparent">
+							<BulletDecorator.Bullet>
+								<Border x:Name="Border" CornerRadius="2" BorderThickness="0" Background="{DynamicResource PrimaryIdle}" Width="14" Height="14">
+									<Grid>
+										<Path Visibility="Collapsed" Width="14" Height="14" x:Name="CheckMark" SnapsToDevicePixels="False" StrokeThickness="2" Data="M 0 0 L 14 14 M 0 14 L 14 0" Stroke="{DynamicResource CheckGlyphColor}"/>
+										<Path Visibility="Collapsed" Width="14" Height="14" x:Name="IndeterminateMark" SnapsToDevicePixels="False" StrokeThickness="2" Data="M 0 14 L 14 0" Stroke="{DynamicResource CheckGlyphColor}"/>
+									</Grid>
+								</Border>
+							</BulletDecorator.Bullet>
+							<VisualStateManager.VisualStateGroups>
+								<VisualStateGroup x:Name="CommonStates">
+									<VisualState x:Name="Normal"/>
+									<VisualState x:Name="MouseOver">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Panel.Background)">
+												<DiscreteColorKeyFrame KeyTime="0" Value="{DynamicResource PrimaryHighlightColor}"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Pressed">
+										<Storyboard>
+											<ColorAnimationUsingKeyFrames Storyboard.TargetName="Border" Storyboard.TargetProperty="(Panel.Background)">
+												<DiscreteColorKeyFrame KeyTime="0" Value="{DynamicResource PrimaryPressedColor}"/>
+											</ColorAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+								<VisualStateGroup x:Name="CheckStates">
+									<VisualState x:Name="Checked">
+										<Storyboard>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="CheckMark" Storyboard.TargetProperty="(UIElement.Visibility)">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+											</ObjectAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+									<VisualState x:Name="Unchecked"/>
+									<VisualState x:Name="Indeterminate">
+										<Storyboard>
+											<ObjectAnimationUsingKeyFrames Storyboard.TargetName="IndeterminateMark">
+												<DiscreteObjectKeyFrame KeyTime="0" Value="{x:Static Visibility.Visible}"/>
+											</ObjectAnimationUsingKeyFrames>
+										</Storyboard>
+									</VisualState>
+								</VisualStateGroup>
+							</VisualStateManager.VisualStateGroups>
+							<ContentPresenter Margin="4,0,0,0"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Left"
+                            RecognizesAccessKey="True" />
+						</BulletDecorator>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		
 		<Style x:Key="Editable Groupbox Textbox" TargetType="{x:Type TextBox}">
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="Foreground" Value="{DynamicResource LightText}"/>

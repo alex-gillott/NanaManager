@@ -81,6 +81,7 @@ namespace NanaManager
 			Paging.AddPage( Pages.Welcome, new Welcome() );
 			Registry.RegisterSettings( new SettingsTab(Pages.ThemesAndColoursSettings, "Colours and Themes", new ThemesAndColours() ) );
 			Registry.RegisterSettings( new SettingsTab( Pages.LanguagesSettings, "Languages", new Languages() ) );
+			Registry.RegisterSettings( new SettingsTab( Pages.TagsSettings, "Tags", new TagSettings() ) );
 
 			Paging.PageChanged += onNewPage;
 			Globals.Fullscreen += toggleFullscreen;
