@@ -53,10 +53,19 @@ namespace NanaManagerAPI.UI.Controls
             set { SetValue( LoadingBrushProperty, value ); }
         }
         public static readonly DependencyProperty LoadingBrushProperty = DependencyProperty.Register( "LoadingBrush", typeof( Brush ), typeof( TagSelector ), new PropertyMetadata( new SolidColorBrush( Color.FromArgb( 255, 0, 0, 0 ) ) ) );
+
+        public bool AllowRejection
+        {
+            get { return (bool)GetValue( AllowRejectionProperty ); }
+            set { SetValue( AllowRejectionProperty, value ); }
+        }
+        public static readonly DependencyProperty AllowRejectionProperty = DependencyProperty.Register( "AllowRefection", typeof( bool ), typeof( TagSelector ), new PropertyMetadata( false ) );
+
         #endregion
-        
+
         private readonly Dictionary<int, ListBox> groups = new Dictionary<int, ListBox>();
         private readonly List<int> checkedTags = new List<int>();
+        private readonly List<int> rejected = new List<int>();
 
         public TagSelector() {
             InitializeComponent();
@@ -74,7 +83,57 @@ namespace NanaManagerAPI.UI.Controls
             init = true;
         }
         private void addGroup( int key, string name ) {
-            GroupBox gb = new GroupBox() { Header = name, Style = (Style)Resources["Tag Groupbox"], Margin = new Thickness( 10, 0, 0, 10 ), Width = 171, FontSize = 18 };
+            GroupBox gb = new GroupBox() { Header = name, Style = (Style)Resources["Tag Groupbox"], Margin = new Thickness( 10, 0, 0, 10 ), Width = 171, FontSize = 18, Tag = false };
+            gb.MouseLeftButtonDown += ( s, ev ) =>
+            {
+                GroupBox gb = (GroupBox)s;
+                bool? c = (bool?)gb.Tag;
+                if (MessageBox.Show($"{(c == true ? "Unc" : "C")}heck all tags in this group?", "Check Tags", MessageBoxButton.YesNo) == MessageBoxResult.Yes) {
+                    if ( c == true )
+                        c = false;
+                    else
+                        c = true;
+                    ListBox content = (ListBox)gb.Content;
+                    foreach (ToggleButton tb in content.Items) {
+                        int id = (int)tb.Tag;
+                        tb.IsChecked = c;
+                        if ( c == true && !checkedTags.Contains( id ) )
+                            checkedTags.Add( id );
+                        else if ( checkedTags.Contains( id ) )
+                            checkedTags.Remove( id );
+                    }
+                    gb.Tag = c;
+                }
+            };
+            gb.MouseRightButtonDown += ( s, ev ) =>
+            {
+                if ( AllowRejection ) {
+                    GroupBox gb = (GroupBox)s;
+                    bool? c = (bool?)gb.Tag;
+                    if ( MessageBox.Show( $"{(c == null ? "Un-" : "")}Reject all tags in this group?", "Check Tags", MessageBoxButton.YesNo ) == MessageBoxResult.Yes ) {
+                        if ( c == null )
+                            c = false;
+                        else
+                            c = null;
+                        ListBox content = (ListBox)gb.Content;
+                        Style rejStyle = (Style)Resources["RejectedTagButton"];
+                        Style stdStyle = (Style)Resources["Tag Button"];
+                        foreach ( ToggleButton tb in content.Items ) {
+                            int id = (int)tb.Tag;
+                            tb.IsChecked = false;
+                            if ( c == null && !rejected.Contains( id ) ) {
+                                tb.Style = rejStyle;
+                                rejected.Add( id );
+                            }
+                            else if ( checkedTags.Contains( id ) ) {
+                                tb.Style = stdStyle;
+                                rejected.Remove( id );
+                            }
+                        }
+                        gb.Tag = c;
+                    }
+                }
+            };
             ListBox content = new ListBox() { Background = new SolidColorBrush( Color.FromArgb( 0, 0, 0, 0 ) ), BorderThickness = new Thickness( 0 ), Foreground = (Brush)Application.Current.Resources["DarkText"], HorizontalContentAlignment = HorizontalAlignment.Stretch, VerticalContentAlignment = VerticalAlignment.Stretch };
             content.SelectionChanged += ( _, _ ) => content.SelectedIndex = -1;
             gb.Content = content;
@@ -83,10 +142,27 @@ namespace NanaManagerAPI.UI.Controls
         }
         private void addTag( int t ) {
             ToggleButton tag = new ToggleButton() { Content = TagData.Tags[TagData.TagLocations[t]].Name, Style = (Style)Resources["Tag Button"], Tag = t };
+            tag.MouseRightButtonDown += ( s, ev ) =>
+            {
+                if ( AllowRejection ) {
+                    ToggleButton b = (ToggleButton)s;
+                    b.IsChecked = false;
+                    int id = (int)b.Tag;
+                    if (rejected.Contains(id)) {
+                        b.Style = (Style)Resources["Tag Button"];
+                        rejected.Remove( id );
+                    } else {
+                        b.Style = (Style)Resources["RejectedTagButton"];
+                        rejected.Add( id );
+                    }
+                }
+            };
             tag.Checked += ( s, ev ) =>
             {
-                int id = (int)((ToggleButton)s).Tag;
+                ToggleButton b = (ToggleButton)s;
+                int id = (int)b.Tag;
                 if ( !checkedTags.Contains( id ) ) {
+                    b.Style = (Style)Resources["Tag Button"];
                     checkedTags.Add( id );
                     TagChecked?.Invoke( this, new TagCheckEventArgs() { IsActive = true, TagIndex = id } );
                     foreach ( int t in TagData.Tags[TagData.TagLocations[id]].GetAliases() )
@@ -95,9 +171,12 @@ namespace NanaManagerAPI.UI.Controls
             };
             tag.Unchecked += ( s, ev ) =>
             {
-                int id = (int)((ToggleButton)s).Tag;
+                ToggleButton b = (ToggleButton)s;
+                int id = (int)b.Tag;
                 if ( checkedTags.Contains( id ) ) {
+                    b.Style = (Style)Resources["Tag Button"];
                     checkedTags.Remove( id );
+
                     if (!clearing)
                         TagChecked?.Invoke( this, new TagCheckEventArgs() { IsActive = false, TagIndex = id } );
                 }
@@ -128,6 +207,21 @@ namespace NanaManagerAPI.UI.Controls
             Tag[] tags = new Tag[checkedTags.Count];
             for ( int i = 0; i < checkedTags.Count; i++ )
                 tags[i] = TagData.Tags[TagData.TagLocations[checkedTags[i]]];
+            return tags;
+        }
+        /// <summary>
+        /// Returns the indicies of the tags that currently have been rejected
+        /// </summary>
+        /// <returns></returns>
+        public int[] GetRejectedTagsIndicies() => rejected.ToArray();
+        /// <summary>
+        /// Returns the tags that currenthly have been rejected
+        /// </summary>
+        /// <returns></returns>
+        public Tag[] GetRejectedTags() {
+            Tag[] tags = new Tag[rejected.Count];
+            for ( int i = 0; i < rejected.Count; i++ )
+                tags[i] = TagData.Tags[TagData.TagLocations[rejected[i]]];
             return tags;
         }
         /// <summary>

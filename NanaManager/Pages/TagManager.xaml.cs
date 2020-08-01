@@ -10,14 +10,14 @@ using System.Collections.Generic;
 using NanaManagerAPI.Data;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+using System.Threading;
 
 namespace NanaManager
 {
 	/// <summary>
 	/// Interaction logic for TagManager.xaml
 	/// </summary>
-	public partial class TagManager : Page
-	{
+	public partial class TagManager : Page {
 		private TextBox selectAlias;
 		private readonly List<string> tagNames = new List<string>();
 		private readonly Dictionary<int, string> groupNames = new Dictionary<int, string>();
@@ -77,7 +77,7 @@ namespace NanaManager
 			bool foundMisc = false;
 			foreach ( KeyValuePair<int, string> name in groupNames ) {
 				if ( (foundMisc && name.Value == "Misc") || string.IsNullOrEmpty( name.Value ) ) {
-					MessageBox.Show( $"Cannot have a group named \"{(string.IsNullOrEmpty( name.Value ) ? "nothing" : name.Value )}\"" );
+					MessageBox.Show( $"Cannot have a group named \"{(string.IsNullOrEmpty( name.Value ) ? "nothing" : name.Value)}\"" );
 					return;
 				}
 				else if ( name.Value == "Misc" )
@@ -85,7 +85,7 @@ namespace NanaManager
 			}
 			List<string> toReplaceG = new List<string>();
 			Dictionary<int, Tag> toReplaceT = new Dictionary<int, Tag>();
-			foreach ( KeyValuePair<int,string> gbName in groupNames ) {
+			foreach ( KeyValuePair<int, string> gbName in groupNames ) {
 				GroupBox gb = getGroupBox( gbName.Value );
 				if ( gbName.Value == "Misc" )
 					foreach ( TextBox tx in ((ListView)gb.Content).Items )
@@ -131,7 +131,7 @@ namespace NanaManager
 
 			createGroup( "New Group " + newGroups );
 		}
-		private void btnBack_Click( object sender, RoutedEventArgs e ) => Paging.LoadPreviousPage( );
+		private void btnBack_Click( object sender, RoutedEventArgs e ) => Paging.LoadPreviousPage();
 		private void clickHandle( object sender, RoutedEventArgs e ) => (sender as UIElement).Focus();
 		private void Page_PreviewKeyUp( object sender, KeyEventArgs e ) {
 			if ( e.Key == Key.Escape ) {
@@ -155,6 +155,125 @@ namespace NanaManager
 		}
 		#endregion
 
+		#region GroupboxData
+		#region GBTextboxData
+		private void gbtxt_KeyDown( object sender, KeyEventArgs e ) {
+			TextBox txt = sender as TextBox;
+			int idx = (int)getGroupBox( groupNames[(int)txt.Tag] ).Tag;
+			if ( e.Key == Key.Enter ) {
+				if ( txt.Text == "Misc" || string.IsNullOrEmpty( txt.Text ) ) {
+					MessageBox.Show( "Group name cannot be " + (txt.Text == "Misc" ? "Misc" : "blank") + ". Please enter a new name" );
+					txt.Select( 0, 0 );
+					return;
+				}
+				else
+					stkGroups.Focus();
+			}
+			groupNames[idx] = txt.Text;
+		}
+		private void gbtxt_LostFocus( object sender, RoutedEventArgs e ) {
+			TextBox txt = sender as TextBox;
+			
+			int idx = (int)getGroupBox(groupNames[(int)txt.Tag]).Tag;
+			if ( txt.Text == "Misc" || string.IsNullOrEmpty( txt.Text ) ) {
+				MessageBox.Show( "Group name cannot be " + (txt.Text == "Misc" ? "Misc" : "blank") + ". Please enter a new name" );
+				txt.Select( 0, 0 );
+				return;
+			}
+			groupNames[idx] = txt.Text;
+		}
+		private void gbtxt_PreviewMouseDown( object sender, RoutedEventArgs e ) { //TODO - Work out why I did this
+			if ( selectAlias != null ) {
+				Keyboard.ClearFocus();
+				((ListBox)((GroupBox)((TextBox)sender).Parent).Content).Focus();
+				e.Handled = true;
+			}
+		}
+		#endregion
+		private void gb_DragLeave( object sender, DragEventArgs e ) {
+			if ( sender is ListBox content )
+				content.Background = new SolidColorBrush( Colors.Transparent );
+		}
+		private void gb_DragEnter(object sender, DragEventArgs e) {
+			if ( sender is ListBox content && e.Data.GetDataPresent( typeof( TextBox ) ) )
+				content.Background = (Brush)Application.Current.Resources["DarkGlass"];
+        }
+		private void gb_Drop(object sender, DragEventArgs e) {
+			Debug.WriteLine( "drop" );
+			if ( sender != e.OriginalSource ) {
+				TextBox data = (TextBox)e.Data.GetData( typeof( TextBox ) );
+				((ListBox)sender).Background = new SolidColorBrush( Colors.Transparent );
+				addTag( (ListBox)sender, data.Text, (tagData)data.Tag ); //Casting so an error occurs without a valid ListBox
+			}
+		}
+		private bool dragInProgress = false;
+		private void gb_MouseMove(object sender, MouseEventArgs e) { //Seriously, this needs fixing. It's a patch mess
+			if ( e.LeftButton == MouseButtonState.Pressed && selectAlias == null && !dragInProgress ) {
+				dragInProgress = true;
+				ListView parent = (ListView)sender;
+				dragparent = parent;
+				object data = getDataFromListBox( dragparent, e.GetPosition( parent ) );
+				if ( data != null ) {
+					try {
+						Application.Current.Dispatcher.Invoke( new Action<ListView, object>( ( p, d ) =>
+						{
+							try {
+								parent.Items.Remove( (TextBox)data );
+								if ( d != null && DragDrop.DoDragDrop( p, d, DragDropEffects.Move ) == DragDropEffects.None ) {
+									Debug.WriteLine( "DragDropEffects" );
+									parent.Items.Add( (TextBox)d );
+								}
+								else
+									dragInProgress = false;
+							} catch ( Exception ev ) {
+								Logging.Write( ev, "Tag Manager" );
+								Debug.WriteLine( "error" );
+								if (dragInProgress)
+									parent.Items.Add( (TextBox)d );
+							}
+						} ), System.Windows.Threading.DispatcherPriority.ApplicationIdle, parent, data );
+					} catch ( InvalidOperationException ) {
+					} finally {
+						dragInProgress = false;
+					}
+				}
+				else
+					dragInProgress = false;
+					//Dispatcher.BeginInvoke( (Action<ListView, object>)(( p, d ) => {
+						
+					//}), parent, data );
+			}
+		}
+
+		private void gb_PreviewMouseDown(object sender, RoutedEventArgs e) {
+			((ListBox)sender).Focus();
+        }
+		private void gb_SelectionChanged(object sender, RoutedEventArgs e) {
+			ListBox gbContent = (ListBox)sender;
+			if ( gbContent.SelectedIndex != -1 ) {
+				if ( selectAlias != null ) {
+					TextBox txt = gbContent.SelectedItem as TextBox;
+					if ( selectAlias != txt ) {
+						if ( ((tagData)selectAlias.Tag).aliases.Contains( ((tagData)txt.Tag).tagIndex ) ) {
+							txt.Style = (Style)Application.Current.Resources["Tag Textbox Deselect"];
+							tagData t = selectAlias.Tag as tagData;
+							t.aliases.Remove( ((tagData)txt.Tag).tagIndex );
+							gbContent.Focus();
+						}
+						else {
+							txt.Style = (Style)Application.Current.Resources["Tag Textbox Select"];
+							tagData t = selectAlias.Tag as tagData;
+							t.aliases.Add( ((tagData)txt.Tag).tagIndex );
+							gbContent.Focus();
+						}
+					}
+					Keyboard.ClearFocus();
+				}
+				gbContent.SelectedIndex = -1;
+			}
+		}
+		#endregion
+
 		#region Creation
 		int curGroupID = 0;
 		private GroupBox createGroup( string name ) {
@@ -167,109 +286,29 @@ namespace NanaManager
 			};
 			ListView gbContent = new ListView()
 			{
-				Background = Theme.Transparent,
+				Background = new SolidColorBrush(Colors.Transparent),
 				BorderThickness = new Thickness( 0 ),
-				Foreground = (Brush)Application.Current.Resources["DarkText"],
+				Foreground = (Brush)Application.Current.Resources["LightText"],
 				Focusable = true,
 				Tag = name,
 				AllowDrop = true
 			};
-			gbContent.Drop += ( sender, ev ) =>
-			{
-				if ( sender != ev.OriginalSource ) {
-					ListView parent = (ListView)sender;
-					TextBox data = (TextBox)ev.Data.GetData( typeof( TextBox ) );
-					dragparent.Items.Remove( data );
-					addTag( gbContent, data.Text, (tagData)data.Tag );
-				}
-			};
-			gbContent.PreviewMouseMove += ( sender, ev ) =>
-			{
-				if ( ev.LeftButton == MouseButtonState.Pressed && selectAlias == null ) {
-					ListView parent = (ListView)sender;
-					dragparent = parent;
-					object data = getDataFromListBox( dragparent, ev.GetPosition( parent ) );
-					if ( data != null )
-						Dispatcher.BeginInvoke( (Action<ListView, object>)(( p, d ) => { 
-							try { 
-								DragDrop.DoDragDrop( p, d, DragDropEffects.Move ); 
-							} catch ( Exception e ) { 
-								Logging.Write( e, "Tag Manager" ); 
-							} 
-						}), parent, data );
-				}
-			};
-			gbContent.PreviewMouseDown += ( sender, ev ) =>
-			{
-				gbContent.Focus();
-			};
-			gbContent.SelectionChanged += ( sender, ev ) =>
-			{
-				if ( gbContent.SelectedIndex != -1 ) {
-					if ( selectAlias != null ) {
-						TextBox txt = gbContent.SelectedItem as TextBox;
-						if ( selectAlias != txt ) {
-							if ( ((tagData)selectAlias.Tag).aliases.Contains( ((tagData)txt.Tag).tagIndex ) ) {
-								txt.Style = (Style)Application.Current.Resources["Tag Textbox Deselect"];
-								tagData t = selectAlias.Tag as tagData;
-								t.aliases.Remove( ((tagData)txt.Tag).tagIndex );
-								gbContent.Focus();
-							}
-							else {
-								txt.Style = (Style)Application.Current.Resources["Tag Textbox Select"];
-								tagData t = selectAlias.Tag as tagData;
-								t.aliases.Add( ((tagData)txt.Tag).tagIndex );
-								gbContent.Focus();
-							}
-						}
-						Keyboard.ClearFocus();
-					}
-					gbContent.SelectedIndex = -1;
-				}
-			};
+			gbContent.DragEnter += gb_DragEnter;
+			gbContent.DragLeave += gb_DragLeave;
+			gbContent.Drop += gb_Drop;
+			gbContent.MouseMove += gb_MouseMove;
+			gbContent.PreviewMouseDown += gb_PreviewMouseDown;
+			gbContent.SelectionChanged += gb_SelectionChanged;
 
 			if ( name != "Misc" ) {
 				DataTemplate template = new DataTemplate { DataType = typeof( GroupBox ) };
 				FrameworkElementFactory factory = new FrameworkElementFactory( typeof( TextBox ) );
-				factory.SetValue( TextBox.BackgroundProperty, Theme.Transparent );
-				factory.SetValue( TextBox.ForegroundProperty, Application.Current.Resources["LightText"] );
-				factory.SetValue( TextBox.BorderThicknessProperty, new Thickness( 0 ) );
 				factory.SetValue( TextBox.TextProperty, name );
-				factory.SetValue( TextBox.FontSizeProperty, 18d );
-				factory.SetValue( TextBox.MaxLengthProperty, 16 );
-				factory.AddHandler( TextBox.KeyDownEvent, new KeyEventHandler( ( sender, ev ) =>
-				{
-					KeyEventArgs e = ev as KeyEventArgs;
-					TextBox txt = sender as TextBox;
-					if ( e.Key == Key.Enter ) {
-						if ( txt.Text == "Misc" || string.IsNullOrEmpty( txt.Text ) ) {
-							MessageBox.Show( "Group name cannot be " + (txt.Text == "Misc" ? "Misc" : "blank") + ". Please enter a new name" );
-							txt.Select( 0, 0 );
-							return;
-						}
-						else
-							stkGroups.Focus();
-					}
-					groupNames[idx] = txt.Text;
-				} ) );
-				factory.AddHandler( TextBox.LostFocusEvent, new RoutedEventHandler( ( sender, _ ) =>
-				{
-					TextBox txt = sender as TextBox;
-					if ( txt.Text == "Misc" || string.IsNullOrEmpty( txt.Text ) ) {
-						MessageBox.Show( "Group name cannot be " + (txt.Text == "Misc" ? "Misc" : "blank") + ". Please enter a new name" );
-						txt.Select( 0, 0 );
-						return;
-					}
-					groupNames[idx] = txt.Text;
-				} ) );
-				factory.AddHandler( TextBox.PreviewMouseDownEvent, new MouseButtonEventHandler( ( _, e ) =>
-				{
-					if (selectAlias != null ) {
-						Keyboard.ClearFocus();
-						gbContent.Focus();
-						e.Handled = true;
-					}
-				} ) );
+				factory.SetValue( TextBox.TagProperty, idx );
+				factory.SetValue( TextBox.StyleProperty, Application.Current.Resources["Editable Groupbox Textbox"]);
+				factory.AddHandler( TextBox.KeyDownEvent, new KeyEventHandler( gbtxt_KeyDown ) );
+				factory.AddHandler( TextBox.LostFocusEvent, new RoutedEventHandler( gbtxt_LostFocus) );
+				factory.AddHandler( TextBox.PreviewMouseDownEvent, new MouseButtonEventHandler( gbtxt_PreviewMouseDown ) );
 				template.VisualTree = factory;
 				gb.HeaderTemplate = template;
 
@@ -290,7 +329,7 @@ namespace NanaManager
 			MenuItem add = new MenuItem() { Header = "Add Tag" };
 			add.Click += ( sender, e ) =>
 			{
-				int newTags = 0;
+				int newTags = 1;
 				foreach ( TextBox t in gbContent.Items )
 					if ( t.Text.Contains( "New Tag" ) )
 						newTags++;
@@ -349,8 +388,13 @@ namespace NanaManager
 			ctx.Items.Add( alias );
 			txt.ContextMenu = ctx;
 			txt.KeyDown += handleKeyPress;
+			txt.LostKeyboardFocus += ( _, ev ) =>
+			{
+				dragInProgress = false;
+			};
 			txt.PreviewMouseLeftButtonDown += ( _, ev ) =>
 			{
+				double x = ev.GetPosition( (TextBox)_ ).X;
 				if ( selectAlias != null ) {
 					if ( selectAlias != txt ) {
 						if ( ((tagData)selectAlias.Tag).aliases.Contains( ((tagData)txt.Tag).tagIndex ) ) {
@@ -367,7 +411,8 @@ namespace NanaManager
 					Keyboard.ClearFocus();
 					lb.Focus();
 					ev.Handled = true;
-				}
+				} else if ( x > 45 && x < 95)
+					dragInProgress = true;
 			};
 
 			lb.Items.Add( txt );

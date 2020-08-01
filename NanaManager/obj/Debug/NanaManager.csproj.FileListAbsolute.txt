@@ -140,3 +140,5 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Them
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\ThemesAndColours.baml
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Languages.g.cs
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Languages.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\TagSettings.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\TagSettings.baml

@@ -137,6 +137,9 @@
     <Compile Include="SettingsPages\Languages.xaml.cs">
       <DependentUpon>Languages.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsPages\TagSettings.xaml.cs">
+      <DependentUpon>TagSettings.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsPages\ThemesAndColours.xaml.cs">
       <DependentUpon>ThemesAndColours.xaml</DependentUpon>
     </Compile>
@@ -166,6 +169,10 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SettingsPages\Languages.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsPages\TagSettings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
