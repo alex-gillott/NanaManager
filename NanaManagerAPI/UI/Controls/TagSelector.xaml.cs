@@ -41,6 +41,20 @@ namespace NanaManagerAPI.UI.Controls
         public event CheckedTagHandler TagChecked;
 
         #region DependencyProperties
+
+
+        public bool DoAliases
+        {
+            get { return (bool)GetValue( DoAliasesProperty ); }
+            set { SetValue( DoAliasesProperty, value ); }
+        }
+        public static readonly DependencyProperty DoAliasesProperty = DependencyProperty.Register( "DoAliases", typeof( bool ), typeof( TagSelector ), new PropertyMetadata( true ) );
+        public bool ShowHiddenTags
+        {
+            get => (bool)GetValue( ShowHiddenTagsProperty );
+            set => SetValue( ShowHiddenTagsProperty, value );
+        }
+        public static readonly DependencyProperty ShowHiddenTagsProperty = DependencyProperty.Register( "ShowHiddenTags", typeof( bool ), typeof( TagSelector ), new PropertyMetadata( false ) );
         public Brush GroupBoxBrush
         {
             get { return (Brush)GetValue( GroupBoxBrushProperty ); }
@@ -53,7 +67,6 @@ namespace NanaManagerAPI.UI.Controls
             set { SetValue( LoadingBrushProperty, value ); }
         }
         public static readonly DependencyProperty LoadingBrushProperty = DependencyProperty.Register( "LoadingBrush", typeof( Brush ), typeof( TagSelector ), new PropertyMetadata( new SolidColorBrush( Color.FromArgb( 255, 0, 0, 0 ) ) ) );
-
         public bool AllowRejection
         {
             get { return (bool)GetValue( AllowRejectionProperty ); }
@@ -77,7 +90,7 @@ namespace NanaManagerAPI.UI.Controls
             foreach ( KeyValuePair<int, string> s in TagData.Groups )
                 addGroup( s.Key, s.Value );
             foreach ( Tag t in TagData.Tags )
-                if ( !TagData.HiddenTags.Contains( t.Index ) || Globals.ShowHiddenTags )
+                if ( !TagData.HiddenTags.Contains( t.Index ) || Globals.ShowHiddenTags || ShowHiddenTags )
                     addTag( t.Index ); //Index may not necessarily be the same as location
             Dispatcher.Invoke( () => bdrLoading.Visibility = Visibility.Collapsed );
             init = true;
@@ -165,8 +178,9 @@ namespace NanaManagerAPI.UI.Controls
                     b.Style = (Style)Resources["Tag Button"];
                     checkedTags.Add( id );
                     TagChecked?.Invoke( this, new TagCheckEventArgs() { IsActive = true, TagIndex = id } );
-                    foreach ( int t in TagData.Tags[TagData.TagLocations[id]].GetAliases() )
-                        CheckTags( t );
+                    if ( DoAliases )
+                        foreach ( int t in TagData.Tags[TagData.TagLocations[id]].GetAliases() )
+                            CheckTags( t );
                 }
             };
             tag.Unchecked += ( s, ev ) =>

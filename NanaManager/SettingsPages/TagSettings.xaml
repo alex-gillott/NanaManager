@@ -13,8 +13,8 @@
 		<StackPanel Orientation="Vertical">
 			<GroupBox Header="Hidden Tags" Background="{DynamicResource LightGlass}" FontSize="18" FontWeight="SemiBold" Foreground="{DynamicResource LightText}">
 				<StackPanel>
-					<CheckBox Content="Show Hidden Tags" IsChecked="False"/>
-					<nmapi:TagSelector x:Name="tslHiddenTags" GroupBoxBrush="{DynamicResource LightGlass}" LoadingBrush="{DynamicResource BlackGlass}" Height="340" TagChecked="TagSelector_TagChecked"/>
+					<CheckBox x:Name="ckbShowHiddenTags" Content="Show Hidden Tags" IsChecked="False" Checked="CheckBox_Checked" Unchecked="CheckBox_Unchecked"/>
+					<nmapi:TagSelector x:Name="tslHiddenTags" DoAliases="False" ShowHiddenTags="True" GroupBoxBrush="{DynamicResource LightGlass}" LoadingBrush="{DynamicResource BlackGlass}" Height="340" TagChecked="TagSelector_TagChecked"/>
 					<Button x:Name="btnAcceptHiddenTags" Style="{DynamicResource Menu Button}" Content="Confirm Tags" IsEnabled="False" HorizontalAlignment="Left" Margin="5,5,0,0" Width="132" Click="btnAcceptHiddenTags_Click"/>
 				</StackPanel>
 			</GroupBox>

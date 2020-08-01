@@ -100,7 +100,7 @@
 					<!--#endregion-->
 					<!--#region Tags&Groups-->
 					<Border Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets"/>
+					<ToggleButton Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_tagsets"/>
 					<Viewbox Grid.Row="6" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Tags" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>

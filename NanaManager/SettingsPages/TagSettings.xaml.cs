@@ -42,6 +42,16 @@ namespace NanaManager.SettingsPages
                 tslHiddenTags.ClearTags();
                 tslHiddenTags.CheckTags( TagData.HiddenTags );
             } );
+            initCheck.Start();
+            ckbShowHiddenTags.IsChecked = Globals.ShowHiddenTags;
+        }
+
+        private void CheckBox_Checked( object sender, RoutedEventArgs e ) {
+            Globals.ShowHiddenTags = true;
+        }
+
+        private void CheckBox_Unchecked( object sender, RoutedEventArgs e ) {
+            Globals.ShowHiddenTags = false;
         }
     }
 }
