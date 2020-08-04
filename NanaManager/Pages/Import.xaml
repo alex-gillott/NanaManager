@@ -41,6 +41,6 @@
 			</Border>
 		</Border>
 		<Button Style="{StaticResource Menu Button}" x:Name="btnManageTags" Content="Manage Tags" HorizontalAlignment="Left" Height="25" Margin="2,0,0,10" VerticalAlignment="Bottom" Width="83" Grid.Row="1" Click="btnManageTags_Click"/>
-		<CheckBox x:Name="cbxCopy" Content="Copy instead of Move" HorizontalAlignment="Left" Margin="0,0,0,40" Grid.Row="1" VerticalAlignment="Bottom" Width="146" FontSize="13" Background="White" Foreground="White"/>
+		<CheckBox x:Name="cbxCopy" Content="Copy instead of Move" HorizontalAlignment="Left" Margin="0,0,0,40" Grid.Row="1" VerticalAlignment="Bottom" Width="146" FontSize="13" Background="White" Foreground="White" IsChecked="True"/>
 	</Grid>
 </Page>

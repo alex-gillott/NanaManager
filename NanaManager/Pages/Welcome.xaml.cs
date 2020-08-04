@@ -42,21 +42,25 @@ namespace NanaManager
         }
 
         private void Page_Loaded( object sender, RoutedEventArgs e ) {
-            pgProgress.Visibility = lblStatus.Visibility = Visibility.Visible;
-            waitThread = new Thread( () => Thread.Sleep( 2000 ) );
-            bgWork.DelegateThread( () =>
-            {
-                if ( !ContentFile.CheckValidity() )
-                    ContentFile.Decrypt( Login.Password );
-                ContentFile.LoadData();
-                Dispatcher.Invoke( () => { pgProgress.Visibility = lblStatus.Visibility = Visibility.Collapsed; } );
-                SpinWait.SpinUntil( () => !waitThread.IsAlive );
-                if ( MainWindow.ImportOnLogin )
-                    Paging.LoadPage( Pages.Import );
-                else
-                    Paging.LoadPage( Pages.Viewer );
-            } );
-            waitThread.Start();
+            if ( TagData.Groups.Count == 0 ) {
+                pgProgress.Visibility = lblStatus.Visibility = Visibility.Visible;
+                waitThread = new Thread( () => Thread.Sleep( 2000 ) );
+                bgWork.DelegateThread( () =>
+                {
+                    if ( !ContentFile.CheckValidity() )
+                        ContentFile.Decrypt( Login.Password );
+
+                    ContentFile.LoadData();
+                    Dispatcher.Invoke( () => { pgProgress.Visibility = lblStatus.Visibility = Visibility.Collapsed; } );
+                    SpinWait.SpinUntil( () => !waitThread.IsAlive );
+                    if ( MainWindow.ImportOnLogin )
+                        Paging.LoadPage( Pages.Import );
+                    else
+                        Paging.LoadPage( Pages.Viewer );
+                } );
+                waitThread.Start();
+            } else
+                Paging.LoadPage( Pages.Viewer );
         }
     }
 }

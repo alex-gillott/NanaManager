@@ -92,6 +92,12 @@ namespace NanaManagerAPI.UI.Controls
             foreach ( Tag t in TagData.Tags )
                 if ( !TagData.HiddenTags.Contains( t.Index ) || Globals.ShowHiddenTags || ShowHiddenTags )
                     addTag( t.Index ); //Index may not necessarily be the same as location
+            UIElement[] childs = new UIElement[stkGroups.Children.Count];
+            stkGroups.Children.CopyTo(childs, 0);
+            foreach ( GroupBox gb in childs )
+                if ( ((ListBox)gb.Content).Items.Count == 0 )
+                    stkGroups.Children.Remove( gb );
+
             Dispatcher.Invoke( () => bdrLoading.Visibility = Visibility.Collapsed );
             init = true;
         }
@@ -110,10 +116,6 @@ namespace NanaManagerAPI.UI.Controls
                     foreach (ToggleButton tb in content.Items) {
                         int id = (int)tb.Tag;
                         tb.IsChecked = c;
-                        if ( c == true && !checkedTags.Contains( id ) )
-                            checkedTags.Add( id );
-                        else if ( checkedTags.Contains( id ) )
-                            checkedTags.Remove( id );
                     }
                     gb.Tag = c;
                 }

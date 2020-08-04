@@ -75,17 +75,17 @@ namespace NanaManager
 
 				//This part executes after the application closes
 
-				string[] logs = Directory.GetFiles( ContentFile.LogPath, "-" );
+				string[] logs = Directory.GetFiles( ContentFile.LogPath );
 				if ( logs.Length > 5 ) {
-					for ( int i = logs.Length - 1; i > 4; i-- )
+					for ( int i = 0; i < logs.Length - 5; i++ )
 						File.Delete( logs[i] );
 				}
 			} catch ( Exception e ) {
 				Logging.Write( e, "Core", LogLevel.Fatal );
 				Logging.SaveLogs();
-				string[] logs = Directory.GetFiles( ContentFile.LogPath, "-" );
+				string[] logs = Directory.GetFiles( ContentFile.LogPath );
 				if ( logs.Length > 5 ) {
-					for ( int i = logs.Length - 1; i > 4; i-- )
+					for ( int i = 0; i < logs.Length - 5; i++ )
 						File.Delete( logs[i] );
 				}
 				throw;

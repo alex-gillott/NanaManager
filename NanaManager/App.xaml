@@ -12,6 +12,7 @@
 		<Color x:Key="PrimaryPressedColor">#9D005A</Color>
 		<Color x:Key="PrimaryIdleColor">#AE006B</Color>
 		<Color x:Key="PrimaryDisabledColor">#7D205A</Color>
+		<Color x:Key="LightTextColor">White</Color>
         <RadialGradientBrush x:Key="Background">
             <GradientStop Color="{DynamicResource BackgroundCentre}" Offset="0"/>
             <GradientStop Color="{DynamicResource BackgroundEdge}" Offset="1"/>
@@ -22,7 +23,7 @@
         <SolidColorBrush x:Key="MenuButtonIdle" Color="#404040"/>
         <SolidColorBrush x:Key="MenuButtonPressed" Color="#2C2C2C"/>
 		<SolidColorBrush x:Key="MenuButtonDisabled" Color="#3D3D3D"/>
-		<SolidColorBrush x:Key="LightText" Color="White"/>
+		<SolidColorBrush x:Key="LightText" Color="{DynamicResource LightTextColor}"/>
         <SolidColorBrush x:Key="DarkText" Color="Black"/>
         <SolidColorBrush x:Key="LightGlass" Color="#22FFFFFF"/>
         <SolidColorBrush x:Key="DarkGlass" Color="#4C646464"/>
@@ -43,7 +44,7 @@
 		<SolidColorBrush x:Key="TextSelectColor" Color="#FF424242"/>
 		<SolidColorBrush x:Key="CaretColor" Color="#FFF"/>
 		<SolidColorBrush x:Key="TagRejectColor" Color="#88ff1212"/>
-		<SolidColorBrush x:Key="CheckGlyphColor" Color="Black"/>
+		<SolidColorBrush x:Key="CheckGlyphColor" Color="{DynamicResource LightTextColor}"/>
 
 		<!--#region Templates-->
 		<ItemsPanelTemplate x:Key="tagViewer">
@@ -68,8 +69,8 @@
 							<BulletDecorator.Bullet>
 								<Border x:Name="Border" CornerRadius="2" BorderThickness="0" Background="{DynamicResource PrimaryIdle}" Width="14" Height="14">
 									<Grid>
-										<Path Visibility="Collapsed" Width="14" Height="14" x:Name="CheckMark" SnapsToDevicePixels="False" StrokeThickness="2" Data="M 0 0 L 14 14 M 0 14 L 14 0" Stroke="{DynamicResource CheckGlyphColor}"/>
-										<Path Visibility="Collapsed" Width="14" Height="14" x:Name="IndeterminateMark" SnapsToDevicePixels="False" StrokeThickness="2" Data="M 0 14 L 14 0" Stroke="{DynamicResource CheckGlyphColor}"/>
+										<Ellipse Visibility="Collapsed" Margin="3" VerticalAlignment="Stretch" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" x:Name="CheckMark" SnapsToDevicePixels="False" StrokeThickness="2" Fill="{DynamicResource CheckGlyphColor}"/>
+										<Ellipse Visibility="Collapsed" Margin="3" VerticalAlignment="Stretch" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" x:Name="IndeterminateMark" SnapsToDevicePixels="False" StrokeThickness="2" Stroke="{DynamicResource CheckGlyphColor}"/>
 									</Grid>
 								</Border>
 							</BulletDecorator.Bullet>
@@ -347,7 +348,8 @@
             <Setter Property="Margin" Value="7, 0, 0, 0"/>
             <Setter Property="Background" Value="{DynamicResource LightGlass}"/>
             <Setter Property="Foreground" Value="{DynamicResource LightText}"/>
-        </Style>
+			<Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled"/>
+		</Style>
 		<Style x:Key="Item Stack" TargetType="{x:Type ListView}">
 			<Setter Property="ItemsPanel">
 				<Setter.Value>

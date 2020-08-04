@@ -29,8 +29,8 @@ namespace NanaManager
 		internal static string Editing = null;
 
 		internal readonly List<string> toImport = new List<string>();
-		private readonly List<List<int>> checkedTags = new List<List<int>>();
-		private List<int> editTags = new List<int>();
+		private readonly List<int[]> checkedTags = new List<int[]>();
+		private int[] editTags = Array.Empty<int>();
 
 		private Thread renderThread;
 
@@ -61,7 +61,7 @@ namespace NanaManager
 				btnSkip.IsEnabled = true;
 
 			if ( Editing != null ) {
-				editTags = Globals.Media[Editing].GetTags().ToList();
+				editTags = Globals.Media[Editing].GetTags();
 				btnSkip.IsEnabled = false;
 				btnUnimport.Content = "Delete";
 				btnAdd.Content = "Done";
@@ -75,6 +75,7 @@ namespace NanaManager
 			renderIndex();
 		}
 		private void btnSkip_Click( object sender, RoutedEventArgs e ) {
+			checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
 			index--;
 			if ( index == 0 )
 				btnSkip.IsEnabled = false;
@@ -82,6 +83,7 @@ namespace NanaManager
 			renderIndex();
 		}
 		private void btnBack_Click( object sender, RoutedEventArgs e ) {
+			checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
 			index++;
 			if ( index == toImport.Count - 1 )
 				btnBack.IsEnabled = false;
@@ -200,7 +202,13 @@ namespace NanaManager
 			}
 		}
 		private void btnNo_Click( object sender, RoutedEventArgs e ) => bdrCancel.Visibility = Visibility.Collapsed;
-		private void btnManageTags_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.TagManager );
+		private void btnManageTags_Click( object sender, RoutedEventArgs e ) {
+			if (Editing == null) {
+				checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
+            }
+			Paging.LoadPage( Pages.TagManager );
+		}
+
 		#endregion
 
 		#region Tags
@@ -277,13 +285,13 @@ namespace NanaManager
 
 			return toAppend;
 		}
-		private List<int> scanForTags( string name ) {
+		private int[] scanForTags( string name ) {
 			string smolName = name.ToLower();
 			List<int> found = new List<int>();
 			foreach (KeyValuePair<int, int> kvp in TagData.TagLocations)
 				if ( smolName.Contains( TagData.Tags[kvp.Value].Name.ToLower() ) )
 					found.Add( kvp.Value );
-			return found;
+			return found.ToArray();
 		}
 		#endregion
 	}

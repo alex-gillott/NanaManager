@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Fullscreen" PreviewKeyDown="Page_PreviewKeyDown" Loaded="Page_Loaded">
+      Title="Fullscreen" KeyDown="Page_PreviewKeyDown" Loaded="Page_Loaded">
 	<Page.Resources>
 		<Storyboard x:Key="styHideMenu">
 			<DoubleAnimation To="-100" Duration="0:0:0.3" Storyboard.TargetProperty="(Grid.RenderTransform).(TranslateTransform.Y)" Storyboard.TargetName="grdMenu">
@@ -17,6 +17,7 @@
 		</Storyboard>
 	</Page.Resources>
 	<Grid>
+		<Frame x:Name="frmViewer" Loaded="frmViewer_Loaded" KeyDown="Page_PreviewKeyDown" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Grid.RowSpan="2" Focusable="True" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden"/>
 		<Rectangle x:Name="rctPrev" HorizontalAlignment="Left" Height="150" VerticalAlignment="Center" Width="40" Fill="#0000" Margin="0,150" Grid.RowSpan="2">
 			<Rectangle.Triggers>
 				<EventTrigger RoutedEvent="MouseEnter">
@@ -105,7 +106,6 @@
 				</EventTrigger>
 			</Button.Triggers>
 		</Button>
-		<Frame x:Name="frmViewer" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Grid.RowSpan="2" Focusable="True" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden"/>
 		<Rectangle VerticalAlignment="Top" HorizontalAlignment="Stretch" Fill="#0000" Height="20">
 			<Rectangle.Triggers>
 				<EventTrigger RoutedEvent="MouseEnter">

@@ -41,6 +41,7 @@ namespace NanaManager.SettingsPages
             {
                 tslHiddenTags.ClearTags();
                 tslHiddenTags.CheckTags( TagData.HiddenTags );
+                Dispatcher.Invoke( () => btnAcceptHiddenTags.IsEnabled = false );
             } );
             initCheck.Start();
             ckbShowHiddenTags.IsChecked = Globals.ShowHiddenTags;

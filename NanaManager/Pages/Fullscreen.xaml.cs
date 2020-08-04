@@ -66,6 +66,12 @@ namespace NanaManager
                     Globals.SetFullscreen( false );
                     Paging.LoadPreviousPage();
                     break;
+                case Key.Left:
+                    Previous();
+                    break;
+                case Key.Right:
+                    Next();
+                    break;
             }
         }
         private void Exit_Click( object sender, RoutedEventArgs e ) {
@@ -133,6 +139,10 @@ namespace NanaManager
 
         private void btnNext_Click( object sender, RoutedEventArgs e ) {
             Next();
+        }
+
+        private void frmViewer_Loaded( object sender, RoutedEventArgs e ) {
+            ((Frame)sender).Focus();
         }
     }
 }

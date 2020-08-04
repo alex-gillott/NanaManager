@@ -5,6 +5,7 @@ using NanaManagerAPI.Data;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+using System.Linq;
 
 namespace NanaManager.FileEncoders
 {
@@ -55,6 +56,7 @@ namespace NanaManager.FileEncoders
 				TagData.TagLocations.Clear();
 				TagData.Groups.Clear();
 				TagData.Tags = new Tag[tagCount];
+				TagData.HiddenTags = new int[tagCount];
 
 				Globals.SetStatus( $"Loading Data - Getting Groups 0/{groupCount}", progress, operations );
 				//Groups
@@ -64,8 +66,10 @@ namespace NanaManager.FileEncoders
 				}
 
 				Globals.SetStatus( $"Loading Data - Getting Tags 0/{tagCount}", progress, operations );
+				int hiddenCount = 0;
 				//Tags
 				for ( int i = 0; i < tagCount; i++ ) {
+					bool hidden = decoder.ReadBoolean();
 					int index = decoder.ReadInt32();
 					TagData.TagLocations.Add( index, i );
 					string name = decoder.ReadString(); //Get the name
@@ -74,6 +78,8 @@ namespace NanaManager.FileEncoders
 					for ( int o = 0; o < aliasCount; o++ )
 						aliases[o] = decoder.ReadInt32(); //Get the aliase indices
 					TagData.Tags[i] = new Tag( name, index, decoder.ReadInt32(), aliases ); //Last integer is the group
+					if ( hidden )
+						TagData.HiddenTags[hiddenCount++] = index;
 					Globals.SetStatus( $"Loading Data - Getting Tags {i+1}/{tagCount}", progress++, operations );
 				}
 
@@ -86,7 +92,7 @@ namespace NanaManager.FileEncoders
 					int[] tags = new int[tagCount];
 					for ( int o = 0; o < tagCount; o++ )
 						tags[o] = decoder.ReadInt32();
-					Globals.Media.Add(uID, new Image( uID, tags, fileType ));
+					Globals.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[fileType]].Invoke( new object[] { uID, tags, fileType } ) );
 					Globals.SetStatus( $"Loading Data - Getting Images {i + 1}/{imageCount}", progress++, operations );
 				}
 			} else {
@@ -112,6 +118,7 @@ namespace NanaManager.FileEncoders
 			}
 			//Tags
 			foreach ( Tag t in TagData.Tags ) {
+				encoder.Write( TagData.HiddenTags.Contains( t.Index ) );
 				encoder.Write( t.Index );
 				encoder.Write(t.Name);
 				int[] aliases = t.GetAliases();

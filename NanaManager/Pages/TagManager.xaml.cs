@@ -112,11 +112,15 @@ namespace NanaManager
 			TagData.Tags = new Tag[toReplaceT.Count];
 			TagData.TagLocations.Clear();
 			TagData.Groups.Clear();
+			List<int> hiddenKeep = new List<int>();
 			int c = 0;
 			foreach ( KeyValuePair<int, Tag> i in toReplaceT ) {
 				TagData.TagLocations.Add( i.Key, c );
 				TagData.Tags[c++] = i.Value;
+				if ( TagData.HiddenTags.Contains( i.Key ) )
+					hiddenKeep.Add( i.Key );
 			}
+			TagData.HiddenTags = hiddenKeep.ToArray();
 
 			for ( int i = 0; i < toReplaceG.Count; i++ )
 				TagData.Groups[i] = toReplaceG[i];
@@ -280,6 +284,7 @@ namespace NanaManager
 			int idx = curGroupID;
 			GroupBox gb = new GroupBox() { Tag = idx };
 			groupNames.Add( curGroupID++, name );
+			ScrollViewer.SetHorizontalScrollBarVisibility( gb, ScrollBarVisibility.Disabled );
 			ContextMenu ctx = new ContextMenu()
 			{
 				FontSize = 12
@@ -293,6 +298,7 @@ namespace NanaManager
 				Tag = name,
 				AllowDrop = true
 			};
+			ScrollViewer.SetHorizontalScrollBarVisibility( gbContent, ScrollBarVisibility.Disabled );
 			gbContent.DragEnter += gb_DragEnter;
 			gbContent.DragLeave += gb_DragLeave;
 			gbContent.Drop += gb_Drop;
