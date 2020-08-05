@@ -15,5 +15,8 @@ namespace NanaManager
         public const string ThemesAndColoursSettings = "hydroxa.nanaManager:pg_tacsets";
         public const string LanguagesSettings = "hydroxa.nanaManager:pg_langsets";
         public const string TagsSettings = "hydroxa.nanaManager:pg_tagsets";
+        public const string SoonSettings = "hydroxa.nanaManager:pg_soonsets";
+        public const string ComingSoon = "hydroxa.nanaManager:pg_soon";
+        public const string InvalidSettings = "hydroxa.nanaManager:pg_invalidsets";
     }
 }

@@ -79,9 +79,12 @@ namespace NanaManager
 			Paging.AddPage( Pages.TagManager, new TagManager() );
 			Paging.AddPage( Pages.Viewer, new Viewer() );
 			Paging.AddPage( Pages.Welcome, new Welcome() );
+
 			Registry.RegisterSettings( new SettingsTab(Pages.ThemesAndColoursSettings, "Colours and Themes", new ThemesAndColours() ) );
-			Registry.RegisterSettings( new SettingsTab( Pages.LanguagesSettings, "Languages", new Languages() ) );
+			Registry.RegisterSettings( new SettingsTab( Pages.LanguagesSettings, "Languages", new ComingSoon() ) );
 			Registry.RegisterSettings( new SettingsTab( Pages.TagsSettings, "Tags", new TagSettings() ) );
+			Registry.RegisterSettings( new SettingsTab( Pages.SoonSettings, "Coming Soon", new ComingSoon() ) );
+			Registry.RegisterSettings( new SettingsTab( Pages.InvalidSettings, "Invalid Settings Page", new InvalidSettingsPage() ) );
 
 			Paging.PageChanged += onNewPage;
 			Globals.Fullscreen += toggleFullscreen;

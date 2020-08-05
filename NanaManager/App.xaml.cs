@@ -6,6 +6,7 @@ using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
 using NanaManagerAPI.Data;
+using System.Diagnostics;
 
 namespace NanaManager
 {
@@ -88,7 +89,8 @@ namespace NanaManager
 					for ( int i = 0; i < logs.Length - 5; i++ )
 						File.Delete( logs[i] );
 				}
-				throw;
+				if (Debugger.IsAttached)
+					throw;
 			}
 		}
 	}

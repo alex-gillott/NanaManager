@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-
+using NanaManager.SettingsPages;
 using NanaManagerAPI.UI;
 
 namespace NanaManager
@@ -25,7 +25,11 @@ namespace NanaManager
             resetButtons();
             ToggleButton b = sender as ToggleButton;
             b.IsChecked = true;
-            frmSettings.Content = Registry.SettingsTabs[b.Tag as string].Display;
+            SettingsTab set = Registry.SettingsTabs[Pages.InvalidSettings];
+            if ( Registry.SettingsTabs.ContainsKey( b.Tag as string ) )
+                set = Registry.SettingsTabs[b.Tag as string];
+            frmSettings.Content = set.Display;
+            lblTitle.Content = set.Title;
         }
 
         private void Button_Click( object sender, RoutedEventArgs e ) {

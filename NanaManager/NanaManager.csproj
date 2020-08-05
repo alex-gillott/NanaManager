@@ -134,6 +134,12 @@
     <Compile Include="Pages\SettingsPage.xaml.cs">
       <DependentUpon>SettingsPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="SettingsPages\ComingSoonSettings.xaml.cs">
+      <DependentUpon>ComingSoonSettings.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SettingsPages\InvalidSettingsPage.xaml.cs">
+      <DependentUpon>InvalidSettingsPage.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SettingsPages\Languages.xaml.cs">
       <DependentUpon>Languages.xaml</DependentUpon>
     </Compile>
@@ -165,6 +171,14 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="Pages\SettingsPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsPages\ComingSoonSettings.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SettingsPages\InvalidSettingsPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

@@ -142,3 +142,7 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Lang
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Languages.baml
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\TagSettings.g.cs
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\TagSettings.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\ComingSoonSettings.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\ComingSoonSettings.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\InvalidSettingsPage.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\InvalidSettingsPage.baml
