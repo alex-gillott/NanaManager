@@ -6,7 +6,7 @@
              xmlns:local="clr-namespace:NanaManagerAPI.UI.Controls"
 			 Name="tagSelectorWindow"
              mc:Ignorable="d" 
-             d:DesignHeight="450" d:DesignWidth="800" Loaded="UserControl_Loaded">
+             d:DesignHeight="450" d:DesignWidth="800" Loaded="userControl_Loaded">
 	<UserControl.Resources>
 		<Style x:Key="Tag Groupbox" TargetType="{x:Type GroupBox}">
 			<Setter Property="Margin" Value="7, 0, 0, 0"/>

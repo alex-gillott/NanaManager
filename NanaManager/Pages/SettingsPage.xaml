@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
       d:DesignHeight="425" d:DesignWidth="800"
-      Title="SettingsPage" Loaded="Page_Loaded">
+      Title="SettingsPage" Loaded="page_Loaded">
 	<Grid>
 		<Grid.ColumnDefinitions>
 			<ColumnDefinition/>
@@ -53,7 +53,7 @@
 					</Grid.RowDefinitions>
 					<!--#region Back button-->
 					<Border Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,0,0,2"/>
-					<Button Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,0,0,5" Click="Button_Click">
+					<Button Grid.Row="0" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,0,0,5" Click="button_Click">
 						<Button.Style>
 							<Style TargetType="{x:Type Button}">
 								<Setter Property="Background" Value="Transparent"/>
@@ -84,11 +84,11 @@
 					<!--#endregion-->
 					<!--#region Themes and Colours-->
 					<Border Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton x:Name="btnTaC" Grid.Row="2" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_tacsets"/>
+					<ToggleButton x:Name="btnTaC" Grid.Row="2" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_tacsets"/>
 					<Viewbox Grid.Row="2" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Themes" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
-					<Ellipse Grid.Row="3" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Grid.ColumnSpan="2" IsHitTestVisible="False" Margin="0,0,0,5">
+					<!--<Ellipse Grid.Row="3" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Grid.ColumnSpan="2" IsHitTestVisible="False" Margin="0,0,0,5">
 						<Ellipse.Fill>
 							<RadialGradientBrush>
 								<GradientStop Color="Red" Offset="0.14285714"/>
@@ -101,11 +101,11 @@
 							</RadialGradientBrush>
 						</Ellipse.Fill>
 					</Ellipse>
-					<Ellipse Grid.Row="3" Margin="0,0,0,5" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Fill="{DynamicResource DarkGlass}" Grid.ColumnSpan="2" IsHitTestVisible="False"/>
+					<Ellipse Grid.Row="3" Margin="0,0,0,5" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Fill="{DynamicResource DarkGlass}" Grid.ColumnSpan="2" IsHitTestVisible="False"/>-->
 					<!--#endregion-->
 					<!--#region Languages-->
 					<Border Grid.Row="4" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton Name="tbtLang" Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets">
+					<ToggleButton Name="tbtLang" Grid.Row="4" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_langsets">
 						<ToggleButton.Content>
 							<Grid Height="{Binding ElementName=tbtLang, Path=ActualHeight}">
 								<Grid.RowDefinitions>
@@ -115,7 +115,7 @@
 								<Viewbox>
 									<Label Content="Languages" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False"/>
 								</Viewbox>
-								<Grid Background="{DynamicResource DarkGlass}" Grid.Row="1" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
+								<!--<Grid Background="{DynamicResource DarkGlass}" Grid.Row="1" Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}">
 									<Grid.ColumnDefinitions>
 										<ColumnDefinition Width="1*"/>
 										<ColumnDefinition Width="1*"/>
@@ -130,23 +130,23 @@
 										<RowDefinition Height="1"/>
 									</Grid.RowDefinitions>
 									<Ellipse x:Name="elpLang" IsHitTestVisible="False" Fill="LightBlue" Grid.ColumnSpan="3" Grid.RowSpan="4" Stroke="Black" StrokeThickness="2"/>
-									<!-- I couldn't get paths to scale properly :/ -->
-									<!-- Gotta work out a good symbol for lang -->
+									--><!-- I couldn't get paths to scale properly :/ -->
+									<!-- Gotta work out a good symbol for lang --><!--
 									<Ellipse Grid.Column="1" Margin="0,1" Grid.RowSpan="4" Stroke="Black" StrokeThickness="2"/>
 									<Border BorderBrush="Black" Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="3" Margin="0,0,0,7" BorderThickness="2" ClipToBounds="True" Grid.RowSpan="2" CornerRadius="4,4,0,0"/>
 									<Border BorderBrush="Black" Grid.Row="1" HorizontalAlignment="Stretch" Grid.ColumnSpan="3" Margin="0,7,0,0" BorderThickness="2" ClipToBounds="True" Grid.RowSpan="2" CornerRadius="0,0,4,4"/>
-								</Grid>
+								</Grid>-->
 							</Grid>
 						</ToggleButton.Content>
 					</ToggleButton>
 					<!--#endregion-->
 					<!--#region Tags&Groups-->
 					<Border Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_tagsets"/>
+					<ToggleButton Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_tagsets"/>
 					<Viewbox Grid.Row="6" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Tags" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
-					<Grid Grid.Row="7" Margin="25,8" RenderTransformOrigin="0.5,0.5">
+					<!--<Grid Grid.Row="7" Margin="25,8" RenderTransformOrigin="0.5,0.5" VerticalAlignment="Top">
 						<Grid.RenderTransform>
 							<TransformGroup>
 								<RotateTransform Angle="10" CenterX="4" CenterY="4"/>
@@ -164,18 +164,18 @@
 						</Grid.RowDefinitions>
 						<Border Background="{DynamicResource Highlight}" IsHitTestVisible="False" CornerRadius="10,0,0,10" Grid.RowSpan="3" Grid.ColumnSpan="3"/>
 						<Ellipse Width="{Binding RelativeSource={RelativeSource Self}, Path=ActualHeight}" Fill="Black" IsHitTestVisible="False" Grid.Column="1" Grid.Row="1"/>
-					</Grid>
+					</Grid>-->
 					<!--#endregion-->
 					<!--#region Advanced-->
 					<Border Grid.Row="8" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton Grid.Row="8" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_soonsets"/>
+					<ToggleButton Grid.Row="8" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_advsets"/>
 					<Viewbox Grid.Row="8" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Advanced" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
 					<!--#endregion-->
 					<!--#region Plugins-->
 					<Border Grid.Row="10" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,0"/>
-					<ToggleButton Grid.Row="10" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,5,0,0" Click="ToggleButton_Click" Tag="hydroxa.nanaManager:pg_soonsets">
+					<ToggleButton Grid.Row="10" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,5,0,0" Click="toggleButton_Click_1" Tag="hydroxa.nanaManager:pg_plugsets">
 						<ToggleButton.Style>
 							<Style TargetType="{x:Type ToggleButton}">
 								<Setter Property="Background" Value="Transparent"/>

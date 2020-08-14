@@ -13,6 +13,9 @@
 		<Color x:Key="PrimaryIdleColor">#AE006B</Color>
 		<Color x:Key="PrimaryDisabledColor">#7D205A</Color>
 		<Color x:Key="LightTextColor">White</Color>
+		<Color x:Key="TitleBarColor">#63005d</Color>
+		<Color x:Key="InactiveTitleBarColor">#63225d</Color>
+		<Color x:Key="InactiveTextColor">#646464</Color>
         <RadialGradientBrush x:Key="Background">
             <GradientStop Color="{DynamicResource BackgroundCentre}" Offset="0"/>
             <GradientStop Color="{DynamicResource BackgroundEdge}" Offset="1"/>
@@ -45,6 +48,9 @@
 		<SolidColorBrush x:Key="CaretColor" Color="#FFF"/>
 		<SolidColorBrush x:Key="TagRejectColor" Color="#88ff1212"/>
 		<SolidColorBrush x:Key="CheckGlyphColor" Color="{DynamicResource LightTextColor}"/>
+		<SolidColorBrush x:Key="TitleBar" Color="{DynamicResource TitleBarColor}"/>
+		<SolidColorBrush x:Key="TitleBarInactive" Color="{DynamicResource InactiveTitleBarColor}"/>
+		<SolidColorBrush x:Key="TitleBarInactiveText" Color="{DynamicResource InactiveTextColor}"/>
 
 		<!--#region Templates-->
 		<ItemsPanelTemplate x:Key="tagViewer">
@@ -65,13 +71,15 @@
 			<Setter Property="Template">
 				<Setter.Value>
 					<ControlTemplate TargetType="{x:Type CheckBox}">
-						<BulletDecorator Background="Transparent">
+						<BulletDecorator Background="Transparent" x:Name="bdc">
 							<BulletDecorator.Bullet>
-								<Border x:Name="Border" CornerRadius="2" BorderThickness="0" Background="{DynamicResource PrimaryIdle}" Width="14" Height="14">
-									<Grid>
-										<Ellipse Visibility="Collapsed" Margin="3" VerticalAlignment="Stretch" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" x:Name="CheckMark" SnapsToDevicePixels="False" StrokeThickness="2" Fill="{DynamicResource CheckGlyphColor}"/>
-										<Ellipse Visibility="Collapsed" Margin="3" VerticalAlignment="Stretch" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" x:Name="IndeterminateMark" SnapsToDevicePixels="False" StrokeThickness="2" Stroke="{DynamicResource CheckGlyphColor}"/>
-									</Grid>
+								<Border VerticalAlignment="Stretch" Height="{Binding ElementName=bdc, Path=ActualHeight}">
+									<Border x:Name="Border" CornerRadius="3" BorderThickness="0" Background="{DynamicResource PrimaryIdle}" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" Margin="5,0,0,0" HorizontalAlignment="Center" VerticalAlignment="Center" Height="{Binding ElementName=content, Path=ActualHeight}" UseLayoutRounding="True">
+										<Grid>
+											<Ellipse Visibility="Collapsed" Margin="4" VerticalAlignment="Stretch" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" x:Name="CheckMark" SnapsToDevicePixels="False" StrokeThickness="2" Fill="{DynamicResource CheckGlyphColor}"/>
+											<Ellipse Visibility="Collapsed" Margin="4" VerticalAlignment="Stretch" Width="{Binding ActualHeight, RelativeSource={RelativeSource Self}}" x:Name="IndeterminateMark" SnapsToDevicePixels="False" StrokeThickness="2" Stroke="{DynamicResource CheckGlyphColor}"/>
+										</Grid>
+									</Border>
 								</Border>
 							</BulletDecorator.Bullet>
 							<VisualStateManager.VisualStateGroups>
@@ -110,16 +118,60 @@
 									</VisualState>
 								</VisualStateGroup>
 							</VisualStateManager.VisualStateGroups>
-							<ContentPresenter Margin="4,0,0,0"
-                            VerticalAlignment="Center"
-                            HorizontalAlignment="Left"
-                            RecognizesAccessKey="True" />
+							<Viewbox x:Name="viewbox">
+								<ContentPresenter x:Name="content" Margin="3,0,0,0" VerticalAlignment="Center" HorizontalAlignment="Left" RecognizesAccessKey="True" />
+							</Viewbox>
 						</BulletDecorator>
 					</ControlTemplate>
 				</Setter.Value>
 			</Setter>
 		</Style>
-		
+		<Style x:Key="TitleBarButtonStyle" TargetType="Button">
+			<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+			<Setter Property="IsTabStop" Value="False" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Border x:Name="border" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="True">
+							<ContentPresenter x:Name="contentPresenter" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" Focusable="False" RecognizesAccessKey="True" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryHighlight}" />
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter TargetName="border" Property="Background" Value="{DynamicResource PrimaryPressed}" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
+		<Style x:Key="TitleBarCloseButtonStyle" TargetType="Button">
+			<Setter Property="Foreground" Value="{DynamicResource LightText}" />
+			<Setter Property="Padding" Value="0" />
+			<Setter Property="WindowChrome.IsHitTestVisibleInChrome" Value="True" />
+			<Setter Property="IsTabStop" Value="False" />
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type Button}">
+						<Border x:Name="border" Background="Transparent" BorderThickness="0" SnapsToDevicePixels="true">
+							<ContentPresenter x:Name="contentPresenter" Margin="0" HorizontalAlignment="Center" VerticalAlignment="Center" Focusable="False" RecognizesAccessKey="True" />
+						</Border>
+						<ControlTemplate.Triggers>
+							<Trigger Property="IsMouseOver" Value="true">
+								<Setter TargetName="border" Property="Background" Value="{DynamicResource CloseButtonHighlight}" />
+							</Trigger>
+							<Trigger Property="IsPressed" Value="true">
+								<Setter TargetName="border" Property="Background" Value="{DynamicResource CloseButtonPressed}" />
+							</Trigger>
+						</ControlTemplate.Triggers>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+		</Style>
 		<Style x:Key="Editable Groupbox Textbox" TargetType="{x:Type TextBox}">
 			<Setter Property="Background" Value="Transparent"/>
 			<Setter Property="Foreground" Value="{DynamicResource LightText}"/>
@@ -177,6 +229,39 @@
 									</Style>
 								</ContentPresenter.Resources>
 							</ContentPresenter>
+						</Border>
+					</ControlTemplate>
+				</Setter.Value>
+			</Setter>
+			<Style.Triggers>
+				<Trigger Property="IsMouseOver" Value="True">
+					<Setter Property="Background" Value="{DynamicResource GlassHighlight}"/>
+				</Trigger>
+				<Trigger Property="IsChecked" Value="True">
+					<Setter Property="Background" Value="{DynamicResource TranslucentHighlight}"/>
+				</Trigger>
+			</Style.Triggers>
+		</Style>
+		<Style x:Key="Settings VButton" TargetType="{x:Type ToggleButton}">
+			<Setter Property="Background" Value="Transparent"/>
+			<Setter Property="Foreground" Value="{DynamicResource LightText}"/>
+			<Setter Property="FontFamily" Value="Segoe UI"/>
+			<Setter Property="HorizontalContentAlignment" Value="Center"/>
+			<Setter Property="VerticalContentAlignment" Value="Center"/>
+			<Setter Property="Focusable" Value="False"/>
+			<Setter Property="Template">
+				<Setter.Value>
+					<ControlTemplate TargetType="{x:Type ToggleButton}">
+						<Border Background="{TemplateBinding Background}" CornerRadius="0,0,0,0" BorderThickness="2,0,0,0" BorderBrush="{DynamicResource Highlight}">
+							<Viewbox Margin="10">
+								<ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center">
+									<ContentPresenter.Resources>
+										<Style TargetType="{x:Type TextBlock}">
+											<Setter Property="TextWrapping" Value="Wrap"/>
+										</Style>
+									</ContentPresenter.Resources>
+								</ContentPresenter>
+							</Viewbox>
 						</Border>
 					</ControlTemplate>
 				</Setter.Value>

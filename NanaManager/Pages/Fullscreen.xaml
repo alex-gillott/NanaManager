@@ -1,12 +1,12 @@
 ﻿<Page x:Class="NanaManager.Fullscreen"
-      xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-      xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-      xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-      xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
-      xmlns:local="clr-namespace:NanaManager"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="Fullscreen" KeyDown="Page_PreviewKeyDown" Loaded="Page_Loaded">
+	  xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+	  xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+	  xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+	  xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+	  xmlns:local="clr-namespace:NanaManager"
+	  mc:Ignorable="d" 
+	  d:DesignHeight="450" d:DesignWidth="800"
+	  Title="Fullscreen" KeyDown="page_PreviewKeyDown" Loaded="page_Loaded">
 	<Page.Resources>
 		<Storyboard x:Key="styHideMenu">
 			<DoubleAnimation To="-100" Duration="0:0:0.3" Storyboard.TargetProperty="(Grid.RenderTransform).(TranslateTransform.Y)" Storyboard.TargetName="grdMenu">
@@ -17,7 +17,7 @@
 		</Storyboard>
 	</Page.Resources>
 	<Grid>
-		<Frame x:Name="frmViewer" Loaded="frmViewer_Loaded" KeyDown="Page_PreviewKeyDown" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Grid.RowSpan="2" Focusable="True" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden"/>
+		<Frame x:Name="frmViewer" Loaded="frmViewer_Loaded" KeyDown="page_PreviewKeyDown" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Grid.RowSpan="2" Focusable="True" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden"/>
 		<Rectangle x:Name="rctPrev" HorizontalAlignment="Left" Height="150" VerticalAlignment="Center" Width="40" Fill="#0000" Margin="0,150" Grid.RowSpan="2">
 			<Rectangle.Triggers>
 				<EventTrigger RoutedEvent="MouseEnter">
@@ -150,8 +150,8 @@
 					</BeginStoryboard>
 				</EventTrigger>
 			</Grid.Triggers>
-			<Button Style="{DynamicResource Menu Button}" Content="Edit" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Height="Auto" Grid.Column="1" Click="Edit_Click"/>
-			<Button Style="{DynamicResource Menu Button}" Content="Exit" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Height="Auto" Grid.Column="2" Click="Exit_Click" />
+			<Button Style="{DynamicResource Menu Button}" Content="Edit" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Height="Auto" Grid.Column="1" Click="edit_Click"/>
+			<Button Style="{DynamicResource Menu Button}" Content="Exit" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Height="Auto" Grid.Column="2" Click="exit_Click" />
 			<ToggleButton Style="{DynamicResource Menu ToggleButton}" Name="btnTags" Content="Tags" HorizontalAlignment="Stretch" Margin="10" VerticalAlignment="Stretch" Height="Auto">
 				<ToggleButton.Triggers>
 					<EventTrigger RoutedEvent="ToggleButton.Checked">

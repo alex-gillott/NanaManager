@@ -5,7 +5,7 @@ using System.Windows;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
-using NanaManagerAPI.Data;
+using NanaManagerAPI.Types;
 using System.Diagnostics;
 
 namespace NanaManager
@@ -40,7 +40,7 @@ namespace NanaManager
 			Registry.RegisterExtensions( "Image Files", Image.CTOR_ID, imhnd.ID, imhnd.GetCompatibleTypes() );
 
 			Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
-			Globals.CryptographyProvider = new Cryptography.Cryptography();
+			ContentFile.CryptographyProvider = new Cryptography.Cryptography();
 
 			if ( NanaManager.Properties.Settings.Default.ToImport == null ) { //Instantiate Import Collection if non-existent
 				NanaManager.Properties.Settings.Default.ToImport = new System.Collections.Specialized.StringCollection();
@@ -69,7 +69,7 @@ namespace NanaManager
 				}
 			}
 
-			try {
+			//try {
 				App app = new App();
 				MainWindow wnd = new MainWindow( instruction ); //Load and run the application
 				app.Run( wnd );
@@ -81,17 +81,17 @@ namespace NanaManager
 					for ( int i = 0; i < logs.Length - 5; i++ )
 						File.Delete( logs[i] );
 				}
-			} catch ( Exception e ) {
-				Logging.Write( e, "Core", LogLevel.Fatal );
-				Logging.SaveLogs();
-				string[] logs = Directory.GetFiles( ContentFile.LogPath );
-				if ( logs.Length > 5 ) {
-					for ( int i = 0; i < logs.Length - 5; i++ )
-						File.Delete( logs[i] );
-				}
-				if (Debugger.IsAttached)
-					throw;
-			}
+			//} catch ( Exception e ) {
+			//	Logging.Write( e, "Core", LogLevel.Fatal );
+			//	Logging.SaveLogs();
+			//	string[] logs = Directory.GetFiles( ContentFile.LogPath );
+			//	if ( logs.Length > 5 ) {
+			//		for ( int i = 0; i < logs.Length - 5; i++ )
+			//			File.Delete( logs[i] );
+			//	}
+			//	if (Debugger.IsAttached)
+			//		throw;
+			//}
 		}
 	}
 }

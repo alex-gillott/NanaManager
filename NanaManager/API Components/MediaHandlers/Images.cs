@@ -23,7 +23,7 @@ namespace NanaManager.MediaHandlers
             return compatibleTypes;
         }
 
-        internal event MediaLoader RenderMedia;
+        internal event UI.MediaLoader RenderMedia;
 
         public void LoadMedia( string Path, bool Editing ) {
             Display = new ImageViewer( this );

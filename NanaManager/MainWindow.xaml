@@ -5,16 +5,83 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:NanaManager"
         mc:Ignorable="d"
-        Title="Nana Manager" Height="450" Width="800" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" AllowsTransparency="True" WindowStyle="None" ResizeMode="CanResizeWithGrip"  MinWidth="800" MinHeight="450" Foreground="White" Background="#FF200C27" Closing="window_Closing">
-    <Border CornerRadius="10" BorderThickness="1" Background="{DynamicResource ResourceKey=Background}">
-        <Grid Background="Transparent" Margin="-1">
-            <Grid.RowDefinitions>
-                <RowDefinition Height="25"/>
-                <RowDefinition Height="71*"/>
-            </Grid.RowDefinitions>
-			<Frame x:Name="frmMain" Margin="0" Grid.Row="1" Grid.RowSpan="2" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
-            <Rectangle x:Name="rctControlBar" MouseDown="grdMouseDown" Grid.Row="0" Fill="#FF342844" HorizontalAlignment="Stretch" Margin="0,0,0,0"/>
-			<TextBlock x:Name="txtClose" FontSize="19" Text="X" HorizontalAlignment="Right" TextWrapping="Wrap" VerticalAlignment="Center" Width="23" TextAlignment="Center" MouseUp="textBlock_MouseUp" Grid.RowSpan="1" MouseDown="txtClose_MouseDown" MouseEnter="txtClose_MouseEnter" MouseLeave="txtClose_MouseLeave" />
+		x:Name="wndMain"
+        Title="Nana Manager" Height="450" Width="800" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" AllowsTransparency="True" WindowStyle="None" MinWidth="800" MinHeight="450" Foreground="White" Background="#FF200C27" Closing="window_Closing" StateChanged="window_StateChanged">
+	<WindowChrome.WindowChrome>
+		<WindowChrome x:Name="wchChrome" CaptionHeight="25" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"/>
+	</WindowChrome.WindowChrome>
+	<Border CornerRadius="10" BorderThickness="1" Background="{DynamicResource ResourceKey=Background}">
+		<Border.Style>
+			<Style TargetType="{x:Type Border}">
+				<Style.Triggers>
+					<DataTrigger Binding="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=WindowState}" Value="Maximized">
+						<Setter Property="Margin" Value="6" />
+					</DataTrigger>
+				</Style.Triggers>
+			</Style>
+		</Border.Style>
+		<Grid Background="Transparent" Margin="-1">
+			<Grid.RowDefinitions>
+				<RowDefinition Height="25"/>
+				<RowDefinition Height="71*"/>
+			</Grid.RowDefinitions>
+			<Frame Grid.ColumnSpan="5" x:Name="frmMain" Margin="0" Grid.Row="1" Grid.RowSpan="2" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+			<!--#region TitleBar-->
+			<!-- Paths by Microsoft-->
+			<Grid x:Name="grdTitle">
+				<Grid.ColumnDefinitions>
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+					<ColumnDefinition Width="Auto" />
+				</Grid.ColumnDefinitions>
+				<Rectangle x:Name="rctTitleBar" Grid.ColumnSpan="5" Fill="{DynamicResource TitleBar}">
+					<Rectangle.Style>
+						<Style TargetType="Rectangle">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+									<Setter Property="Fill" Value="{DynamicResource TitleBarInactive}"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</Rectangle.Style>
+				</Rectangle>
+				<Image Grid.Column="0" Width="22" Height="22" Margin="4" />
+				<TextBlock Grid.Column="1" Margin="4 0 0 0" VerticalAlignment="Center" FontSize="14" Text="{Binding ElementName=wndMain, Path=Title}" Foreground="{DynamicResource LightText}">
+					<TextBlock.Style>
+						<Style TargetType="TextBlock">
+							<Style.Triggers>
+								<DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
+									<Setter Property="Foreground" Value="{DynamicResource TitleBarInactiveText}"/>
+								</DataTrigger>
+							</Style.Triggers>
+						</Style>
+					</TextBlock.Style>
+				</TextBlock>
+				<Button Grid.Column="2" Click="onMinimizeButtonClick" RenderOptions.EdgeMode="Aliased" Style="{StaticResource TitleBarButtonStyle}">
+					<Path Width="46" Height="25" Data="M 18,13 H 28" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+				</Button>
+				<Button Name="btnMaximise" Grid.Column="3" Click="onMaximizeRestoreButtonClick" Style="{StaticResource TitleBarButtonStyle}">
+					<Path Width="46" Height="25" Data="M 18.5,8.5 H 27.5 V 17.5 H 18.5 Z" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+				</Button>
+				<Button Name="btnRestore" Grid.Column="3" Click="onMaximizeRestoreButtonClick" Style="{StaticResource TitleBarButtonStyle}" Visibility="Collapsed">
+					<Path Width="46" Height="25" Data="M 18.5,10.5 H 25.5 V 17.5 H 18.5 Z M 20.5,10.5 V 8.5 H 27.5 V 15.5 H 25.5" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+				</Button>
+				<Button Grid.Column="4" Click="onCloseButtonClick" Style="{StaticResource TitleBarCloseButtonStyle}">
+					<Path Width="46" Height="25" Data="M 18,8 27,17 M 18,17 27,8" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
+				</Button>
+			</Grid>
+			
+			<!--#endregion-->
+			<Border x:Name="bdrNotif" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top" MouseEnter="bdrNotif_MouseEnter" MouseLeave="bdrNotif_MouseLeave">
+				<Label x:Name="lblNotif" FontSize="18" Content="Sorting by Tag" Foreground="{DynamicResource LightText}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+			</Border>
+			<Border x:Name="bdrNotifList" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top">
+				<ScrollViewer>
+					<StackPanel x:Name="stkNotifList" Orientation="Vertical" Width="300" MouseLeave="stkNotifList_MouseLeave"/>
+				</ScrollViewer>
+			</Border>
 		</Grid>
     </Border>
 </Window>

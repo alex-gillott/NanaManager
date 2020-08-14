@@ -53,6 +53,7 @@ namespace NanaManager
 							checkedTags.Add( scanForTags( s ) );
 						}
 
+			tslEditor.ShowHiddenTags = Data.ShowHiddenTags;
 			index = toImport.Count - 1;
 			btnBack.IsEnabled = false;
 			if ( index == 0 )
@@ -61,7 +62,7 @@ namespace NanaManager
 				btnSkip.IsEnabled = true;
 
 			if ( Editing != null ) {
-				editTags = Globals.Media[Editing].GetTags();
+				editTags = Data.Media[Editing].GetTags();
 				btnSkip.IsEnabled = false;
 				btnUnimport.Content = "Delete";
 				btnAdd.Content = "Done";
@@ -94,7 +95,7 @@ namespace NanaManager
 			using ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update );
 			bool saved = false;
 			if ( Editing != null ) {
-				Globals.Media[Editing] = (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Globals.Media[Editing].FileType]].Invoke( new object[] { Editing, tslEditor.GetCheckedTagsIndicies(), Globals.Media[Editing].FileType } );
+				Data.Media[Editing] = (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Data.Media[Editing].FileType]].Invoke( new object[] { Editing, tslEditor.GetCheckedTagsIndicies(), Data.Media[Editing].FileType } );
 				Paging.LoadPreviousPage();
 				return;
 			}
@@ -103,7 +104,7 @@ namespace NanaManager
 					byte[] data = File.ReadAllBytes( toImport[index] );
 					string uID = Guid.NewGuid().ToString();
 					archive.CreateEntryFromFile( toImport[index], uID );
-					Globals.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) );;
+					Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) );;
 
 					saved = true;
 
@@ -134,7 +135,7 @@ namespace NanaManager
 				}
 			}
 		}
-		private void Page_PreviewKeyDown( object sender, KeyEventArgs e ) {
+		private void page_PreviewKeyDown( object sender, KeyEventArgs e ) {
 			switch (e.Key)
 			{
 				case Key.Right:
@@ -187,7 +188,7 @@ namespace NanaManager
 					renderIndex();
 				}
 				else {
-					Globals.Media.Remove( Editing );
+					Data.Media.Remove( Editing );
 					using ( ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update ) ) {
 						archive.GetEntry( Editing ).Delete();
 					}
@@ -226,7 +227,7 @@ namespace NanaManager
 		#region Importing
 		private void renderIndex() {
 			if ( Editing != null ) {
-				IMedia media = Globals.Media[Editing];
+				IMedia media = Data.Media[Editing];
 				string fileType = media.FileType;
 				if ( Registry.SupportedDataTypes.ContainsKey( fileType ) ) {
 					string toLoad = Registry.SupportedDataTypes[fileType];
@@ -288,8 +289,8 @@ namespace NanaManager
 		private int[] scanForTags( string name ) {
 			string smolName = name.ToLower();
 			List<int> found = new List<int>();
-			foreach (KeyValuePair<int, int> kvp in TagData.TagLocations)
-				if ( smolName.Contains( TagData.Tags[kvp.Value].Name.ToLower() ) )
+			foreach (KeyValuePair<int, int> kvp in Data.TagLocations)
+				if ( smolName.Contains( Data.Tags[kvp.Value].Name.ToLower() ) )
 					found.Add( kvp.Value );
 			return found.ToArray();
 		}

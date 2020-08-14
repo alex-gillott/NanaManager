@@ -17,21 +17,21 @@ namespace NanaManager
         private delegate void imageHandler( BitmapImage B );
         private event imageHandler OnImageLoaded;
 
-        NanaManagerAPI.Data.Image img;
+        NanaManagerAPI.Types.Image img;
         string toLoad;
         public ImageViewer(Images Parent) {
             InitializeComponent();
             Parent.RenderMedia += loadMedia;
-            OnImageLoaded += ImageLoaded;
+            OnImageLoaded += imageLoaded;
         }
 
         private void loadMedia(string id, bool edit) {
             RenderOptions.SetBitmapScalingMode( imgView, BitmapScalingMode.NearestNeighbor );
             if ( edit ) {
                 BackgroundWorker worker = new BackgroundWorker();
-                img = Globals.Media[id] as NanaManagerAPI.Data.Image;
+                img = Data.Media[id] as NanaManagerAPI.Types.Image;
                 imgView.Source = img.GetSample();
-                worker.DelegateThread(LoadHiRes);
+                worker.DelegateThread(loadHiRes);
             }
             else {
                 img = null;
@@ -46,11 +46,11 @@ namespace NanaManager
                 toLoad = id;
 
                 BackgroundWorker worker = new BackgroundWorker();
-                worker.DelegateThread( LoadHiRes );
+                worker.DelegateThread( loadHiRes );
             }
         }
 
-        private void ImageLoaded( BitmapImage b ) {
+        private void imageLoaded( BitmapImage b ) {
             imgView.Dispatcher.BeginInvoke( new Action( () =>
             {
                 RenderOptions.SetBitmapScalingMode( imgView, BitmapScalingMode.Fant );
@@ -58,7 +58,7 @@ namespace NanaManager
             } ) );
         }
 
-        private void LoadHiRes() {
+        private void loadHiRes() {
             if ( img == null ) {
                 BitmapImage bmp = new BitmapImage();
                 bmp.BeginInit();
@@ -75,7 +75,7 @@ namespace NanaManager
             }
         }
 
-        private void Page_Unloaded( object sender, RoutedEventArgs e ) {
+        private void page_Unloaded( object sender, RoutedEventArgs e ) {
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Reflection;
 using NanaManagerAPI.Media;
 
@@ -29,11 +30,11 @@ namespace NanaManagerAPI.UI
 		/// </summary>
 		public readonly static Dictionary<string, ConstructorInfo> MediaConstructors = new Dictionary<string, ConstructorInfo>();
 		/// <summary>
-		/// A dictionary of all categories for the importer
+		/// A dictionary of all file categories. Used for the Open File Dialog
 		/// </summary>
 		public readonly static Dictionary<string, List<string>> Categories = new Dictionary<string, List<string>>();
 		/// <summary>
-		/// A dictionary with all of the settings tabs
+		/// A dictionary with all of the settings tabs. Used for the settings page
 		/// </summary>
 		internal readonly static Dictionary<string, SettingsTab> SettingsTabs = new Dictionary<string, SettingsTab>();
 
@@ -140,5 +141,18 @@ namespace NanaManagerAPI.UI
 				throw;
 			}
 		}
+
+		/// <summary>
+		/// A shortcut to getting the media constructor for a specified file extension
+		/// </summary>
+		/// <param name="FileExtension">The file extension that the constructor handles</param>
+		/// <returns>The constructor that handles the specified file extension. Returns null if the file extension is not supported</returns>
+		public static ConstructorInfo GetConstructor( string FileExtension ) => ExtensionConstructors.ContainsKey(FileExtension) ? MediaConstructors[ExtensionConstructors[FileExtension]] : null;
+		/// <summary>
+		/// A shortcut to getting the media viewer for a specified file extension
+		/// </summary>
+		/// <param name="FileExtension">The file extension that the media viewer handles</param>
+		/// <returns>The viewer for the specified file extension. Returns null if the file extension is not supported</returns>
+		public static IMediaViewer GetViewer( string FileExtension ) => SupportedDataTypes.ContainsKey( FileExtension ) ? Viewers[SupportedDataTypes[FileExtension]] : null;
 	}
 }

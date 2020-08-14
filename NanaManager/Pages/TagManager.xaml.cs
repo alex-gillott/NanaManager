@@ -7,10 +7,9 @@ using System.Windows.Media;
 using System.Windows.Controls;
 using System.Collections.Generic;
 
-using NanaManagerAPI.Data;
+using NanaManagerAPI.Types;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
-using System.Threading;
 
 namespace NanaManager
 {
@@ -30,11 +29,11 @@ namespace NanaManager
 			stkGroups.Children.Clear();
 			groupNames.Clear();
 			createGroup( "Misc" );
-			foreach ( KeyValuePair<int, string> s in TagData.Groups )
+			foreach ( KeyValuePair<int, string> s in Data.Groups )
 				createGroup( s.Value );
 
-			foreach ( Tag t in TagData.Tags )
-				addTag( getContent( t.Group == -1 ? "Misc" : TagData.Groups[t.Group] ), t.Name, new tagData( t.Index, t.GetAliases() ) );
+			foreach ( Tag t in Data.Tags )
+				addTag( getContent( t.Group == -1 ? "Misc" : Data.Groups[t.Group] ), t.Name, new tagData( t.Index, t.GetAliases() ) );
 		}
 		private void handleListKeyPress( object sender, KeyEventArgs e ) {
 			ListBox lst = sender as ListBox;
@@ -109,21 +108,21 @@ namespace NanaManager
 				}
 			}
 
-			TagData.Tags = new Tag[toReplaceT.Count];
-			TagData.TagLocations.Clear();
-			TagData.Groups.Clear();
+			Data.Tags = new Tag[toReplaceT.Count];
+			Data.TagLocations.Clear();
+			Data.Groups.Clear();
 			List<int> hiddenKeep = new List<int>();
 			int c = 0;
 			foreach ( KeyValuePair<int, Tag> i in toReplaceT ) {
-				TagData.TagLocations.Add( i.Key, c );
-				TagData.Tags[c++] = i.Value;
-				if ( TagData.HiddenTags.Contains( i.Key ) )
+				Data.TagLocations.Add( i.Key, c );
+				Data.Tags[c++] = i.Value;
+				if ( Data.HiddenTags.Contains( i.Key ) )
 					hiddenKeep.Add( i.Key );
 			}
-			TagData.HiddenTags = hiddenKeep.ToArray();
+			Data.HiddenTags = hiddenKeep.ToArray();
 
 			for ( int i = 0; i < toReplaceG.Count; i++ )
-				TagData.Groups[i] = toReplaceG[i];
+				Data.Groups[i] = toReplaceG[i];
 			MessageBox.Show( "Saved Groups and Tags" );
 			Paging.LoadPreviousPage();
 		}
@@ -137,7 +136,7 @@ namespace NanaManager
 		}
 		private void btnBack_Click( object sender, RoutedEventArgs e ) => Paging.LoadPreviousPage();
 		private void clickHandle( object sender, RoutedEventArgs e ) => (sender as UIElement).Focus();
-		private void Page_PreviewKeyUp( object sender, KeyEventArgs e ) {
+		private void page_PreviewKeyUp( object sender, KeyEventArgs e ) {
 			if ( e.Key == Key.Escape ) {
 				selectAlias = null;
 				bdrTag.Visibility = Visibility.Collapsed;
@@ -153,7 +152,7 @@ namespace NanaManager
 				e.Handled = true;
 			}
 		}
-		private void Page_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
+		private void page_PreviewMouseRightButtonDown( object sender, MouseButtonEventArgs e ) {
 			if ( selectAlias != null )
 				e.Handled = true;
 		}
@@ -196,7 +195,7 @@ namespace NanaManager
 		#endregion
 		private void gb_DragLeave( object sender, DragEventArgs e ) {
 			if ( sender is ListBox content )
-				content.Background = new SolidColorBrush( Colors.Transparent );
+				content.Background = Brushes.Transparent;
 		}
 		private void gb_DragEnter(object sender, DragEventArgs e) {
 			if ( sender is ListBox content && e.Data.GetDataPresent( typeof( TextBox ) ) )
@@ -206,7 +205,7 @@ namespace NanaManager
 			Debug.WriteLine( "drop" );
 			if ( sender != e.OriginalSource ) {
 				TextBox data = (TextBox)e.Data.GetData( typeof( TextBox ) );
-				((ListBox)sender).Background = new SolidColorBrush( Colors.Transparent );
+				((ListBox)sender).Background = Brushes.Transparent;
 				addTag( (ListBox)sender, data.Text, (tagData)data.Tag ); //Casting so an error occurs without a valid ListBox
 			}
 		}
@@ -291,7 +290,7 @@ namespace NanaManager
 			};
 			ListView gbContent = new ListView()
 			{
-				Background = new SolidColorBrush(Colors.Transparent),
+				Background = Brushes.Transparent,
 				BorderThickness = new Thickness( 0 ),
 				Foreground = (Brush)Application.Current.Resources["LightText"],
 				Focusable = true,

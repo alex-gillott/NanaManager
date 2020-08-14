@@ -57,16 +57,15 @@
   <ItemGroup>
     <Compile Include="Attributes\EntryPointAttribute.cs" />
     <Compile Include="EventArgs\TagCheckEventArgs.cs" />
-    <Compile Include="Globals.cs" />
     <Compile Include="IO\ContentFile.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="UI\Controls\TagSelector.xaml.cs">
       <DependentUpon>TagSelector.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\Paging.cs" />
-    <Compile Include="TagData.cs" />
-    <Compile Include="Data\Image.cs" />
-    <Compile Include="Data\Tag.cs" />
+    <Compile Include="Data.cs" />
+    <Compile Include="Types\Image.cs" />
+    <Compile Include="Types\Tag.cs" />
     <Compile Include="IO\DataDecoder.cs" />
     <Compile Include="IO\DataEncoder.cs" />
     <Compile Include="IO\Cryptography\ICryptographyProvider.cs" />
@@ -77,6 +76,7 @@
     <Compile Include="Threading\BackgroundWorker.cs" />
     <Compile Include="UI\Registry.cs" />
     <Compile Include="UI\SettingsTab.cs" />
+    <Compile Include="UI\UI.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="ImageViewer" Unloaded="Page_Unloaded">
+      Title="ImageViewer" Unloaded="page_Unloaded">
 	<Grid>
 		<Image x:Name="imgView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform" RenderOptions.BitmapScalingMode="LowQuality" UseLayoutRounding="True"/>
 	</Grid>

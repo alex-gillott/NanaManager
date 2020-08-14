@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="TagManager" PreviewKeyUp="Page_PreviewKeyUp" PreviewMouseRightButtonDown="Page_PreviewMouseRightButtonDown" PreviewMouseRightButtonUp="Page_PreviewMouseRightButtonDown">
+      Title="TagManager" PreviewKeyUp="page_PreviewKeyUp" PreviewMouseRightButtonDown="page_PreviewMouseRightButtonDown" PreviewMouseRightButtonUp="page_PreviewMouseRightButtonDown">
 	<Page.Resources>
 		<Style x:Key="Menu Button" TargetType="{x:Type Button}">
 			<Setter Property="Background" Value="#FF404040"/>

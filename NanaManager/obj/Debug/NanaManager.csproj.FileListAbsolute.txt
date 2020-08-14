@@ -146,3 +146,9 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Comi
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\ComingSoonSettings.baml
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\InvalidSettingsPage.g.cs
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\InvalidSettingsPage.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\Search.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\Search.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\AdvancedSettings.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\PluginsSettings.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\AdvancedSettings.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\PluginsSettings.baml

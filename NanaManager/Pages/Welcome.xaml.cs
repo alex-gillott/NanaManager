@@ -25,24 +25,24 @@ namespace NanaManager
         private Thread waitThread;
         public Welcome() {
             InitializeComponent();
-            Globals.ChangeStatus += onStatusChange;
+            UI.StatusChanged += onStatusChange;
         }
 
-        private void onStatusChange( string status, double progress, double? Maximum ) {
+        private void onStatusChange( string status, double progress, double? maximum ) {
             Dispatcher.Invoke( new Action( () =>
             {
                 lblStatus.Content = status;
                 if ( progress == -1 )
                     pgProgress.IsIndeterminate = true;
                 else {
-                    pgProgress.Maximum = (int)Maximum;
+                    pgProgress.Maximum = (int)maximum;
                     pgProgress.Value = progress;
                 }
             } ) );
         }
 
-        private void Page_Loaded( object sender, RoutedEventArgs e ) {
-            if ( TagData.Groups.Count == 0 ) {
+        private void page_Loaded( object sender, RoutedEventArgs e ) {
+            if ( Data.Groups.Count == 0 ) {
                 pgProgress.Visibility = lblStatus.Visibility = Visibility.Visible;
                 waitThread = new Thread( () => Thread.Sleep( 2000 ) );
                 bgWork.DelegateThread( () =>

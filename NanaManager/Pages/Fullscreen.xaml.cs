@@ -15,7 +15,6 @@ namespace NanaManager
     /// </summary>
     public partial class Fullscreen : Page
     {
-        private int[] searchTerms;
         private string[] searched;
         private int idx;
         private string current;
@@ -30,14 +29,15 @@ namespace NanaManager
         private void load(string path) {
             current = path;
 
-            IMedia media = Globals.Media[path];
+            IMedia media = Data.Media[path];
             IMediaViewer viewer = Registry.Viewers[Registry.SupportedDataTypes[media.FileType]];
             viewer.LoadMedia( path, true );
             frmViewer.Content = viewer.Display;
 
             stkTags.Children.Clear();
             foreach ( int i in media.GetTags() ) {
-                ToggleButton tb = new ToggleButton() { Content = TagData.Tags[TagData.TagLocations[i]].Name, Style = (Style)Application.Current.Resources["Tag Button"]};
+                ToggleButton tb = new ToggleButton() { Content = Data.Tags[Data.TagLocations[i]].Name, Style = (Style)Application.Current.Resources["Tag Button"], Tag = i };
+                tb.Checked += handleTagClick;
                 stkTags.Children.Add(tb);
             }
         }
@@ -48,9 +48,9 @@ namespace NanaManager
         /// <param name="Current">The media to open with</param>
         /// <param name="Search">The search term to use when seeking</param>
         /// <param name="Index">Where in the list the media is</param>
-        public void OpenViewer(string Current, int[] Search, int Index) {
-            searchTerms = Search;
-            searched = TagData.SearchForAll( Search );
+        public void OpenViewer(string Current, int[] Search, int[] Rejected, int Index) {
+
+            searched = Data.SearchForAll( Search, Rejected );
 
             btnPrev.IsEnabled = rctPrev.IsEnabled = Index != 0;
             btnNext.IsEnabled = rctNext.IsEnabled = Index != searched.Length - 1 && searched.Length > 0;
@@ -60,22 +60,22 @@ namespace NanaManager
         }
 
         //TODO - Work out how to make this handle 
-        private void Page_PreviewKeyDown( object sender, KeyEventArgs e ) {
+        private void page_PreviewKeyDown( object sender, KeyEventArgs e ) {
             switch (e.Key) {
                 case Key.Escape:
-                    Globals.SetFullscreen( false );
+                    UI.SetFullscreen( false );
                     Paging.LoadPreviousPage();
                     break;
                 case Key.Left:
-                    Previous();
+                    previous();
                     break;
                 case Key.Right:
-                    Next();
+                    next();
                     break;
             }
         }
-        private void Exit_Click( object sender, RoutedEventArgs e ) {
-            Globals.SetFullscreen( false );
+        private void exit_Click( object sender, RoutedEventArgs e ) {
+            UI.SetFullscreen( false );
             Paging.LoadPreviousPage();
         }
 
@@ -91,20 +91,21 @@ namespace NanaManager
                 hideMenu.Begin( grdMenu, true );
         }
         private void handleTagClick( object sender, RoutedEventArgs e) {
-            //TODO - Link to Searching
+            Search.SearchTags = new int[] { (int)((ToggleButton)sender).Tag };
+            Paging.LoadPage( Pages.Viewer );
         }
 
-        private void Edit_Click( object sender, RoutedEventArgs e ) {
-            Globals.SetFullscreen( false );
+        private void edit_Click( object sender, RoutedEventArgs e ) {
+            UI.SetFullscreen( false );
             Import.Editing = current;
             Paging.LoadPage( Pages.Import );
             editing = true;
         }
 
-        private void Page_Loaded( object sender, RoutedEventArgs e ) {
-            Globals.SetFullscreen( true );
+        private void page_Loaded( object sender, RoutedEventArgs e ) {
+            UI.SetFullscreen( true );
             if ( editing ) {
-                if ( Globals.Media.ContainsKey( current ) )
+                if ( Data.Media.ContainsKey( current ) )
                     load( current );
                 else
                     Paging.LoadPreviousPage();
@@ -112,7 +113,7 @@ namespace NanaManager
             }
         }
 
-        private void Previous() {
+        private void previous() {
             if ( idx > 0 ) {
                 idx--;
                 load( searched[idx] );
@@ -121,7 +122,7 @@ namespace NanaManager
             }  
         }
 
-        private void Next() {
+        private void next() {
             if ( idx < searched.Length - 1) {
                 idx++;
                 load( searched[idx] );
@@ -130,15 +131,12 @@ namespace NanaManager
             }
         }
 
-        private void grdMenu_MouseDown( object sender, MouseButtonEventArgs e ) {
-        }
-
         private void btnPrev_Click( object sender, RoutedEventArgs e ) {
-            Previous();
+            previous();
         }
 
         private void btnNext_Click( object sender, RoutedEventArgs e ) {
-            Next();
+            next();
         }
 
         private void frmViewer_Loaded( object sender, RoutedEventArgs e ) {

@@ -1,23 +1,21 @@
 ﻿using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 using System.Windows;
 using Microsoft.Win32;
 using System.Diagnostics;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.IO.Compression;
 using System.Windows.Controls;
 using System.Collections.Generic;
-using System.Windows.Media.Imaging;
 using System.Windows.Media.Animation;
 
 using NanaManagerAPI;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
-using NanaManagerAPI.Data;
+using NanaManagerAPI.Types;
 using NanaManagerAPI.Media;
+using System.Configuration;
 
 namespace NanaManager
 {
@@ -51,8 +49,6 @@ namespace NanaManager
         private readonly OpenFileDialog ofd = new OpenFileDialog();
 
         private bool menuOpen = false;
-
-        private int[] searchTags = Array.Empty<int>();
         #endregion
 
         #region MenuButton
@@ -70,69 +66,62 @@ namespace NanaManager
         #endregion
 
         #region ImageDisplay
-        private void fillListView( int[] tags ) {
+        private void fillListView( int[] tags, int[] reject ) {
             lstImages.Items.Clear();
 
-            foreach ( KeyValuePair<string, NanaManagerAPI.Media.IMedia> i in Globals.Media ) {
-                bool fits = true;
-                int[] t = i.Value.GetTags();
-                foreach ( int tag in tags )
-                    if ( !t.Contains( tag ) ) {
-                        fits = false;
-                        break;
-                    }
-                if ( fits )
-                    lstImages.Items.Add( new System.Windows.Controls.Image() { Tag = i.Key, Source = i.Value.GetSample(), Width = 100, Height = 100 } );
+            stkTags.Children.Clear();
+            foreach ( int t in tags ) {
+                Border bd = new Border()
+                {
+                    CornerRadius = new CornerRadius( 8 ),
+                    Background = (Brush)Application.Current.Resources["Highlight"],
+                    Margin = new Thickness( 2 )
+                };
+                Label lb = new Label()
+                {
+                    Foreground = (Brush)Application.Current.Resources["LightText"],
+                    Content = Data.Tags[Data.TagLocations[t]].Name,
+                    FontSize = 11,
+                    HorizontalContentAlignment = HorizontalAlignment.Center
+                };
+                bd.Child = lb;
+                stkTags.Children.Add( bd );
             }
-        }
-        #endregion
+            foreach ( int t in reject ) {
+                Border bd = new Border()
+                {
+                    CornerRadius = new CornerRadius( 8 ),
+                    Background = (Brush)Application.Current.Resources["TagRejectColor"],
+                    Margin = new Thickness( 2 )
+                };
+                Label lb = new Label()
+                {
+                    Foreground = (Brush)Application.Current.Resources["LightText"],
+                    Content = Data.Tags[Data.TagLocations[t]].Name,
+                    FontSize = 11,
+                    HorizontalContentAlignment = HorizontalAlignment.Center
+                };
+                bd.Child = lb;
+                stkTags.Children.Add( bd );
+            }
 
-        #region Search
-        private readonly List<int> checkedItems = new List<int>();
+            ((TranslateTransform)scrTags.RenderTransform).Y = -300;
 
-        private void scanTags( string filter ) {
-            lstTags.Items.Clear();
-            if ( string.IsNullOrEmpty( filter ) )
-                foreach ( Tag t in TagData.Tags ) {
-                    CheckBox cbx = new CheckBox() { Content = t.Name, IsChecked = checkedItems.Contains( t.Index ), Foreground = (Brush)Application.Current.Resources["LightText"], Tag = t.Index };
-                    cbx.Click += ( sender, e ) =>
-                    {
-                        int idx = (int)((CheckBox)sender).Tag;
-                        if ( cbx.IsChecked == true && !checkedItems.Contains( idx ) )
-                            checkedItems.Add( idx );
-                        else if ( cbx.IsChecked == false && checkedItems.Contains( idx ) )
-                            checkedItems.Remove( idx );
-                    };
-                    lstTags.Items.Add( cbx );
-                }
+            if ( stkTags.Children.Count == 0 )
+                bdrSearch.Visibility = Visibility.Collapsed;
             else
-                foreach ( Tag t in TagData.Tags )
-                    if ( t.Name.Contains( filter ) ) {
-                        CheckBox cbx = new CheckBox() { Content = t.Name, IsChecked = checkedItems.Contains( t.Index ), Foreground = (Brush)Application.Current.Resources["LightText"], Tag = t.Index };
-                        cbx.Click += ( sender, e ) =>
-                        {
-                            int idx = (int)((CheckBox)sender).Tag;
-                            if ( cbx.IsChecked == true && !checkedItems.Contains( idx ) )
-                                checkedItems.Add( idx );
-                            else if ( cbx.IsChecked == false && checkedItems.Contains( idx ) )
-                                checkedItems.Remove( idx );
-                        };
-                        lstTags.Items.Add( cbx );
-                    }
-        }
+                bdrSearch.Visibility = Visibility.Visible;
 
-        private void btnSearch_Click( object sender, RoutedEventArgs e ) {
-            //TODO - SEARCH
+            foreach ( string id in Data.SearchForAll( tags, reject ) )
+                lstImages.Items.Add( new System.Windows.Controls.Image() { Tag = id, Source = Data.Media[id].GetSample(), Width = 100, Height = 100 } );
         }
-        private void txtSearch_TextChanged( object sender, TextChangedEventArgs e ) => scanTags( txtSearch.Text );
         #endregion
 
         #region Events
         private void page_Loaded( object sender, RoutedEventArgs e ) {
             ((Storyboard)Resources["stbCloseMenuFast"]).Begin();
             menuOpen = false;
-            scanTags( "" );
-            lstImages.Dispatcher.BeginInvoke( new Action( () => fillListView( Array.Empty<int>() ) ) );
+            lstImages.Dispatcher.BeginInvoke( new Action( () => fillListView( Search.SearchTags, Search.RejectedTags ) ) );
         }
         private void btnImport_Click( object sender, RoutedEventArgs e ) {
             bool? import = ofd.ShowDialog();
@@ -142,10 +131,11 @@ namespace NanaManager
                 Paging.LoadPage( Pages.Import );
             }
         }
+        private void btnSearch_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.Search );
         private void lstImages_MouseDoubleClick( object sender, MouseButtonEventArgs e ) {
             if ( lstImages.SelectedIndex > -1 ) {
-                Globals.OpenMedia( (string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag, searchTags, lstImages.SelectedIndex );
-                Globals.SetFullscreen( true );
+                UI.OpenMedia( (string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag, Search.SearchTags, Search.RejectedTags, lstImages.SelectedIndex );
+                UI.SetFullscreen( true );
                 Paging.LoadPage( Pages.Fullscreen );
             }
         }
@@ -155,7 +145,7 @@ namespace NanaManager
         }
         private void btnExport_Click( object sender, RoutedEventArgs e ) {
             if ( lstImages.SelectedIndex > -1 ) {
-                IMedia m = Globals.Media[(string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag];
+                IMedia m = Data.Media[(string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag];
                 File.WriteAllBytes( Path.Combine( ContentFile.ExportPath, m.ID + m.FileType ), ContentFile.ReadFile( m.ID ) );
                 Process.Start( ContentFile.ExportPath );
             }

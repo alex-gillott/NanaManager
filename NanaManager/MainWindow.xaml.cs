@@ -1,18 +1,14 @@
 ﻿using System;
 using System.Timers;
 using System.Windows;
-using System.Threading;
 using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Interop;
 using System.Windows.Controls;
-using System.Collections.Generic;
 using System.Windows.Media.Animation;
 
+using NanaManager.SettingsPages;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
-using NanaManager.SettingsPages;
 
 namespace NanaManager
 {
@@ -21,11 +17,14 @@ namespace NanaManager
 	/// </summary>
 	public partial class MainWindow : Window
 	{
-		const int WM_SIZE = 0x5; //The windows message for resizing
-		const int SIZE_MAXIMIZED = 2; //The message for resizing to maximised
-		const int SIZE_RESTORED = 0; //The message for resizing to restored
-		public static int SaveTimeMS = 1800000; //The period between each auto-save in milliseconds
-
+		/// <summary>
+		/// The period between each auto-save in milliseconds
+		/// </summary>
+		public static int SaveTimeMS = 900000;
+		/// <summary>
+		/// The time a notification displays before attempting to fade out
+		/// </summary>
+		public static int NotificationFadeTimeMS = 5000;
 
 		#region Paging
 		private Storyboard sb; //Animator for the welcome screen
@@ -59,16 +58,35 @@ namespace NanaManager
 
 
 		public static bool ImportOnLogin = false;
-		public bool Maximised = false;
+		public bool IsFullscreen = false;
 		public Size PrevSize;
 		public Point PrevLoc;
 
-		private readonly System.Timers.Timer saveTimer = new System.Timers.Timer( SaveTimeMS );
+		private readonly Timer saveTimer = new Timer( SaveTimeMS );
+		private readonly Timer notifLeaveTimer = new Timer( NotificationFadeTimeMS );
 
 		public MainWindow( int Instruction ) {
 			ImportOnLogin = Instruction == 0x1;
 			InitializeComponent(); //Initialises the UI elements
 
+			addPages();
+			addSettings();
+
+			Paging.PageChanged += onNewPage;
+			UI.Fullscreen += toggleFullscreen;
+			UI.MediaOpened += (Paging.GetPage( Pages.Fullscreen ) as Fullscreen).OpenViewer;
+			UI.NotificationRaised += onNotificationChange;
+
+			if ( !string.IsNullOrEmpty(Properties.Settings.Default.Password) ) //Checking if the user has an account. If they do, go to login page, otherwise go to register page
+				Paging.LoadPage(Pages.Login);
+			else
+				Paging.LoadPage(Pages.Register);
+
+			saveTimer.Elapsed += onSaveTimerTick;
+			saveTimer.Start();
+		}
+		#region Helper Methods
+		private void addPages() {
 			Logging.Write( "Registering Pages", "Init" );
 			Paging.AddPage( Pages.Error, new Error() );
 			Paging.AddPage( Pages.Fullscreen, new Fullscreen() );
@@ -79,26 +97,44 @@ namespace NanaManager
 			Paging.AddPage( Pages.TagManager, new TagManager() );
 			Paging.AddPage( Pages.Viewer, new Viewer() );
 			Paging.AddPage( Pages.Welcome, new Welcome() );
-
-			Registry.RegisterSettings( new SettingsTab(Pages.ThemesAndColoursSettings, "Colours and Themes", new ThemesAndColours() ) );
+			Paging.AddPage( Pages.Search, new Search() );
+			Paging.AddPage( Pages.PluginsSettings, new PluginsSettings() );
+		}
+		private void addSettings() {
+			Registry.RegisterSettings( new SettingsTab( Pages.ThemesAndColoursSettings, "Colours and Themes", new ThemesAndColours() ) );
 			Registry.RegisterSettings( new SettingsTab( Pages.LanguagesSettings, "Languages", new ComingSoon() ) );
 			Registry.RegisterSettings( new SettingsTab( Pages.TagsSettings, "Tags", new TagSettings() ) );
 			Registry.RegisterSettings( new SettingsTab( Pages.SoonSettings, "Coming Soon", new ComingSoon() ) );
 			Registry.RegisterSettings( new SettingsTab( Pages.InvalidSettings, "Invalid Settings Page", new InvalidSettingsPage() ) );
+			Registry.RegisterSettings( new SettingsTab( Pages.AdvancedSettings, "Advanced Settings", new AdvancedSettings() ) );
+		}
+		private void refreshMaximizeRestoreButton() {
+			if ( WindowState == WindowState.Maximized ) {
+				btnMaximise.Visibility = Visibility.Collapsed;
+				btnRestore.Visibility = Visibility.Visible;
+			}
+			else {
+				btnMaximise.Visibility = Visibility.Visible;
+				btnRestore.Visibility = Visibility.Collapsed;
+			}
+		}
+		#endregion
+		#region Events
+		private void onMinimizeButtonClick( object sender, RoutedEventArgs e ) => WindowState = WindowState.Minimized;
 
-			Paging.PageChanged += onNewPage;
-			Globals.Fullscreen += toggleFullscreen;
-			Globals.OnOpenMedia += (Paging.GetPage( Pages.Fullscreen ) as Fullscreen).OpenViewer;
-			if ( !string.IsNullOrEmpty(Properties.Settings.Default.Password) ) //Checking if the user has an account. If they do, go to login page, otherwise go to register page
-				Paging.LoadPage(Pages.Login);
+		private void onMaximizeRestoreButtonClick( object sender, RoutedEventArgs e ) {
+			if ( WindowState == WindowState.Maximized )
+				WindowState = WindowState.Normal;
 			else
-				Paging.LoadPage(Pages.Register);
-
-			saveTimer.Elapsed += onSaveTimerTick;
-			saveTimer.Enabled = true;
+				WindowState = WindowState.Maximized;
 		}
 
-		#region Events
+		private void onCloseButtonClick( object sender, RoutedEventArgs e ) => Close();
+
+		private void onNotificationChange( string text, object[] _ ) {
+			lblNotif.Content = text;
+			notifLeaveTimer.Start();
+        }
 		private void onSaveTimerTick( object sender, ElapsedEventArgs e ) {
 			ContentFile.SaveData();
 			Logging.SaveLogs();
@@ -113,10 +149,6 @@ namespace NanaManager
 				DragMove(); //Drag the window
 			}
 		}
-		private void textBlock_MouseUp( object sender, MouseButtonEventArgs e ) {
-			txtClose.Background = (Brush)Application.Current.Resources["CloseButtonHighlight"];
-			Close();
-		}
 		private void window_Closing( object sender, System.ComponentModel.CancelEventArgs e ) {
 			saveTimer.Stop();
 			if ( ContentFile.CheckValidity() ) {
@@ -126,47 +158,45 @@ namespace NanaManager
 			}
 			Logging.SaveLogs();
 		}
-		private void txtClose_MouseEnter( object sender, MouseEventArgs e ) => txtClose.Background = (Brush)Application.Current.Resources["CloseButtonHighlight"];
-		private void txtClose_MouseDown( object sender, MouseButtonEventArgs e ) => txtClose.Background = (Brush)Application.Current.Resources["CloseButtonPressed"];
-		private void txtClose_MouseLeave( object sender, MouseEventArgs e ) => txtClose.Background = Theme.Transparent;
 		private void toggleFullscreen(bool fullscreen) {
+			IsFullscreen = fullscreen;
 			if (fullscreen) {
-				rctControlBar.Visibility = Visibility.Collapsed;
-				txtClose.Visibility = Visibility.Collapsed;
+				WindowState = WindowState.Maximized;
 				Grid.SetRow( frmMain, 0 );
 			} else {
 				Grid.SetRow(frmMain, 1 );
-				rctControlBar.Visibility = Visibility.Visible;
-				txtClose.Visibility = Visibility.Visible;
+				WindowState = WindowState.Normal;
 			}
 		}
-		#endregion
+		private void bdrNotif_MouseEnter( object sender, MouseEventArgs e ) {
 
-		#region WNDProc
-		protected override void OnSourceInitialized( EventArgs e ) {
-			base.OnSourceInitialized( e );
-			HwndSource source = PresentationSource.FromVisual( this ) as HwndSource;
-			source.AddHook( wndProc );
 		}
-		private IntPtr wndProc( IntPtr hwnd, int msg, IntPtr wParam, IntPtr lParam, ref bool handled ) {
-			switch ( msg ) {
-				case WM_SIZE:
-					if ( wParam.ToInt32() == SIZE_MAXIMIZED ) {
-						Maximised = true;
-						var sc = System.Windows.Forms.Screen.FromPoint( new System.Drawing.Point( (int)Left, (int)Top ) );
-						Height = sc.WorkingArea.Height;
-						Width = sc.WorkingArea.Width;
-						Left = sc.WorkingArea.X;
-						Top = sc.WorkingArea.Y;
-					}
-					else if ( wParam.ToInt32() == SIZE_RESTORED )
-						Maximised = false;
-					break;
+
+		private void bdrNotif_MouseLeave( object sender, MouseEventArgs e ) {
+
+		}
+
+		private void stkNotifList_MouseLeave( object sender, MouseEventArgs e ) {
+
+		}
+		private void window_StateChanged( object sender, EventArgs e ) {
+			refreshMaximizeRestoreButton();
+			if ( WindowState == WindowState.Maximized ) {
+				if ( !IsFullscreen ) {
+					grdTitle.Visibility = Visibility.Visible;
+					wchChrome.CaptionHeight = 25;
+					var sc = System.Windows.Forms.Screen.FromPoint( new System.Drawing.Point( (int)Left, (int)Top ) );
+					MaxHeight = sc.WorkingArea.Height + 7;
+					MaxWidth = sc.WorkingArea.Width + 7;
+				}
+				else {
+					grdTitle.Visibility = Visibility.Collapsed;
+					wchChrome.CaptionHeight = 25;
+				}
 			}
-
-			return IntPtr.Zero;
+			else
+				MaxHeight = MaxWidth = double.PositiveInfinity;
 		}
-
 		#endregion
-	}
+    }
 }

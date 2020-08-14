@@ -1,10 +1,12 @@
 ﻿using System;
 using System.IO;
+using System.Windows;
 using System.Security;
 using System.IO.Compression;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
-using System.Windows;
+
+using NanaManagerAPI.IO.Cryptography;
 
 [assembly: InternalsVisibleTo("NanaManager")]
 
@@ -18,6 +20,15 @@ namespace NanaManagerAPI.IO
 		private const int ERROR_DRIVE_MISSING = 0x001;
 		private const int ERROR_INVALID_PATH = 0x002;
 		private const int ERROR_GENERIC_IO = 0x003;
+
+		/// <summary>
+		/// A delegate for encrypting and decrypting data
+		/// </summary>
+		/// <param name="Data">The data to perform the cryptographic function on</param>
+		/// <param name="Password">The password for the function</param>
+		/// <returns>The data resultant of the cryptographic function</returns>
+		public delegate byte[] CryptographyFunction( byte[] Data, string Password );
+		public static ICryptographyProvider CryptographyProvider;
 
 		/// <summary>
 		/// The directory containing application data for all Hydroxa programs
@@ -193,14 +204,14 @@ namespace NanaManagerAPI.IO
 		}
 
 		/// <summary>
-		/// Encrypts the content file using <see cref="Globals.CryptographyProvider"/>
+		/// Encrypts the content file using <see cref="CryptographyProvider"/>
 		/// </summary>
 		/// <param name="Password">The password to encrypt the data with</param>
 		public static void Encrypt( string Password ) {
 			try {
-				Globals.CryptographyProvider.Initialise( Password );
-				File.WriteAllBytes( ContentPath, Globals.CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
-				Globals.CryptographyProvider.Terminate();
+				CryptographyProvider.Initialise( Password );
+				File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
+				CryptographyProvider.Terminate();
 			} catch ( IOException e ) {
 				//TODO - HANDLE I/O ERROR
 				throw e;
@@ -216,14 +227,14 @@ namespace NanaManagerAPI.IO
 			}
 		}
 		/// <summary>
-		/// Decrypts the content file using <see cref="Globals.CryptographyProvider"/>
+		/// Decrypts the content file using <see cref="CryptographyProvider"/>
 		/// </summary>
 		/// <param name="Password">The password to decrypt the data with</param>
 		public static void Decrypt( string Password ) {
 			try {
-				Globals.CryptographyProvider.Initialise( Password );
-				File.WriteAllBytes( ContentPath, Globals.CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
-				Globals.CryptographyProvider.Terminate();
+				CryptographyProvider.Initialise( Password );
+				File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
+				CryptographyProvider.Terminate();
 			} catch ( ArgumentNullException e ) {
 				//Path is null or byte array was empty
 				Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );

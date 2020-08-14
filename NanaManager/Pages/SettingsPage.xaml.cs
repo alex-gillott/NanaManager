@@ -1,6 +1,7 @@
 ﻿using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
+using System.Windows.Documents;
 using NanaManager.SettingsPages;
 using NanaManagerAPI.UI;
 
@@ -21,7 +22,7 @@ namespace NanaManager
                     button.IsChecked = false;//             have to add a new manual set each time.
         }
 
-        private void ToggleButton_Click( object sender, RoutedEventArgs e ) {
+        private void toggleButton_Click( object sender, RoutedEventArgs e ) {
             resetButtons();
             ToggleButton b = sender as ToggleButton;
             b.IsChecked = true;
@@ -32,12 +33,16 @@ namespace NanaManager
             lblTitle.Content = set.Title;
         }
 
-        private void Button_Click( object sender, RoutedEventArgs e ) {
+        private void button_Click( object sender, RoutedEventArgs e ) {
             Paging.LoadPreviousPage();
         }
 
-        private void Page_Loaded( object sender, RoutedEventArgs e ) {
-            ToggleButton_Click( btnTaC, null );
+        private void page_Loaded( object sender, RoutedEventArgs e ) {
+            toggleButton_Click( btnTaC, null );
+        }
+
+        private void toggleButton_Click_1( object sender, RoutedEventArgs e ) {
+            Paging.LoadPage( Pages.PluginsSettings );
         }
     }
 }

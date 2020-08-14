@@ -30,29 +30,29 @@ namespace NanaManager.SettingsPages
         }
 
         private void btnAcceptHiddenTags_Click( object sender, RoutedEventArgs e ) {
-            TagData.HiddenTags = tslHiddenTags.GetCheckedTagsIndicies();
+            Data.HiddenTags = tslHiddenTags.GetCheckedTagsIndicies();
             btnAcceptHiddenTags.IsEnabled = false;
         }
 
-        private void TagSelector_TagChecked( object sender, TagCheckEventArgs e ) => btnAcceptHiddenTags.IsEnabled = true;
+        private void tagSelector_TagChecked( object sender, TagCheckEventArgs e ) => btnAcceptHiddenTags.IsEnabled = true;
 
-        private void Page_Loaded( object sender, RoutedEventArgs e ) {
+        private void page_Loaded( object sender, RoutedEventArgs e ) {
             initCheck = new Thread( () =>
             {
                 tslHiddenTags.ClearTags();
-                tslHiddenTags.CheckTags( TagData.HiddenTags );
+                tslHiddenTags.CheckTags( Data.HiddenTags );
                 Dispatcher.Invoke( () => btnAcceptHiddenTags.IsEnabled = false );
             } );
             initCheck.Start();
-            ckbShowHiddenTags.IsChecked = Globals.ShowHiddenTags;
+            ckbShowHiddenTags.IsChecked = Data.ShowHiddenTags;
         }
 
-        private void CheckBox_Checked( object sender, RoutedEventArgs e ) {
-            Globals.ShowHiddenTags = true;
+        private void checkBox_Checked( object sender, RoutedEventArgs e ) {
+            Data.ShowHiddenTags = true;
         }
 
-        private void CheckBox_Unchecked( object sender, RoutedEventArgs e ) {
-            Globals.ShowHiddenTags = false;
+        private void checkBox_Unchecked( object sender, RoutedEventArgs e ) {
+            Data.ShowHiddenTags = false;
         }
     }
 }
