@@ -14,6 +14,10 @@ namespace NanaManager
     {
         public SettingsPage() {
             InitializeComponent();
+            tbtLang.Tag = Pages.LanguagesSettings;
+            tbtTaC.Tag = Pages.ThemesAndColoursSettings; //In case the IDs ever change, these are set so that they don't become invalid
+            tbtAdv.Tag = Pages.AdvancedSettings;
+            tbtTags.Tag = Pages.TagsSettings;
         }
 
         private void resetButtons() {
@@ -27,7 +31,7 @@ namespace NanaManager
             ToggleButton b = sender as ToggleButton;
             b.IsChecked = true;
             SettingsTab set = Registry.SettingsTabs[Pages.InvalidSettings];
-            if ( Registry.SettingsTabs.ContainsKey( b.Tag as string ) )
+                if ( Registry.SettingsTabs.ContainsKey( b.Tag as string ) )
                 set = Registry.SettingsTabs[b.Tag as string];
             frmSettings.Content = set.Display;
             lblTitle.Content = set.Title;
@@ -38,7 +42,7 @@ namespace NanaManager
         }
 
         private void page_Loaded( object sender, RoutedEventArgs e ) {
-            toggleButton_Click( btnTaC, null );
+            toggleButton_Click( tbtTaC, null );
         }
 
         private void toggleButton_Click_1( object sender, RoutedEventArgs e ) {

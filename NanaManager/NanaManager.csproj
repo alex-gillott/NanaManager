@@ -69,8 +69,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="API Components\Cryptography\Cryptography.cs" />
+    <Compile Include="API Components\MediaHandlers\Audio.cs" />
     <Compile Include="API Components\MediaHandlers\Images.cs" />
     <Compile Include="API Components\FileEncoders\BaseEncoder1_1.cs" />
+    <Compile Include="API Components\MediaHandlers\Video.cs" />
+    <Compile Include="Pages\AudioViewer.xaml.cs">
+      <DependentUpon>AudioViewer.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Pages\Fullscreen.xaml.cs">
       <DependentUpon>Fullscreen.xaml</DependentUpon>
     </Compile>
@@ -103,6 +108,10 @@
     <Compile Include="Pages\Viewer.xaml.cs">
       <DependentUpon>Viewer.xaml</DependentUpon>
     </Compile>
+    <Page Include="Pages\AudioViewer.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="Pages\Fullscreen.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>

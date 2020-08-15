@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:NanaManager.SettingsPages"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="PluginsSettings">
+      Title="PluginsSettings" Loaded="page_Loaded">
 
     <Grid>
 		<Grid.RowDefinitions>
@@ -63,12 +63,12 @@
 						</Style>
 					</ToggleButton.Style>
 				</ToggleButton>
-				<ToggleButton x:Name="btnT1" Style="{DynamicResource Settings VButton}" Grid.Column="1" Content="Test"/>
-				<ToggleButton x:Name="btnT2" Style="{DynamicResource Settings VButton}" Grid.Column="2" Content="Test"/>
-				<ToggleButton x:Name="btnT3" Style="{DynamicResource Settings VButton}" Grid.Column="3" Content="Test"/>
-				<ToggleButton x:Name="btnT4" Style="{DynamicResource Settings VButton}" Grid.Column="4" Content="Test"/>
-				<ToggleButton x:Name="btnT5" Style="{DynamicResource Settings VButton}" Grid.Column="5" Content="Test"/>
-				<ToggleButton x:Name="btnT6" Style="{DynamicResource Settings VButton}" Grid.Column="6" Content="Test"/>
+				<ToggleButton x:Name="btnT1" Style="{DynamicResource Settings VButton}" Grid.Column="1"/>
+				<ToggleButton x:Name="btnT2" Style="{DynamicResource Settings VButton}" Grid.Column="2"/>
+				<ToggleButton x:Name="btnT3" Style="{DynamicResource Settings VButton}" Grid.Column="3"/>
+				<ToggleButton x:Name="btnT4" Style="{DynamicResource Settings VButton}" Grid.Column="4"/>
+				<ToggleButton x:Name="btnT5" Style="{DynamicResource Settings VButton}" Grid.Column="5"/>
+				<ToggleButton x:Name="btnT6" Style="{DynamicResource Settings VButton}" Grid.Column="6"/>
 				<ToggleButton x:Name="btnT7" Grid.Column="7" Content="Test">
 					<ToggleButton.Style>
 						<Style TargetType="{x:Type ToggleButton}">

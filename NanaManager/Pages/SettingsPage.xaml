@@ -84,7 +84,7 @@
 					<!--#endregion-->
 					<!--#region Themes and Colours-->
 					<Border Grid.Row="2" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton x:Name="btnTaC" Grid.Row="2" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_tacsets"/>
+					<ToggleButton x:Name="tbtTaC" Grid.Row="2" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_tacsets"/>
 					<Viewbox Grid.Row="2" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Themes" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
@@ -142,7 +142,7 @@
 					<!--#endregion-->
 					<!--#region Tags&Groups-->
 					<Border Grid.Row="6" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_tagsets"/>
+					<ToggleButton x:Name="tbtTags" Grid.Row="6" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_tagsets"/>
 					<Viewbox Grid.Row="6" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Tags" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
@@ -168,14 +168,14 @@
 					<!--#endregion-->
 					<!--#region Advanced-->
 					<Border Grid.Row="8" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,2"/>
-					<ToggleButton Grid.Row="8" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_advsets"/>
+					<ToggleButton x:Name="tbtAdv" Grid.Row="8" Grid.ColumnSpan="2" Style="{DynamicResource Settings Button}" Grid.RowSpan="2" Margin="0,5,0,5" Click="toggleButton_Click" Tag="hydroxa.nanaManager:pg_advsets"/>
 					<Viewbox Grid.Row="8" Grid.ColumnSpan="2" IsHitTestVisible="False">
 						<Label Content="Advanced" HorizontalContentAlignment="Center" Foreground="{DynamicResource LightText}" IsHitTestVisible="False" FontSize="15"/>
 					</Viewbox>
 					<!--#endregion-->
 					<!--#region Plugins-->
 					<Border Grid.Row="10" Grid.RowSpan="2" Grid.ColumnSpan="2" BorderBrush="{DynamicResource Highlight}" BorderThickness="0,2,0,0"/>
-					<ToggleButton Grid.Row="10" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,5,0,0" Click="toggleButton_Click_1" Tag="hydroxa.nanaManager:pg_plugsets">
+					<ToggleButton Grid.Row="10" Grid.ColumnSpan="2" Grid.RowSpan="2" Margin="0,5,0,0" Click="toggleButton_Click_1">
 						<ToggleButton.Style>
 							<Style TargetType="{x:Type ToggleButton}">
 								<Setter Property="Background" Value="Transparent"/>
