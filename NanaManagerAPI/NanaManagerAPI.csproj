@@ -59,6 +59,7 @@
     <Compile Include="EventArgs\TagCheckEventArgs.cs" />
     <Compile Include="IO\ContentFile.cs" />
     <Compile Include="Logging.cs" />
+    <Compile Include="Types\Audio.cs" />
     <Compile Include="UI\Controls\TagSelector.xaml.cs">
       <DependentUpon>TagSelector.xaml</DependentUpon>
     </Compile>

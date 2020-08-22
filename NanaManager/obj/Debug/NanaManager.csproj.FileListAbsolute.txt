@@ -152,3 +152,5 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\Adva
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\PluginsSettings.g.cs
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\AdvancedSettings.baml
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\SettingsPages\PluginsSettings.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\AudioViewer.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\AudioViewer.baml

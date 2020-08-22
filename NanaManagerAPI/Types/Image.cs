@@ -23,8 +23,9 @@ namespace NanaManagerAPI.Types
         /// <summary>
         /// Constructs a new reference to an image
         /// </summary>
-        /// <param name="Index">The location of the image in the database</param>
+        /// <param name="ID">The location of the image in the database</param>
         /// <param name="Tags">The tags associated with this image</param>
+        /// <param name="FileType">The file extension of the media</param>
         public Image(string ID, int[] Tags, string FileType) {
 			this.ID = ID;
 			tags = Tags;

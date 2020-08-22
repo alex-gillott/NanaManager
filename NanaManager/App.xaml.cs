@@ -2,11 +2,10 @@
 using System.IO;
 using System.Windows;
 
+using NanaManagerAPI.Types;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
-using NanaManagerAPI.Types;
-using System.Diagnostics;
 
 namespace NanaManager
 {
@@ -33,11 +32,15 @@ namespace NanaManager
 
 			Logging.Write( "Registering Media Constructors", "Init", LogLevel.Info );
 			Registry.RegisterMediaConstructor( typeof( Image ), Image.CTOR_ID );
+			Registry.RegisterMediaConstructor( typeof( Audio ), Audio.CTOR_ID );
 
 			Logging.Write( "Registering Media Viewers", "Init", LogLevel.Info );
 			MediaHandlers.Images imhnd = new MediaHandlers.Images();
 			Registry.RegisterMediaViewer( imhnd.ID, imhnd );
 			Registry.RegisterExtensions( "Image Files", Image.CTOR_ID, imhnd.ID, imhnd.GetCompatibleTypes() );
+			MediaHandlers.Audio auhnd = new MediaHandlers.Audio();
+			Registry.RegisterMediaViewer( auhnd.ID, auhnd );
+			Registry.RegisterExtensions( "Audio Files", Audio.CTOR_ID, auhnd.ID, auhnd.GetCompatibleTypes() );
 
 			Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
 			ContentFile.CryptographyProvider = new Cryptography.Cryptography();

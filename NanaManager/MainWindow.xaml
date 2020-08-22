@@ -74,10 +74,10 @@
 			</Grid>
 			
 			<!--#endregion-->
-			<Border x:Name="bdrNotif" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top" MouseEnter="bdrNotif_MouseEnter" MouseLeave="bdrNotif_MouseLeave">
+			<Border Visibility="Collapsed" x:Name="bdrNotif" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top" MouseEnter="bdrNotif_MouseEnter" MouseLeave="bdrNotif_MouseLeave">
 				<Label x:Name="lblNotif" FontSize="18" Content="Sorting by Tag" Foreground="{DynamicResource LightText}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
 			</Border>
-			<Border x:Name="bdrNotifList" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top">
+			<Border Visibility="Collapsed" x:Name="bdrNotifList" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top">
 				<ScrollViewer>
 					<StackPanel x:Name="stkNotifList" Orientation="Vertical" Width="300" MouseLeave="stkNotifList_MouseLeave"/>
 				</ScrollViewer>

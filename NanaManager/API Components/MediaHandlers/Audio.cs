@@ -16,7 +16,7 @@ namespace NanaManager.MediaHandlers
             public string ID { get; } = "hydroxa.nanabrowser.media.audioHandler";
             public Page Display { get; set; }
 
-            private readonly string[] compatibleTypes = new string[] { ".wmv", ".mov", ".mpeg", ".wav", ".asf", ".midi", ".aiff", ".avi", ".aif" };
+        private readonly string[] compatibleTypes = new string[] { ".wav", ".flac", ".mp3", ".ogg", ".aiff", ".aac", ".wma", ".mka" };
 
             public string[] GetCompatibleTypes() {
                 return compatibleTypes;

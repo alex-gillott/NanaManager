@@ -72,9 +72,8 @@ namespace NanaManager.SettingsPages
                     btn.Content = Registry.SettingsTabs[id].Title;
                     btn.Tag = id;
                 }
-                for (int i = pages.Count; i < 7; i++ ) {
+                for (int i = pages.Count; i < 7; i++ )
                     buttons[i].IsEnabled = false;
-                }
             }
         }
 
