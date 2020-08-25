@@ -6,7 +6,7 @@
       xmlns:local="clr-namespace:NanaManager"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="AudioViewer">
+      Title="AudioViewer" Unloaded="page_Unloaded">
 	<Page.Resources>
 		<Storyboard x:Key="spinBuffer">
 			<DoubleAnimation Storyboard.TargetName="elpBuffering" Storyboard.TargetProperty="(Ellipse.RenderTransform).(RotateTransform.Angle)" By="360" Duration="0:0:2" RepeatBehavior="Forever">
@@ -16,7 +16,7 @@
 			</DoubleAnimation>
 		</Storyboard>
 		<Storyboard x:Key="growVol">
-			<DoubleAnimation Storyboard.TargetName="grdVol" Storyboard.TargetProperty="(Grid.Width)" To="100" Duration="0:0:0.1">
+			<DoubleAnimation Storyboard.TargetName="grdVol" Storyboard.TargetProperty="(Grid.Width)" To="104" Duration="0:0:0.1">
 				<DoubleAnimation.EasingFunction>
 					<QuadraticEase EasingMode="EaseOut"/>
 				</DoubleAnimation.EasingFunction>
@@ -32,23 +32,23 @@
 	</Page.Resources>
 	<Grid>
 		<Grid.ColumnDefinitions>
+			<ColumnDefinition MaxWidth="50"/>
+			<ColumnDefinition MaxWidth="50"/>
 			<ColumnDefinition Width="50"/>
+			<ColumnDefinition MinWidth="104"/>
 			<ColumnDefinition Width="50"/>
-			<ColumnDefinition Width="50"/>
-			<ColumnDefinition/>
-			<ColumnDefinition Width="50"/>
-			<ColumnDefinition Width="50"/>
-			<ColumnDefinition Width="50"/>
+			<ColumnDefinition MaxWidth="50"/>
+			<ColumnDefinition MaxWidth="50"/>
 		</Grid.ColumnDefinitions>
 		<Grid.RowDefinitions>
 			<RowDefinition Height="7*"/>
 			<RowDefinition Height="45"/>
 			<RowDefinition Height="2*"/>
 		</Grid.RowDefinitions>
-		<Slider x:Name="sldSeek" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Grid.Row="1" ValueChanged="sldSeek_ValueChanged"/>
+		<Slider x:Name="sldSeek" Grid.Column="3" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" VerticalContentAlignment="Center" Grid.Row="1" ValueChanged="sldSeek_ValueChanged" MouseLeftButtonDown="sldSeek_MouseLeftButtonDown" MouseLeftButtonUp="sldSeek_MouseLeftButtonUp"/>
 		<Label x:Name="lblTime" Grid.Column="3" Margin="0,21,0,0" Grid.Row="1" HorizontalAlignment="Left" Content="00:00" Foreground="{DynamicResource LightText}"/>
 		<Label x:Name="lblmaxTime" Grid.Column="3" Margin="0,21,0,0" Grid.Row="1" HorizontalAlignment="Right" Content="00:00" Foreground="{DynamicResource LightText}"/>
-		<ToggleButton x:Name="btnPlay" Grid.Column="2" Grid.Row="1" IsChecked="True" Checked="btnPlay_Checked" Unchecked="btnPlay_Unchecked" Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
+		<ToggleButton x:Name="btnPlay" Grid.Column="2" Grid.Row="1" IsChecked="False" Checked="btnPlay_Checked" Unchecked="btnPlay_Unchecked" Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
 			<ToggleButton.Style>
 				<Style TargetType="ToggleButton">
 					<Setter Property="Background" Value="{DynamicResource PrimaryIdle}"/>
@@ -69,12 +69,12 @@
 					</Setter>
 					<Setter Property="Content">
 						<Setter.Value>
-							<Path Fill="{TemplateBinding Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center">
+							<Path Fill="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type ToggleButton}}, Path=Foreground}" HorizontalAlignment="Center" VerticalAlignment="Center">
 								<Path.Data>
 									<PathGeometry>
-										<PathFigure StartPoint="8,5">
+										<PathFigure StartPoint="12,7.5">
 											<LineSegment Point="0,0"/>
-											<LineSegment Point="0,10"/>
+											<LineSegment Point="0,15"/>
 										</PathFigure>
 									</PathGeometry>
 								</Path.Data>
@@ -92,7 +92,7 @@
 							<Setter Property="Foreground" Value="{DynamicResource DisabledText}"/>
 							<Setter Property="Background" Value="{DynamicResource PrimaryDisabled}"/>
 						</Trigger>
-						<Trigger Property="IsChecked" Value="False">
+						<Trigger Property="IsChecked" Value="True">
 							<Setter Property="Content">
 								<Setter.Value>
 									<Grid Width="20" Height="20">
@@ -100,8 +100,8 @@
 											<ColumnDefinition/>
 											<ColumnDefinition/>
 										</Grid.ColumnDefinitions>
-										<Rectangle HorizontalAlignment="Right" VerticalAlignment="Stretch" Fill="{TemplateBinding Foreground}" Width="5" Height="15" Margin="0,1,3,0"/>
-										<Rectangle HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{TemplateBinding Foreground}" Width="5" Height="15" Grid.Column="1" Margin="3,1,0,0"/>
+										<Rectangle HorizontalAlignment="Right" VerticalAlignment="Stretch" Fill="{DynamicResource CheckGlyphColor}" Width="5" Height="15" Margin="0,1,3,0"/>
+										<Rectangle HorizontalAlignment="Left" VerticalAlignment="Stretch" Fill="{DynamicResource CheckGlyphColor}" Width="5" Height="15" Grid.Column="1" Margin="3,1,0,0"/>
 									</Grid>
 								</Setter.Value>
 							</Setter>
@@ -121,18 +121,18 @@
 				<RotateTransform/>
 			</Ellipse.RenderTransform>
 		</Ellipse>
-		<ToggleButton Style="{DynamicResource Rounded Button}" x:Name="btnVolume" Grid.Column="4" Grid.Row="1" IsChecked="True" Checked="btnPlay_Checked" Unchecked="btnPlay_Unchecked" Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
+		<ToggleButton Style="{DynamicResource Rounded Button}" x:Name="btnVolume" Grid.Column="4" Grid.Row="1" IsChecked="False" Checked="btnVolume_Checked" Unchecked="btnVolume_Unchecked" Margin="5" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" Height="Auto">
 			<ToggleButton.Content>
 				<Grid Width="20" Height="20">
 					<Path Stroke="{DynamicResource CheckGlyphColor}" Data="M 0,7 l 5,0 l 5,-5 l 0,15 l -5,-5 l -5,0 Z" StrokeThickness="2"/>
 					<Path x:Name="pthVol1" Stroke="{DynamicResource CheckGlyphColor}" StrokeThickness="2" Data="M 13,1 Q 16,9 13,18"/>
-					<Path x:Name="pthVol2" Stroke="{DynamicResource CheckGlyphColor}" StrokeThickness="2" Data="M 17,1 Q 20,9 17,18"/>
+					<Path x:Name="pthVol2" Stroke="{DynamicResource CheckGlyphColor}" StrokeThickness="2" Data="M 17,1 Q 20,9 17,18" Visibility="Collapsed"/>
 					<Path x:Name="pthMute" Stroke="{DynamicResource CheckGlyphColor}" StrokeThickness="2" Data="M 20,0 0,20" Visibility="Collapsed"/>
 				</Grid>
 			</ToggleButton.Content>
 		</ToggleButton>
-		<Grid x:Name="grdVol" Grid.Column="4" Grid.Row="1" Width="0" Margin="45,0,0,0">
-			<Slider Grid.Column="4" Value="0.5" Maximum="1" HorizontalAlignment="Left" Height="68" VerticalAlignment="Top" Width="22" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="3"/>
+		<Grid x:Name="grdVol" Grid.Column="4" Grid.ColumnSpan="3" Grid.Row="1" Width="0" Margin="45,0,0,0" HorizontalAlignment="Left">
+			<Slider x:Name="sldVol" Grid.Column="4" Value="0.5" Maximum="1" HorizontalAlignment="Left" Height="68" VerticalAlignment="Top" Width="22" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="3" ValueChanged="slider_ValueChanged"/>
 			<Label x:Name="lblVol" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="50%" Foreground="{DynamicResource LightText}"/>
 		</Grid>
 		<Border x:Name="bdrLoading" Background="{DynamicResource BlackGlass}" Visibility="Collapsed" Grid.RowSpan="3" Grid.ColumnSpan="5">

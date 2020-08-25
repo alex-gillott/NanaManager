@@ -1,10 +1,6 @@
-﻿using NanaManagerAPI.Media;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Media.Imaging;
+﻿using System.Windows.Media.Imaging;
+
+using NanaManagerAPI.Media;
 
 namespace NanaManagerAPI.Types
 {
@@ -29,9 +25,7 @@ namespace NanaManagerAPI.Types
             this.FileType = FileType;
         }
 
-        public BitmapImage GetSample() {
-            return new BitmapImage();
-        }
+        public BitmapImage GetSample() => UI.UI.AudioSymbol;
 
         public int[] GetTags() => tags;
     }

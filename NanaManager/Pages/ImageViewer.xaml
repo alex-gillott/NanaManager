@@ -8,6 +8,15 @@
       d:DesignHeight="450" d:DesignWidth="800"
       Title="ImageViewer" Unloaded="page_Unloaded">
 	<Grid>
-		<Image x:Name="imgView" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform" RenderOptions.BitmapScalingMode="LowQuality" UseLayoutRounding="True"/>
+		<Border x:Name="bdrImg">
+			<Image x:Name="imgView" ClipToBounds="True" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Stretch="Uniform" RenderOptions.BitmapScalingMode="LowQuality" UseLayoutRounding="True" RenderTransformOrigin="0.5,0.5" MouseWheel="imgView_MouseWheel" MouseLeftButtonDown="imgView_MouseLeftButtonDown" MouseMove="imgView_MouseMove" MouseLeftButtonUp="imgView_MouseLeftButtonUp">
+				<Image.RenderTransform>
+					<TransformGroup>
+						<TranslateTransform/>
+						<ScaleTransform/>
+					</TransformGroup>
+				</Image.RenderTransform>
+			</Image>
+		</Border>
 	</Grid>
 </Page>

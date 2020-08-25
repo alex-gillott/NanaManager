@@ -27,27 +27,14 @@ namespace NanaManager
 		public static int NotificationFadeTimeMS = 5000;
 
 		#region Paging
-		private Storyboard sb; //Animator for the welcome screen
-
 		private void onNewPage(Page newPage, string iD) {
 			switch (iD) {
 				case Pages.Welcome:
 					Dispatcher.Invoke( () => //As this on a separate thread, invoke the animation through the UI thread
 					{
-						var da = new DoubleAnimation //TODO - MOVE THIS ONTO XAML
-						{
-							From = 1.0,
-							To = 0.0,
-							Duration = new Duration( TimeSpan.FromMilliseconds( 200 ) ),
-							AutoReverse = true
-						}; //Define the animation
-						sb = new Storyboard();
-						sb.Children.Add( da );
-						Storyboard.SetTarget( da, frmMain );
-						Storyboard.SetTargetProperty( da, new PropertyPath( Frame.OpacityProperty ) ); //We're making it blink, so target opacity
 						frmMain.Content = newPage; //Show the welcome page
-						sb.Begin(); //Initiate the animation
-					}, System.Windows.Threading.DispatcherPriority.Render ); //Prioritise graphics over processing (We're just animating here)
+						((Storyboard)Resources["blinkScreen"]).Begin();
+					}, System.Windows.Threading.DispatcherPriority.Render ); //Process this operation at the same priority as rendering
 					return;
 				default:
 					frmMain.Dispatcher.Invoke( (Action)(() => frmMain.Content = newPage) ); //Invoke page change on UI thread, as this is a separate thread
@@ -191,7 +178,8 @@ namespace NanaManager
 				}
 				else {
 					grdTitle.Visibility = Visibility.Collapsed;
-					wchChrome.CaptionHeight = 25;
+					wchChrome.CaptionHeight = 0;
+					MaxHeight = MaxWidth = double.PositiveInfinity;
 				}
 			}
 			else

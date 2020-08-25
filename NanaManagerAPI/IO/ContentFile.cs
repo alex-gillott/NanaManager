@@ -7,6 +7,8 @@ using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using NanaManagerAPI.IO.Cryptography;
+using NanaManagerAPI.Properties;
+using System.Drawing.Imaging;
 
 [assembly: InternalsVisibleTo("NanaManager")]
 
@@ -89,7 +91,17 @@ namespace NanaManagerAPI.IO
 				MessageBox.Show( e.Message, "Nana Manager Pre-load Error", MessageBoxButton.OK, MessageBoxImage.Error );
 				Environment.Exit( ERROR_GENERIC_IO );
 			}
-		}
+
+            using MemoryStream ms = new MemoryStream();
+            Resources.Music_Icon.Save( ms, ImageFormat.Png );
+			ms.Position = 0;
+            UI.UI.AudioSymbol = new System.Windows.Media.Imaging.BitmapImage();
+            UI.UI.AudioSymbol.BeginInit();
+            UI.UI.AudioSymbol.StreamSource = ms;
+            UI.UI.AudioSymbol.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+            UI.UI.AudioSymbol.EndInit();
+            UI.UI.AudioSymbol.Freeze();
+        }
 
 		/// <summary>
 		/// Checks if the content file can be read

@@ -23,3 +23,5 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI_
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI_MarkupCompile.lref
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\UI\Controls\TagSelector.baml
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.g.resources
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.Properties.Resources.resources
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.csproj.GenerateResource.cache

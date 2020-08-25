@@ -128,15 +128,13 @@ namespace NanaManager.FileEncoders
 				encoder.Write( t.Group );
 			}
 			//Images
-			foreach ( KeyValuePair<string, IMedia> img in Data.Media) {
-				if ( img.Value is Image ) {
-					encoder.Write( img.Key );
-					encoder.Write( img.Value.FileType );
-					int[] tags = img.Value.GetTags();
-					encoder.Write( tags.Length );
-					foreach ( int t in tags )
-						encoder.Write( t );
-				}
+			foreach ( KeyValuePair<string, IMedia> img in Data.Media ) {
+				encoder.Write( img.Key );
+				encoder.Write( img.Value.FileType );
+				int[] tags = img.Value.GetTags();
+				encoder.Write( tags.Length );
+				foreach ( int t in tags )
+					encoder.Write( t );
 			}
 
 			ContentFile.WriteFile( "nanaData", encoder.ToString() );

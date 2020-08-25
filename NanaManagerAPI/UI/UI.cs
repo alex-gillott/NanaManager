@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Collections.Generic;
+using System.Windows.Media.Imaging;
 
 namespace NanaManagerAPI.UI
 {
@@ -58,6 +59,11 @@ namespace NanaManagerAPI.UI
         public static event LoadMedia MediaOpened;
 
         /// <summary>
+        /// The image displayed over audio files without an album cover
+        /// </summary>
+        public static BitmapImage AudioSymbol;
+
+        /// <summary>
         /// Raises a notification to be displayed
         /// </summary>
         /// <param name="Message">The message to display as the notification</param>
@@ -88,8 +94,6 @@ namespace NanaManagerAPI.UI
         /// <param name="Current">The media to load</param>
         /// <param name="Search">The search terms used</param>
         /// <param name="Index">Where in the list the media is</param>
-        public static void OpenMedia( string Current, int[] Search, int[] Reject, int Index ) {
-            MediaOpened( Current, Search, Reject, Index );
-        }
+        public static void OpenMedia( string Current, int[] Search, int[] Reject, int Index ) => MediaOpened( Current, Search, Reject, Index );
     }
 }
