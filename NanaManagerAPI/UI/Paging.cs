@@ -69,6 +69,7 @@ namespace NanaManagerAPI.UI
         /// <param name="ID">The ID of the <see cref="Page"/> to remove</param>
         public static bool RemovePage( string ID ) {
             try {
+                Logging.Write($"Attempting to remove page \"{ID}\"", "Paging");
                 return pages.Remove( ID );
             } catch ( ArgumentNullException ex ) {
                 Logging.Write( string.Format( REMOVE_NULL_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Error );
@@ -101,6 +102,7 @@ namespace NanaManagerAPI.UI
             try {
                 PageChanged?.Invoke( GetPage( ID ), ID );
                 history.Push( ID );
+                Logging.Write($"Changed to page \"{ID}\"", "Paging");
             } catch ( ArgumentNullException ex ) {
                 Logging.Write( string.Format( LOAD_NULL_PAGE_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Fatal );
             } catch ( KeyNotFoundException ex ) {

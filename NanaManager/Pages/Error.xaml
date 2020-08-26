@@ -4,13 +4,31 @@
       xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
       xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
       xmlns:local="clr-namespace:NanaManager"
-      mc:Ignorable="d" 
-      d:DesignHeight="450" d:DesignWidth="800"
-      Title="Error">
+      mc:Ignorable="d"
+      Title="Error" Height="425" Width="800">
 
-    <Grid>
-        <Label HorizontalAlignment="Left" Margin="10,10,0,0" Content="Oops! Something went wrong!" VerticalAlignment="Top" Height="64" Width="780" Foreground="White" FontSize="40" HorizontalContentAlignment="Center"/>
-        <TextBlock x:Name="txtMsg" HorizontalAlignment="Left" Height="361" Margin="10,79,0,0" VerticalAlignment="Top" Width="780" Foreground="White" FontSize="18" TextWrapping="Wrap" Text="You're not meant to see this page, unfortunately. If you're here, it means something went wrong while changing the page. If you could report what you were doing when this happened, that would be amazing! When you close the application, the program will automatically store any logs containing errors in {0} that it detects. Thank you for your patience, and don't worry! Your data is not gone."/>
-        <Button Content="Return" HorizontalAlignment="Center" Height="39" Margin="0,150,0,0" VerticalAlignment="Center" Width="166" Foreground="White" FontSize="18" FontWeight="Medium" Background="#FFB90072" BorderBrush="{x:Null}" Click="Button_Click"/>
-    </Grid>
+	<Grid>
+		<Grid.RowDefinitions>
+			<RowDefinition Height="72"/>
+			<RowDefinition Height="212*"/>
+			<RowDefinition Height="40*"/>
+			<RowDefinition Height="120"/>
+		</Grid.RowDefinitions>
+		<Grid.ColumnDefinitions>
+			<ColumnDefinition Width="1*"/>
+			<ColumnDefinition Width="170"/>
+			<ColumnDefinition Width="170"/>
+			<ColumnDefinition Width="170"/>
+			<ColumnDefinition Width="1*"/>
+		</Grid.ColumnDefinitions>
+		<Label HorizontalAlignment="Left" Margin="10,10,0,0" Content="Oops! Something went wrong!" VerticalAlignment="Top" Height="64" Width="780" Foreground="White" FontSize="40" HorizontalContentAlignment="Center" Grid.ColumnSpan="5" Grid.RowSpan="2"/>
+		<Viewbox Grid.ColumnSpan="5" Grid.Row="1">
+			<TextBlock x:Name="txtMsg" HorizontalAlignment="Left" VerticalAlignment="Top" Foreground="White" FontSize="18" TextWrapping="Wrap" Height="132" ><Run Text="Unfortunately, a part of the program messed up and couldn't continue working."/><LineBreak/><Run Text="This is fine, however! Simply press the Return button to return to the Viewer."/><LineBreak/><Run/><LineBreak/><Run Text="The error was saved to the logs. "/><LineBreak/><Run Text="Please report the issue to the plugin developer or Nana Manager developers, as we would greatly appreciate it!"/></TextBlock>
+		</Viewbox>
+		<Button Content="Return" HorizontalAlignment="Stretch" Height="40" Margin="5,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontWeight="Medium" Background="#FFB90072" BorderBrush="{x:Null}" Click="button_Click" Grid.Column="2" Grid.Row="3"/>
+		<Button Content="View Logs" HorizontalAlignment="Stretch" Height="40" Margin="5,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontWeight="Medium" Background="#FFB90072" BorderBrush="{x:Null}" Grid.Column="3" Grid.Row="3" Click="button_Click_2"/>
+		<Button Content="Report" HorizontalAlignment="Stretch" Height="40" Margin="5,0" VerticalAlignment="Top" Foreground="White" FontSize="18" FontWeight="Medium" Background="#FFB90072" BorderBrush="{x:Null}" Grid.Column="1" Grid.Row="3" Click="button_Click_1"/>
+
+		<Label x:Name="lblLocation" Content="What part went wrong: Something" Foreground="{DynamicResource LightText}" VerticalAlignment="Center" HorizontalAlignment="Stretch" Margin="10,5" FontSize="16" Grid.ColumnSpan="5" Grid.Row="2" Height="32"/>
+	</Grid>
 </Page>

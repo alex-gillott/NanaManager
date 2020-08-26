@@ -45,7 +45,7 @@ namespace NanaManager
         }
 
         private void mediaPlayer_MediaFailed( object sender, ExceptionEventArgs e ) {
-            Logging.Write( e.ErrorException, "AudioViewer" );
+            Logging.Write( e.ErrorException, "AudioViewer", LogLevel.Error );
         }
 
         private void intervalTimer_Elapsed( object sender, ElapsedEventArgs e ) => Dispatcher.Invoke( () =>

@@ -6,7 +6,7 @@
         xmlns:local="clr-namespace:NanaManager"
         mc:Ignorable="d"
 		x:Name="wndMain"
-        Title="Nana Manager" Height="450" Width="800" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" AllowsTransparency="True" WindowStyle="None" MinWidth="800" MinHeight="450" Foreground="White" Background="#FF200C27" Closing="window_Closing" StateChanged="window_StateChanged">
+        Title="Nana Manager" Height="450" Width="800" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" AllowsTransparency="True" WindowStyle="None" MinWidth="800" MinHeight="450" Foreground="White" Background="#FF200C27" Closing="window_Closing" StateChanged="window_StateChanged" WindowStartupLocation="CenterScreen">
 	<Window.Resources>
 		<Storyboard x:Key="blinkScreen">
 			<DoubleAnimation AutoReverse="True" Duration="0:0:0.2" To="0" From="1" Storyboard.TargetName="frmMain" Storyboard.TargetProperty="Opacity"/>

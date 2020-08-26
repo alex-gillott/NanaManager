@@ -57,6 +57,10 @@ namespace NanaManagerAPI.IO
 		/// </summary>
 		public static readonly string ExportPath = Path.Combine( RootPath, "exports" );
 		/// <summary>
+		/// The directory where plugins are found
+		/// </summary>
+		public static readonly string PluginPath = Path.Combine( RootPath, "plugins" );
+		/// <summary>
 		/// The file location of the latest.log file
 		/// </summary>
 		public static readonly string LatestLogPath = Path.Combine( LogPath, "latest.log" );
@@ -79,6 +83,8 @@ namespace NanaManagerAPI.IO
 					Directory.CreateDirectory( LogPath );
 				if ( !Directory.Exists( ExportPath ) )
 					Directory.CreateDirectory( ExportPath );
+				if ( !Directory.Exists( PluginPath ) )
+					Directory.CreateDirectory( PluginPath );
 				if ( !File.Exists( ContentPath ) )
 					File.WriteAllBytes( ContentPath, ZIP_SIGNATURE ); //Blank signature for a zip file
 			} catch ( NotSupportedException e ) {
@@ -92,16 +98,18 @@ namespace NanaManagerAPI.IO
 				Environment.Exit( ERROR_GENERIC_IO );
 			}
 
-            using MemoryStream ms = new MemoryStream();
-            Resources.Music_Icon.Save( ms, ImageFormat.Png );
+			//Constructing the audio symbol
+			using MemoryStream ms = new MemoryStream();
+			Resources.Music_Icon.Save( ms, ImageFormat.Png );
 			ms.Position = 0;
-            UI.UI.AudioSymbol = new System.Windows.Media.Imaging.BitmapImage();
-            UI.UI.AudioSymbol.BeginInit();
-            UI.UI.AudioSymbol.StreamSource = ms;
-            UI.UI.AudioSymbol.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-            UI.UI.AudioSymbol.EndInit();
-            UI.UI.AudioSymbol.Freeze();
-        }
+			UI.UI.AudioSymbol = new System.Windows.Media.Imaging.BitmapImage();
+			UI.UI.AudioSymbol.BeginInit();
+			UI.UI.AudioSymbol.StreamSource = ms;
+			UI.UI.AudioSymbol.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
+			UI.UI.AudioSymbol.EndInit();
+			UI.UI.AudioSymbol.Freeze();
+		}
+
 
 		/// <summary>
 		/// Checks if the content file can be read

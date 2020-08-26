@@ -9,6 +9,7 @@ using NanaManager.SettingsPages;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+using System.Reflection;
 
 namespace NanaManager
 {
@@ -27,8 +28,8 @@ namespace NanaManager
 		public static int NotificationFadeTimeMS = 5000;
 
 		#region Paging
-		private void onNewPage(Page newPage, string iD) {
-			switch (iD) {
+		private void onNewPage( Page newPage, string iD ) {
+			switch ( iD ) {
 				case Pages.Welcome:
 					Dispatcher.Invoke( () => //As this on a separate thread, invoke the animation through the UI thread
 					{
@@ -39,22 +40,26 @@ namespace NanaManager
 				default:
 					frmMain.Dispatcher.Invoke( (Action)(() => frmMain.Content = newPage) ); //Invoke page change on UI thread, as this is a separate thread
 					break;
-            }
-        }
+			}
+		}
 		#endregion
 
 
 		public static bool ImportOnLogin = false;
 		public bool IsFullscreen = false;
+		public bool Maximised = false;
 		public Size PrevSize;
 		public Point PrevLoc;
 
 		private readonly Timer saveTimer = new Timer( SaveTimeMS );
 		private readonly Timer notifLeaveTimer = new Timer( NotificationFadeTimeMS );
 
-		public MainWindow( int Instruction ) {
-			ImportOnLogin = Instruction == 0x1;
+		public MainWindow() {
 			InitializeComponent(); //Initialises the UI elements
+
+			Logging.Write( "Running STAThread plugins", "Plugins", LogLevel.Info );
+			foreach ( MethodInfo mi in Plugins.NeedSTA )
+				mi.Invoke( null, null );
 
 			addPages();
 			addSettings();
@@ -63,11 +68,12 @@ namespace NanaManager
 			UI.Fullscreen += toggleFullscreen;
 			UI.MediaOpened += (Paging.GetPage( Pages.Fullscreen ) as Fullscreen).OpenViewer;
 			UI.NotificationRaised += onNotificationChange;
+			UI.WindowClosed += onWindowClose;
 
-			if ( !string.IsNullOrEmpty(Properties.Settings.Default.Password) ) //Checking if the user has an account. If they do, go to login page, otherwise go to register page
-				Paging.LoadPage(Pages.Login);
+			if ( !string.IsNullOrEmpty( Properties.Settings.Default.Password ) ) //Checking if the user has an account. If they do, go to login page, otherwise go to register page
+				Paging.LoadPage( Pages.Login );
 			else
-				Paging.LoadPage(Pages.Register);
+				Paging.LoadPage( Pages.Register );
 
 			saveTimer.Elapsed += onSaveTimerTick;
 			saveTimer.Start();
@@ -107,6 +113,7 @@ namespace NanaManager
 		}
 		#endregion
 		#region Events
+		private void onWindowClose() => Close();
 		private void onMinimizeButtonClick( object sender, RoutedEventArgs e ) => WindowState = WindowState.Minimized;
 
 		private void onMaximizeRestoreButtonClick( object sender, RoutedEventArgs e ) {
@@ -116,14 +123,16 @@ namespace NanaManager
 				WindowState = WindowState.Maximized;
 		}
 
-		private void onCloseButtonClick( object sender, RoutedEventArgs e ) => Close();
+		private void onCloseButtonClick( object sender, RoutedEventArgs e ) => UI.CloseApplication();
 
 		private void onNotificationChange( string text, object[] _ ) {
 			lblNotif.Content = text;
 			notifLeaveTimer.Start();
-        }
+		}
 		private void onSaveTimerTick( object sender, ElapsedEventArgs e ) {
-			ContentFile.SaveData();
+			Logging.Write( "Autosaving..", "Auto Save" );
+			if ( ContentFile.CheckValidity() )
+				ContentFile.SaveData();
 			Logging.SaveLogs();
 		}
 		private void grdMouseDown( object sender, MouseButtonEventArgs e ) {
@@ -137,6 +146,8 @@ namespace NanaManager
 			}
 		}
 		private void window_Closing( object sender, System.ComponentModel.CancelEventArgs e ) {
+			Logging.Write( "Closing application", "UI", LogLevel.Info );
+
 			saveTimer.Stop();
 			if ( ContentFile.CheckValidity() ) {
 				ContentFile.SaveData();
@@ -145,14 +156,29 @@ namespace NanaManager
 			}
 			Logging.SaveLogs();
 		}
-		private void toggleFullscreen(bool fullscreen) {
+		private void toggleFullscreen( bool fullscreen ) {
 			IsFullscreen = fullscreen;
-			if (fullscreen) {
+			if ( fullscreen ) {
+				Logging.Write( "Changing to Fullscreen mode", "UI" );
 				WindowState = WindowState.Maximized;
 				Grid.SetRow( frmMain, 0 );
-			} else {
-				Grid.SetRow(frmMain, 1 );
-				WindowState = WindowState.Normal;
+
+				grdTitle.Visibility = Visibility.Collapsed;
+				wchChrome.CaptionHeight = 0;
+				MaxHeight = MaxWidth = double.PositiveInfinity;
+			}
+			else {
+				Logging.Write( "Leaving Fullscreen mode", "UI" );
+				Grid.SetRow( frmMain, 1 );
+				grdTitle.Visibility = Visibility.Visible;
+				wchChrome.CaptionHeight = 25;
+				if ( !Maximised )
+					WindowState = WindowState.Normal;
+				else {
+					var sc = System.Windows.Forms.Screen.FromPoint( new System.Drawing.Point( (int)Left, (int)Top ) );
+					MaxHeight = sc.WorkingArea.Height + 7;
+					MaxWidth = sc.WorkingArea.Width + 7;
+				}
 			}
 		}
 		private void bdrNotif_MouseEnter( object sender, MouseEventArgs e ) {
@@ -170,21 +196,19 @@ namespace NanaManager
 			refreshMaximizeRestoreButton();
 			if ( WindowState == WindowState.Maximized ) {
 				if ( !IsFullscreen ) {
+					Maximised = true;
 					grdTitle.Visibility = Visibility.Visible;
 					wchChrome.CaptionHeight = 25;
 					var sc = System.Windows.Forms.Screen.FromPoint( new System.Drawing.Point( (int)Left, (int)Top ) );
 					MaxHeight = sc.WorkingArea.Height + 7;
 					MaxWidth = sc.WorkingArea.Width + 7;
 				}
-				else {
-					grdTitle.Visibility = Visibility.Collapsed;
-					wchChrome.CaptionHeight = 0;
-					MaxHeight = MaxWidth = double.PositiveInfinity;
-				}
 			}
-			else
+			else {
 				MaxHeight = MaxWidth = double.PositiveInfinity;
+				Maximised = false;
+			}
 		}
 		#endregion
-    }
+	}
 }

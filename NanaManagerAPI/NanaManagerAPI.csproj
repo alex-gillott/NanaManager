@@ -58,6 +58,7 @@
     <Compile Include="Attributes\EntryPointAttribute.cs" />
     <Compile Include="EventArgs\TagCheckEventArgs.cs" />
     <Compile Include="IO\ContentFile.cs" />
+    <Compile Include="IO\Plugins.cs" />
     <Compile Include="Logging.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>

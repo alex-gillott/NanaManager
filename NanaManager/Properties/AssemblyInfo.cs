@@ -8,7 +8,7 @@ using System.Windows;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 [assembly: AssemblyTitle("NanaManager")]
-[assembly: AssemblyDescription( "A media management application" )]
+[assembly: AssemblyDescription( "A media management application made by Hydroxa" )]
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany( "Hydroxa" )]
 [assembly: AssemblyProduct("NanaManager")]
@@ -51,6 +51,6 @@ using System.Windows;
 // You can specify all the values or you can default the Build and Revision Numbers
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
-[assembly: AssemblyVersion( "0.12.645.0" )]
+[assembly: AssemblyVersion( "0.18.704.8374" )]
 [assembly: AssemblyFileVersion("1.0.0.0")]
 [assembly: NeutralResourcesLanguage( "en-GB" )]
