@@ -25,3 +25,7 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\UI\Controls\Tag
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.g.resources
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.Properties.Resources.resources
 C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\obj\Debug\NanaManagerAPI.csproj.GenerateResource.cache
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\Microsoft.WindowsAPICodePack.dll
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\Microsoft.WindowsAPICodePack.xml
+C:\Users\Hydro\source\repos\NanaManager\NanaManagerAPI\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml

@@ -38,8 +38,6 @@ so that this kind of error may be fixed!";
                 Paging.LoadPage( Pages.Error );
             }
             else if ( level == LogLevel.Crash ) {
-                string loc = message.Split( ' ' )[2];
-                loc = loc.Substring( 1, loc.Length - 2 );
                 lblLocation.Content = $"What part went wrong: {location}";
                 crash = true;
                 txtMsg.Text = FATAL_MSG;

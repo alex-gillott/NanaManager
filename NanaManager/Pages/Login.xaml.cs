@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
+using System.IO.Compression;
 
 namespace NanaManager
 {
@@ -76,6 +77,8 @@ namespace NanaManager
                 //Decrypt data and prepare for re-encryption
                 if ( !ContentFile.CheckValidity() )
                     ContentFile.Decrypt( password );
+                else
+                    ContentFile.Archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update );
 
                 //TODO - MOVE TO CONTENT FILE
                 Properties.Settings.Default.Password = "";

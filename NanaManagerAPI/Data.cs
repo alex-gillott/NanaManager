@@ -47,7 +47,7 @@ namespace NanaManagerAPI
 			int[] tags = M.GetTags();
 			bool match = true;
 			foreach (int i in SearchTags)
-				if (!tags.Contains(i) && (ShowHiddenTags || !HiddenTags.Contains(i))) {
+				if (!tags.Contains(i)) {
 					match = false;
 					break;
                 }
@@ -57,7 +57,13 @@ namespace NanaManagerAPI
 						match = false;
 						break;
                     }
-
+			if (match)
+				foreach (int i in tags)
+					if (!ShowHiddenTags && HiddenTags.Contains( i ) ) {
+						match = false;
+						break;
+                    }
+						
 			return match;
         }
 

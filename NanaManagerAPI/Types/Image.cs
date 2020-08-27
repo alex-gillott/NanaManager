@@ -4,7 +4,6 @@ using System.Windows.Media.Imaging;
 
 using NanaManagerAPI.Media;
 using NanaManagerAPI.IO;
-using System.Linq.Expressions;
 
 namespace NanaManagerAPI.Types
 {
@@ -40,8 +39,7 @@ namespace NanaManagerAPI.Types
 		/// <returns>The image as a <see cref="BitmapImage"/></returns>
 		public BitmapImage GetImage() {
 			if ( ContentFile.CheckValidity() ) {
-				using ZipArchive archive = ZipFile.OpenRead( ContentFile.ContentPath );
-				ZipArchiveEntry entry = archive.GetEntry( ID );
+				ZipArchiveEntry entry = ContentFile.Archive.GetEntry( ID );
                 if ( entry == null ) 
                     throw new FileNotFoundException( "Image was not found within the database", ID );
                 else {
@@ -64,8 +62,7 @@ namespace NanaManagerAPI.Types
 		}
         public BitmapImage GetSample() {
             if ( ContentFile.CheckValidity() ) {
-                using ZipArchive archive = ZipFile.OpenRead( ContentFile.ContentPath );
-                ZipArchiveEntry entry = archive.GetEntry( ID );
+                ZipArchiveEntry entry = ContentFile.Archive.GetEntry( ID );
                 if ( entry == null )
                     throw new FileNotFoundException( "Image was not found within the database", ID );
                 else {

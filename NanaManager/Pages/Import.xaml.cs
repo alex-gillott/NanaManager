@@ -33,6 +33,7 @@ namespace NanaManager
 		private int[] editTags = Array.Empty<int>();
 
 		private Thread renderThread;
+		private Thread importThread;
 
 		public Import() {
 			InitializeComponent();
@@ -61,6 +62,7 @@ namespace NanaManager
 			else
 				btnSkip.IsEnabled = true;
 
+			bdrImporting.Visibility = Visibility.Collapsed;
 			if ( Editing != null ) {
 				editTags = Data.Media[Editing].GetTags();
 				btnSkip.IsEnabled = false;
@@ -92,52 +94,20 @@ namespace NanaManager
 			renderIndex();
 		}
 		private void btnAdd_Click( object sender, RoutedEventArgs e ) {
-			using ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update );
-			bool saved = false;
 			if ( Editing != null ) {
 				Data.Media[Editing] = (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Data.Media[Editing].FileType]].Invoke( new object[] { Editing, tslEditor.GetCheckedTagsIndicies(), Data.Media[Editing].FileType } );
 				Paging.LoadPreviousPage();
 				return;
 			}
 			else {
-				try {
-					byte[] data = File.ReadAllBytes( toImport[index] );
-					string uID = Guid.NewGuid().ToString();
-					archive.CreateEntryFromFile( toImport[index], uID );
-					Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) );;
+				bdrImporting.Visibility = Visibility.Visible;
 
-					saved = true;
-
-					tslEditor.UncheckTags();
-
-					string toDelete = toImport[index];
-					toImport.RemoveAt( index );
-					checkedTags.RemoveAt( index );
-					if ( index > 0 )
-						btnSkip_Click( sender, e );
-
-					if ( cbxCopy.IsChecked == false )
-						File.Delete( toDelete );
-
-					if ( toImport.Count == 0 ) {
-						frmPreview.Content = null;
-						currentViewer = "";
-						Paging.LoadPreviousPage();
-					}
-				} catch ( Exception ex ) {
-					if ( Debugger.IsAttached )
-						throw ex;
-					//TODO - RECORD ERROR DATA
-					if ( saved )
-						MessageBox.Show( "Could not remove file from original position. Data saved" );
-					else
-						MessageBox.Show( "Could not save data. The error was recorded and your image was recovered" );
-				}
+				importThread = new Thread( addEntry );
+				importThread.Start();
 			}
 		}
 		private void page_PreviewKeyDown( object sender, KeyEventArgs e ) {
-			switch (e.Key)
-			{
+			switch ( e.Key ) {
 				case Key.Right:
 					if ( btnSkip.IsEnabled )
 						btnSkip_Click( sender, e );
@@ -189,9 +159,7 @@ namespace NanaManager
 				}
 				else {
 					Data.Media.Remove( Editing );
-					using ( ZipArchive archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update ) ) {
-						archive.GetEntry( Editing ).Delete();
-					}
+					ContentFile.Archive.GetEntry( Editing ).Delete();
 					frmPreview.Content = null;
 					Editing = null;
 					Paging.LoadPreviousPage();
@@ -204,9 +172,9 @@ namespace NanaManager
 		}
 		private void btnNo_Click( object sender, RoutedEventArgs e ) => bdrCancel.Visibility = Visibility.Collapsed;
 		private void btnManageTags_Click( object sender, RoutedEventArgs e ) {
-			if (Editing == null) {
+			if ( Editing == null ) {
 				checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
-            }
+			}
 			Paging.LoadPage( Pages.TagManager );
 		}
 
@@ -221,10 +189,53 @@ namespace NanaManager
 				tslEditor.CheckTags( toCheck );
 			} );
 			renderThread.Start();
-        }
+		}
 		#endregion
 
 		#region Importing
+		private void addEntry() {
+			bool saved = false;
+			try {
+				string uID = Guid.NewGuid().ToString();
+				ContentFile.Archive.CreateEntryFromFile( toImport[index], uID );
+				Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) ); ;
+
+				GC.Collect();
+				GC.WaitForPendingFinalizers();
+				GC.Collect();
+				saved = true;
+
+				Dispatcher.Invoke( () =>
+				 {
+					 tslEditor.UncheckTags();
+
+					 string toDelete = toImport[index];
+					 toImport.RemoveAt( index );
+					 checkedTags.RemoveAt( index );
+					 if ( index > 0 )
+						 btnSkip_Click( null, null );
+
+					 if ( cbxCopy.IsChecked == false )
+						 File.Delete( toDelete );
+
+					 if ( toImport.Count == 0 ) {
+						 frmPreview.Content = null;
+						 currentViewer = "";
+						 Paging.LoadPreviousPage();
+					 }
+					 bdrImporting.Visibility = Visibility.Collapsed;
+				 } );
+			} catch ( Exception ex ) {
+				Logging.Write( ex, "Import" );
+				if ( Debugger.IsAttached )
+					throw ex;
+
+				if ( saved )
+					MessageBox.Show( "Could not remove file from original position. Data saved" );
+				else
+					MessageBox.Show( "Could not save data. The error was recorded and your image was recovered" );
+			}
+		}
 		private void renderIndex() {
 			if ( Editing != null ) {
 				IMedia media = Data.Media[Editing];
@@ -237,7 +248,7 @@ namespace NanaManager
 						frmPreview.Content = viewer.Display;
 				}
 				lblIndex.Content = "";
-				checkTags(editTags.ToArray());
+				checkTags( editTags.ToArray() );
 			}
 			else {
 				string path = toImport[index];
@@ -248,9 +259,9 @@ namespace NanaManager
 						IMediaViewer viewer = Registry.Viewers[toLoad];
 						viewer.LoadMedia( path, false );
 						if ( currentViewer != toLoad )
-							Dispatcher.Invoke(() => frmPreview.Content = viewer.Display);
+							Dispatcher.Invoke( () => frmPreview.Content = viewer.Display );
 						lblIndex.Content = $"{toImport.Count - index}/{toImport.Count}";
-						checkTags(checkedTags[index].ToArray());
+						checkTags( checkedTags[index].ToArray() );
 					} catch ( Exception ) {
 						if ( Debugger.IsAttached )
 							throw;
@@ -289,7 +300,7 @@ namespace NanaManager
 		private int[] scanForTags( string name ) {
 			string smolName = name.ToLower();
 			List<int> found = new List<int>();
-			foreach (KeyValuePair<int, int> kvp in Data.TagLocations)
+			foreach ( KeyValuePair<int, int> kvp in Data.TagLocations )
 				if ( smolName.Contains( Data.Tags[kvp.Value].Name.ToLower() ) )
 					found.Add( kvp.Value );
 			return found.ToArray();

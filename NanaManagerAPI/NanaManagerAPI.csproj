@@ -37,6 +37,12 @@
     <Reference Include="DotNetZip, Version=1.13.8.0, Culture=neutral, PublicKeyToken=6583c7c814667745, processorArchitecture=MSIL">
       <HintPath>..\packages\DotNetZip.1.13.8\lib\net40\DotNetZip.dll</HintPath>
     </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack, Version=1.1.2.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Core.1.1.2\lib\Microsoft.WindowsAPICodePack.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.WindowsAPICodePack.Shell, Version=1.1.0.0, Culture=neutral, processorArchitecture=MSIL">
+      <HintPath>..\packages\WindowsAPICodePack-Shell.1.1.1\lib\Microsoft.WindowsAPICodePack.Shell.dll</HintPath>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -57,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Attributes\EntryPointAttribute.cs" />
     <Compile Include="EventArgs\TagCheckEventArgs.cs" />
+    <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IO\ContentFile.cs" />
     <Compile Include="IO\Plugins.cs" />
     <Compile Include="Logging.cs" />
@@ -66,6 +73,7 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
     <Compile Include="Types\Audio.cs" />
+    <Compile Include="Types\Video.cs" />
     <Compile Include="UI\Controls\TagSelector.xaml.cs">
       <DependentUpon>TagSelector.xaml</DependentUpon>
     </Compile>

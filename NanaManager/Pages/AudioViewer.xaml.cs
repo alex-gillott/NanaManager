@@ -1,20 +1,16 @@
-﻿using NanaManager.MediaHandlers;
-using NanaManagerAPI.IO;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+﻿using System;
 using System.IO;
-using System.IO.Compression;
-using System.Threading.Tasks;
-using System.Windows;
 using System.Timers;
-using System.Windows.Controls;
+using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.IO.Compression;
+using System.Windows.Controls;
 using System.Windows.Media.Animation;
 
 using NanaManagerAPI;
+using NanaManagerAPI.IO;
+using NanaManager.MediaHandlers;
 
 namespace NanaManager
 {
@@ -38,27 +34,30 @@ namespace NanaManager
             Parent.RenderMedia += loadMedia;
 
             mediaPlayer.MediaOpened += mediaPlayer_MediaOpened;
+            mediaPlayer.MediaEnded += mediaPlayer_MediaEnded;
             mediaPlayer.BufferingStarted += mediaPlayer_BufferingStarted;
             mediaPlayer.BufferingEnded += mediaPlayer_BufferingEnded;
             mediaPlayer.MediaFailed += mediaPlayer_MediaFailed;
             intervalTimer.Elapsed += intervalTimer_Elapsed;
         }
 
+        private void mediaPlayer_MediaEnded( object sender, EventArgs e ) {
+            elapse = true;
+            btnPlay.IsChecked = false;
+            mediaPlayer.Position = new TimeSpan( 0 );
+            sldSeek.Value = 0;
+        }
+
         private void mediaPlayer_MediaFailed( object sender, ExceptionEventArgs e ) {
             Logging.Write( e.ErrorException, "AudioViewer", LogLevel.Error );
+            lblLoading.Content = "An error occured while loading the video";
         }
 
         private void intervalTimer_Elapsed( object sender, ElapsedEventArgs e ) => Dispatcher.Invoke( () =>
-                                                                                   {
-                                                                                       elapse = true;
-                                                                                       if ( mediaPlayer.Position.Ticks >= mediaPlayer.NaturalDuration.TimeSpan.Ticks ) {
-                                                                                           btnPlay.IsChecked = false;
-                                                                                           mediaPlayer.Position = new TimeSpan( 0 );
-                                                                                           sldSeek.Value = 0;
-                                                                                       }
-                                                                                       else
-                                                                                           sldSeek.Value = mediaPlayer.Position.Ticks;
-                                                                                   } );
+        {
+            elapse = true;
+            sldSeek.Value = mediaPlayer.Position.Ticks;
+        } );
 
         private void mediaPlayer_BufferingEnded( object sender, EventArgs e ) {
             ((Storyboard)Resources["spinBuffer"]).Stop();
@@ -80,29 +79,29 @@ namespace NanaManager
             intervalTimer.Start();
         }
 
-        
-
         private void loadMedia( string id, bool editing ) {
             if ( id != Path.GetFileNameWithoutExtension( lastViewed ) && lastViewed != null ) {
                 File.Delete( lastViewed );
                 lastViewed = null;
             }
+            mediaPlayer.Stop();
+            mediaPlayer.Close();
+            lblLoading.Content = "Loading..";
             bdrLoading.Visibility = Visibility.Visible;
             if ( editing ) {
                 extract( id );
-                mediaPlayer.Open( new Uri( Path.Combine( ContentFile.TempPath, $"{id}{Data.Media[id].FileType}" ) ) );
-                lastViewed = Path.Combine( ContentFile.TempPath, $"{id}{Data.Media[id].FileType}" );
+                mediaPlayer.Open( new Uri( Path.Combine( ContentFile.TempPath, $"temp{Data.Media[id].FileType}" ), UriKind.Absolute ) );
+                lastViewed = Path.Combine( ContentFile.TempPath, $"temp{Data.Media[id].FileType}" );
             }
             else
                 mediaPlayer.Open( new Uri( id ) );
         }
 
         private void extract( string id ) {
-            using ZipArchive archive = ZipFile.OpenRead( ContentFile.ContentPath );
-            ZipArchiveEntry entry = archive.GetEntry( id );
-            using StreamWriter fs = new StreamWriter( Path.Combine( ContentFile.TempPath, $"{id}{Data.Media[id].FileType}" ) );
-            using StreamReader sr = new StreamReader( entry.Open() );
-            fs.Write( sr.ReadToEnd() );
+            ZipArchiveEntry entry = ContentFile.Archive.GetEntry( id );
+            string path = Path.Combine( ContentFile.TempPath, $"temp{Data.Media[id].FileType}" );
+            if ( File.Exists( path ) ) File.Delete( path );
+            entry.ExtractToFile( path );
         }
 
         private void btnPlay_Checked( object sender, RoutedEventArgs e ) =>
@@ -155,7 +154,10 @@ namespace NanaManager
         private void page_Unloaded( object sender, RoutedEventArgs e ) {
             intervalTimer.Stop();
             intervalTimer.Dispose();
-            File.Delete( lastViewed );
+            mediaPlayer.Stop();
+            mediaPlayer.Close();
+            if ( lastViewed != null )
+                File.Delete( lastViewed );
             lastViewed = null;
         }
     }

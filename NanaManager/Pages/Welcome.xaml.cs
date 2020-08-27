@@ -1,16 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Threading;
+using System.IO.Compression;
+using System.Windows.Controls;
 
-using NanaManagerAPI;
+using NanaManagerAPI.Threading;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
-using NanaManagerAPI.Threading;
+using NanaManagerAPI;
 
 namespace NanaManager
 {
@@ -49,6 +46,8 @@ namespace NanaManager
                 {
                     if ( !ContentFile.CheckValidity() )
                         ContentFile.Decrypt( Login.Password );
+                    else
+                        ContentFile.Archive = ZipFile.Open( ContentFile.ContentPath, ZipArchiveMode.Update );
 
                     ContentFile.LoadData();
                     Dispatcher.Invoke( () => { pgProgress.Visibility = lblStatus.Visibility = Visibility.Collapsed; } );

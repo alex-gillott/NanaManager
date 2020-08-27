@@ -135,9 +135,9 @@
 			<Slider x:Name="sldVol" Grid.Column="4" Value="0.5" Maximum="1" HorizontalAlignment="Left" Height="68" VerticalAlignment="Top" Width="22" Grid.RowSpan="2" Grid.Row="1" Grid.ColumnSpan="3" ValueChanged="slider_ValueChanged"/>
 			<Label x:Name="lblVol" HorizontalAlignment="Left" VerticalAlignment="Bottom" Content="50%" Foreground="{DynamicResource LightText}"/>
 		</Grid>
-		<Border x:Name="bdrLoading" Background="{DynamicResource BlackGlass}" Visibility="Collapsed" Grid.RowSpan="3" Grid.ColumnSpan="5">
+		<Border x:Name="bdrLoading" Background="{DynamicResource BlackGlass}" Visibility="Collapsed" Grid.RowSpan="3" Grid.ColumnSpan="7">
 			<Viewbox>
-				<Label Content="Loading" Foreground="{DynamicResource LightText}" Margin="20"/>
+				<Label x:Name="lblLoading" Content="Loading" Foreground="{DynamicResource LightText}" Margin="20"/>
 			</Viewbox>
 		</Border>
 	</Grid>

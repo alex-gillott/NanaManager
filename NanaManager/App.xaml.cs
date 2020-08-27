@@ -28,33 +28,6 @@ namespace NanaManager
 			ContentFile.LoadEnvironment();
 			Logging.Init();
 
-			if ( NanaManager.Properties.Settings.Default.ToImport == null ) { //Instantiate Import Collection if non-existent
-				NanaManager.Properties.Settings.Default.ToImport = new System.Collections.Specialized.StringCollection();
-				NanaManager.Properties.Settings.Default.Save();
-			}
-			if ( NanaManager.Properties.Settings.Default.ticked == null ) {
-				NanaManager.Properties.Settings.Default.ticked = new System.Collections.Specialized.StringCollection();
-				NanaManager.Properties.Settings.Default.Save();
-			}
-
-			//int instruction = 0;
-			//if ( args.Length > 0 ) {
-			//	switch ( args[0] ) {
-			//		case "import":
-			//			if ( File.Exists( args[1] ) || Directory.Exists( args[1] ) ) //If importing from shell, add to list
-			//			{
-			//				NanaManager.Properties.Settings.Default.ToImport.Add( args[1] );
-			//				NanaManager.Properties.Settings.Default.Save();
-			//			}
-			//			if ( args[2] == "open" ) //If opening from shell, set the instruction as such
-			//			{
-			//				instruction = 0x1;
-			//				break;
-			//			}
-			//			return;
-			//	}
-			//}
-
 			try {
 				App app = new App();
 				Splash wnd = new Splash(); //Load and run the application
@@ -75,8 +48,12 @@ namespace NanaManager
 					for ( int i = 0; i < logs.Length - 5; i++ )
 						File.Delete( logs[i] );
 				}
-				if ( Debugger.IsAttached )
+				if ( Debugger.IsAttached ) {
+					ContentFile.Archive.Dispose();
 					throw;
+				}
+			} finally {
+				ContentFile.Archive?.Dispose();
 			}
 		}
 	}

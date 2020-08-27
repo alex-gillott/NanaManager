@@ -3,12 +3,12 @@ using System.IO;
 using System.Windows;
 using System.Security;
 using System.IO.Compression;
+using System.Drawing.Imaging;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 
 using NanaManagerAPI.IO.Cryptography;
 using NanaManagerAPI.Properties;
-using System.Drawing.Imaging;
 
 [assembly: InternalsVisibleTo("NanaManager")]
 
@@ -65,6 +65,8 @@ namespace NanaManagerAPI.IO
 		/// </summary>
 		public static readonly string LatestLogPath = Path.Combine( LogPath, "latest.log" );
 
+		public static ZipArchive Archive;
+
 		private static readonly byte[] ZIP_SIGNATURE = new byte[] { 80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
 
 		/// <summary>
@@ -117,10 +119,15 @@ namespace NanaManagerAPI.IO
 		/// <returns>Returns true if the content file can be read. False if corrupt or encrypted</returns>
 		public static bool CheckValidity() {
 			try {
-				return Ionic.Zip.ZipFile.CheckZip( ContentPath );
-			} catch ( Exception e ) {
-				Logging.Write( e, "Content", LogLevel.Error );
-				throw e;
+				if (Archive == null) {
+                    using var zipFile = ZipFile.OpenRead( ContentPath );
+                    var test = zipFile.Entries;
+                    return true;
+                }
+				var entries = Archive.Entries;
+				return true;
+			} catch ( InvalidDataException ) {
+				return false;
 			}
 		}
 		/// <summary>
@@ -132,9 +139,7 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-			using ZipArchive archive = ZipFile.OpenRead( ContentPath );
-
-			ZipArchiveEntry entry = archive.GetEntry( Name );
+			ZipArchiveEntry entry = Archive.GetEntry( Name );
 			if ( entry == null )
 				throw new FileNotFoundException( "The specified file was not found within the database", Name );
 			else {
@@ -154,21 +159,19 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-			if ( Exists( Name ) )
-				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
-					ZipArchiveEntry entry = archive.GetEntry( Name );
-					using Stream entryStream = entry.Open();
-					using StreamWriter writer = new StreamWriter( entryStream );
-					writer.Write( Data );
-				}
-			else
-				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
+			if ( Exists( Name ) ) {
+				ZipArchiveEntry entry = Archive.GetEntry( Name );
+				using Stream entryStream = entry.Open();
+				using StreamWriter writer = new StreamWriter( entryStream );
+				writer.Write( Data );
+			}
+			else {
 					//TODO - HANDLE ERRORS
 					string location = Path.Combine( TempPath, Name );
 					File.WriteAllText( location, Data );
-					archive.CreateEntryFromFile( location, Name );
+					Archive.CreateEntryFromFile( location, Name );
 					File.Delete( location );
-				}
+			}
 		}
 		/// <summary>
 		/// Writes to a file within the content file, if it exists. Creates one otherwise
@@ -179,18 +182,16 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-			if ( Exists( Name ) )
-				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
-					ZipArchiveEntry entry = archive.GetEntry( Name );
+			if ( Exists( Name ) ) {
+					ZipArchiveEntry entry = Archive.GetEntry( Name );
 					using Stream entryStream = entry.Open();
 					using StreamWriter writer = new StreamWriter( entryStream );
 					writer.Write( Data );
 				}
-			else
-				using ( ZipArchive archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ) ) {
+			else{
 					string location = Path.Combine( TempPath, Name );
 					File.WriteAllBytes( location, Data );
-					archive.CreateEntryFromFile( location, Name );
+					Archive.CreateEntryFromFile( location, Name );
 					File.Delete( location );
 				}
 		}
@@ -203,8 +204,7 @@ namespace NanaManagerAPI.IO
 		public static bool Exists( string Name ) {
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
-			using ZipArchive archive = ZipFile.OpenRead( ContentPath );
-			ZipArchiveEntry entry = archive.GetEntry( Name );
+			ZipArchiveEntry entry = Archive.GetEntry( Name );
 			return entry != null;
 		}
 
@@ -229,6 +229,7 @@ namespace NanaManagerAPI.IO
 		/// <param name="Password">The password to encrypt the data with</param>
 		public static void Encrypt( string Password ) {
 			try {
+				Archive.Dispose();
 				CryptographyProvider.Initialise( Password );
 				File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
 				CryptographyProvider.Terminate();
@@ -255,6 +256,7 @@ namespace NanaManagerAPI.IO
 				CryptographyProvider.Initialise( Password );
 				File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
 				CryptographyProvider.Terminate();
+				Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
 			} catch ( ArgumentNullException e ) {
 				//Path is null or byte array was empty
 				Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );

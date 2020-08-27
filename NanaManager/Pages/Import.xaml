@@ -28,11 +28,13 @@
 		<Button Style="{DynamicResource Menu Button}" x:Name="btnUnimport" Content="Don't Import" HorizontalAlignment="Right" Height="25" Margin="0,0,2,2" VerticalAlignment="Bottom" Width="83" Grid.Row="2" Click="btnUnimport_Click"/>
 		<Button Style="{DynamicResource Menu Button}" x:Name="btnSkip" Content="Next" HorizontalAlignment="Right" Height="25" Margin="0,0,90,2" VerticalAlignment="Bottom" Width="66" Grid.Row="2" Click="btnSkip_Click"/>
 		<Button Style="{DynamicResource Menu Button}" x:Name="btnAdd" Content="Add" HorizontalAlignment="Right" Height="25" Margin="0,0,2,10" VerticalAlignment="Bottom" Width="83" Grid.Row="1" Click="btnAdd_Click"/>
-		<Border x:Name="bdrCancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="#59000000" Visibility="Collapsed">
-			<Border Margin="200,100" Background="#4C646464" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" HorizontalAlignment="Center">
+		<Button Style="{StaticResource Menu Button}" x:Name="btnManageTags" Content="Manage Tags" HorizontalAlignment="Left" Height="25" Margin="2,0,0,10" VerticalAlignment="Bottom" Width="83" Grid.Row="1" Click="btnManageTags_Click"/>
+		<CheckBox x:Name="cbxCopy" Content="Copy instead of Move" HorizontalAlignment="Left" Margin="0,0,0,40" Grid.Row="1" VerticalAlignment="Bottom" Width="146" FontSize="13" Background="White" Foreground="White" IsChecked="True"/>
+		<Border x:Name="bdrCancel" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="{DynamicResource BlackGlass}" Visibility="Collapsed">
+			<Border Margin="200,100" Background="{DynamicResource DarkGlass}" BorderBrush="Black" BorderThickness="2" VerticalAlignment="Center" HorizontalAlignment="Center">
 				<StackPanel>
-					<Label x:Name="lblClarify" Content="Are you sure you want to cancel?" Foreground="White" FontSize="16" Height="39" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
-					<Label x:Name="lblProgress" Content="Your progress will NOT be saved" Foreground="White" FontSize="14" Height="39" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,-20,0,0"/>
+					<Label x:Name="lblClarify" Content="Are you sure you want to cancel?" Foreground="{DynamicResource LightText}" FontSize="16" Height="39" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
+					<Label x:Name="lblProgress" Content="Your progress will NOT be saved" Foreground="{DynamicResource LightText}" FontSize="14" Height="39" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,-20,0,0"/>
 					<StackPanel Height="57" Margin="10,50" Orientation="Horizontal">
 						<Button Style="{DynamicResource Menu Button}" x:Name="btnYes" Content="Yes" HorizontalAlignment="Stretch" Margin="5,5,0,5" VerticalAlignment="Stretch" Width="170" Grid.Row="1" Height="Auto" Click="btnYes_Click"/>
 						<Button Style="{DynamicResource Menu Button}" x:Name="btnNo" Content="No" HorizontalAlignment="Stretch" Margin="25,5,0,5" VerticalAlignment="Stretch" Width="170" Height="Auto" Click="btnNo_Click"/>
@@ -40,7 +42,19 @@
 				</StackPanel>
 			</Border>
 		</Border>
-		<Button Style="{StaticResource Menu Button}" x:Name="btnManageTags" Content="Manage Tags" HorizontalAlignment="Left" Height="25" Margin="2,0,0,10" VerticalAlignment="Bottom" Width="83" Grid.Row="1" Click="btnManageTags_Click"/>
-		<CheckBox x:Name="cbxCopy" Content="Copy instead of Move" HorizontalAlignment="Left" Margin="0,0,0,40" Grid.Row="1" VerticalAlignment="Bottom" Width="146" FontSize="13" Background="White" Foreground="White" IsChecked="True"/>
+		<Border x:Name="bdrImporting" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="{DynamicResource BlackGlass}" >
+			<Grid Margin="200,100">
+				<Grid.RowDefinitions>
+					<RowDefinition/>
+					<RowDefinition/>
+				</Grid.RowDefinitions>
+				<Viewbox>
+					<Label Content="Importing.." Foreground="{DynamicResource LightText}" FontSize="16" Height="39" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
+				</Viewbox>
+				<Viewbox Grid.Row="1">
+					<Label Content="This may take a few seconds" Foreground="{DynamicResource LightText}" FontSize="14" Height="39" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Margin="0,10,0,0"/>
+				</Viewbox>
+			</Grid>
+		</Border>
 	</Grid>
 </Page>

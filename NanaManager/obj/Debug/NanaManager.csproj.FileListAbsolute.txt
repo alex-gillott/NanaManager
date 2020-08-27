@@ -156,3 +156,7 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\AudioViewer.
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\AudioViewer.baml
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Splash.g.cs
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Splash.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\bin\Debug\Microsoft.WindowsAPICodePack.Shell.dll
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\VideoViewer.g.cs
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\VideoViewer.baml

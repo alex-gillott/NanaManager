@@ -7,7 +7,7 @@
         mc:Ignorable="d"
 		d:DesignHeight="400"
 		d:DesignWidth="400"
-        Title="Splash" Height="300" Width="300" ResizeMode="CanMinimize" WindowStyle="None" WindowStartupLocation="CenterScreen" Background="Transparent" ContentRendered="window_ContentRendered">
+        Title="Splash" Height="300" Width="300" ResizeMode="CanMinimize" WindowStyle="None" WindowStartupLocation="CenterScreen" Background="Transparent" ContentRendered="window_ContentRendered" AllowsTransparency="True">
 	<Border Background="{DynamicResource Background}" CornerRadius="20">
 		<Grid>
 			<Label Content="Nana Manager" Foreground="{DynamicResource LightText}" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="25" Height="100"/>

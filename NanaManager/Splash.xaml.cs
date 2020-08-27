@@ -10,7 +10,6 @@ using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
 using System.Threading;
-using NanaManager.SettingsPages;
 
 namespace NanaManager
 {
@@ -44,6 +43,7 @@ namespace NanaManager
 			Logging.Write( "Registering Media Constructors", "Init", LogLevel.Info );
 			Registry.RegisterMediaConstructor( typeof( Image ), Image.CTOR_ID );
 			Registry.RegisterMediaConstructor( typeof( Audio ), Audio.CTOR_ID );
+			Registry.RegisterMediaConstructor( typeof( Video ), Video.CTOR_ID );
 			ProgUpdate( 3 );
 
 			Logging.Write( "Registering Media Viewers", "Init", LogLevel.Info );
@@ -53,6 +53,9 @@ namespace NanaManager
 			MediaHandlers.Audio auhnd = new MediaHandlers.Audio();
 			Registry.RegisterMediaViewer( auhnd.ID, auhnd );
 			Registry.RegisterExtensions( "Audio Files", Audio.CTOR_ID, auhnd.ID, auhnd.GetCompatibleTypes() );
+			MediaHandlers.Video vihnd = new MediaHandlers.Video();
+			Registry.RegisterMediaViewer( vihnd.ID, vihnd );
+			Registry.RegisterExtensions( "Video Files", Video.CTOR_ID, vihnd.ID, vihnd.GetCompatibleTypes() );
 			ProgUpdate( 4 );
 
 			Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
