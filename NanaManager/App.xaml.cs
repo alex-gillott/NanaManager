@@ -28,6 +28,8 @@ namespace NanaManager
 			ContentFile.LoadEnvironment();
 			Logging.Init();
 
+			NanaManager.Properties.Settings.Default.ToImport = new System.Collections.Specialized.StringCollection();
+
 			try {
 				App app = new App();
 				Splash wnd = new Splash(); //Load and run the application

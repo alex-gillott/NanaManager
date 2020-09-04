@@ -66,7 +66,7 @@
 					<MenuItem Header="Add Group" Click="menuItem_Click"/>
 				</ContextMenu>
 			</ScrollViewer.ContextMenu>
-			<StackPanel x:Name="stkGroups" HorizontalAlignment="Stretch" Margin="0,0,0,0" VerticalAlignment="Stretch" Orientation="Horizontal" MouseDown="clickHandle" Loaded="stackPanel_Loaded" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"/>
+			<StackPanel x:Name="stkGroups" HorizontalAlignment="Stretch" Margin="0,0,0,7" VerticalAlignment="Stretch" Orientation="Horizontal" MouseDown="clickHandle" Loaded="stackPanel_Loaded" ScrollViewer.HorizontalScrollBarVisibility="Visible" ScrollViewer.VerticalScrollBarVisibility="Disabled" ScrollViewer.CanContentScroll="True"/>
 		</ScrollViewer>
 		<Button x:Name="btnBack" FontSize="14" Content="Back" Style="{DynamicResource Menu Button}" HorizontalAlignment="Left" Height="32" Margin="10,0,0,10" Grid.Row="1" VerticalAlignment="Bottom" Width="106" Click="btnBack_Click"/>
 		<Button x:Name="btnNewGroup" Style="{DynamicResource Menu Button}" BorderThickness="0" Content="+" FontSize="30" HorizontalAlignment="Left" Height="40" Margin="0" VerticalAlignment="Top" VerticalContentAlignment="Stretch" Width="37" Grid.Row="1" Padding="0" Click="btnNewGroup_Click"/>

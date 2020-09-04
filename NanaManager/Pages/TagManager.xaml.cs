@@ -291,11 +291,12 @@ namespace NanaManager
 			ListView gbContent = new ListView()
 			{
 				Background = Brushes.Transparent,
-				BorderThickness = new Thickness( 0 ),
+				BorderThickness = new Thickness(0),
 				Foreground = (Brush)Application.Current.Resources["LightText"],
 				Focusable = true,
 				Tag = name,
-				AllowDrop = true
+				AllowDrop = true,
+				Margin = new Thickness(0, 0, 0, 3)
 			};
 			ScrollViewer.SetHorizontalScrollBarVisibility( gbContent, ScrollBarVisibility.Disabled );
 			gbContent.DragEnter += gb_DragEnter;
