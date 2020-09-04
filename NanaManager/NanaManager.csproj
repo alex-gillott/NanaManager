@@ -269,6 +269,12 @@
     <Content Include="Resources\MenuBars.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Resources\Nana Manager Icon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Resources\Nana Manager Logo.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Resources\PasswordShow.png">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

@@ -48,7 +48,7 @@ namespace NanaManagerAPI.Types
                     zipStream.CopyTo( ms );
                     ms.Position = 0;
 
-                    BitmapImage bmp = new BitmapImage();
+                    BitmapImage bmp = new BitmapImage();  
                     bmp.BeginInit();
                     bmp.CacheOption = BitmapCacheOption.OnLoad;
                     bmp.StreamSource = ms;

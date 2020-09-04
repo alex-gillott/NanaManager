@@ -9,6 +9,8 @@
 //------------------------------------------------------------------------------
 
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/menubars.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/nana%20manager%20icon.png")]
+[assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/nana%20manager%20logo.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/passwordshow.png")]
 [assembly: System.Windows.Resources.AssemblyAssociatedContentFileAttribute("resources/username.png")]
 
