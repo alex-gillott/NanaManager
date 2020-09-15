@@ -229,7 +229,7 @@ namespace NanaManagerAPI.IO
 		/// <param name="Password">The password to encrypt the data with</param>
 		public static void Encrypt( string Password ) {
 			try {
-				Archive.Dispose();
+				Archive?.Dispose();
 				CryptographyProvider.Initialise( Password );
 				File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
 				CryptographyProvider.Terminate();

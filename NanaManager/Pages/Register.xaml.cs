@@ -42,6 +42,7 @@ namespace NanaManager
                 sb.Append( (char)((byte)username[i] ^ key[i % key.Length]) );
             Properties.Settings.Default.Username = sb.ToString();
             Properties.Settings.Default.Save();
+            
             ContentFile.Encrypt( password );
             MessageBox.Show( "Registered your user!" );
             Paging.LoadPage(Pages.Login);
