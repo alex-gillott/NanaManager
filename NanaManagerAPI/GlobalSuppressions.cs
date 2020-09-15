@@ -5,4 +5,4 @@
 
 using System.Diagnostics.CodeAnalysis;
 
-[assembly: SuppressMessage( "Design", "CA1031:Do not catch general exception types", Justification = "<Pending>", Scope = "member", Target = "~M:NanaManagerAPI.IO.ContentFile.CheckValidity~System.Boolean" )]
+[assembly: SuppressMessage( "Design", "CA1031:Do not catch general exception types", Justification = "The error thrown will always be swallowed, because it is used as a checker until a better method is found", Scope = "member", Target = "~M:NanaManagerAPI.IO.ContentFile.CheckValidity~System.Boolean" )]

@@ -4,6 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using System.Windows.Media.Imaging;
+using NanaManagerAPI.Properties;
 
 namespace NanaManagerAPI.UI
 {
@@ -40,7 +41,6 @@ namespace NanaManagerAPI.UI
         /// <param name="Text">The text to display with the notification</param>
         /// <param name="Additional">Any additional information to pass to the Handlers</param>
         public delegate void NotificationHandler( string Text, object[] Additional );
-
         
         /// <summary>
         /// Fires whenever a notification is to be displayed
@@ -62,11 +62,29 @@ namespace NanaManagerAPI.UI
         /// Raises whenever the application is closed
         /// </summary>
         public static event Action WindowClosed;
+        /// <summary>
+        /// Raises whenever the <see cref="IsLightTheme"/> property is set
+        /// </summary>
+        public static event SetterDelegate ThemeLightnessChanged;
 
         /// <summary>
         /// The image displayed over audio files without an album cover
         /// </summary>
         public static BitmapImage AudioSymbol;
+
+        private static bool lightTheme;
+        /// <summary>
+        /// Determines whether the current theme is a light theme. Changes certain static elements to fit light themes better
+        /// </summary>
+        public static bool IsLightTheme { 
+            set
+            {
+                ThemeLightnessChanged?.Invoke( value );
+                lightTheme = value;
+            }
+            get => lightTheme; }
+        internal static BitmapImage LogoDark = Resources.Nana_Manager_Icon_Dark.ToBitmapImage( BitmapCacheOption.OnLoad );
+        internal static BitmapImage LogoLight = Resources.Nana_Manager_Icon_Light.ToBitmapImage( BitmapCacheOption.OnLoad );
 
         /// <summary>
         /// Raises a notification to be displayed

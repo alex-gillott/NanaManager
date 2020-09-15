@@ -69,5 +69,25 @@ namespace NanaManagerAPI.Properties {
                 return ((System.Drawing.Bitmap)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Nana_Manager_Icon_Dark {
+            get {
+                object obj = ResourceManager.GetObject("Nana_Manager_Icon_Dark", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        internal static System.Drawing.Bitmap Nana_Manager_Icon_Light {
+            get {
+                object obj = ResourceManager.GetObject("Nana_Manager_Icon_Light", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

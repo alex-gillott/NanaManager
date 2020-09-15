@@ -121,4 +121,10 @@
   <data name="Music_Icon" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\Music Icon.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="Nana_Manager_Icon_Dark" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Nana Manager Icon Small.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="Nana_Manager_Icon_Light" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\Nana Manager Icon Small light.png;System.Drawing.Bitmap, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>
