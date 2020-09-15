@@ -160,3 +160,5 @@ C:\Users\Hydro\source\repos\NanaManager\NanaManager\bin\Debug\Microsoft.WindowsA
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\bin\Debug\Microsoft.WindowsAPICodePack.Shell.xml
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\VideoViewer.g.cs
 C:\Users\Hydro\source\repos\NanaManager\NanaManager\obj\Debug\Pages\VideoViewer.baml
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\bin\Debug\Resources\Nana Manager Icon.png
+C:\Users\Hydro\source\repos\NanaManager\NanaManager\bin\Debug\Resources\Nana Manager Logo.png
