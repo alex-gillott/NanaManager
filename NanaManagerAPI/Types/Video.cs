@@ -17,7 +17,7 @@ namespace NanaManagerAPI.Types
     {
         public BitmapImage thumbnail;
 
-        public const string CTOR_ID = "hydroxa.nanaManager:data_Video";
+        public const string CTOR_ID = "hydroxa.nanaManager:data_video";
 
         private readonly int[] tags;
 
@@ -49,25 +49,20 @@ namespace NanaManagerAPI.Types
                     ShellFile sf = ShellFile.FromFilePath( filePath );
                     Bitmap bm = sf.Thumbnail.Bitmap;
 
-                    using MemoryStream ms = new MemoryStream();
-                    bm.Save( ms, ImageFormat.Jpeg );
-                    ms.Position = 0;
-
                     File.Delete( filePath );
 
-                    BitmapImage bmp = new BitmapImage();
-                    bmp.BeginInit();
-                    bmp.DecodePixelWidth = 100;
-                    bmp.DecodePixelHeight = 100;
-                    bmp.CacheOption = BitmapCacheOption.OnLoad;
-                    bmp.StreamSource = ms;
-                    bmp.EndInit();
-                    bmp.Freeze();
-
-                    thumbnail = bmp;
+                    thumbnail = bm.ToBitmapImage( BitmapCacheOption.OnDemand );
                 }
             }
             return thumbnail;
+        }
+
+        public string GetCustomData() {
+            return "";
+        }
+
+        public void LoadCustomData( string Data ) {
+            //Currently does nothing
         }
     }
 }

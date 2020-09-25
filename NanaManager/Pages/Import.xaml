@@ -42,7 +42,7 @@
 				</StackPanel>
 			</Border>
 		</Border>
-		<Border x:Name="bdrImporting" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="{DynamicResource BlackGlass}" >
+		<Border x:Name="bdrImporting" HorizontalAlignment="Stretch" VerticalAlignment="Stretch" Grid.ColumnSpan="2" Grid.RowSpan="3" Background="{DynamicResource BlackGlass}" Visibility="Collapsed">
 			<Grid Margin="200,100">
 				<Grid.RowDefinitions>
 					<RowDefinition/>

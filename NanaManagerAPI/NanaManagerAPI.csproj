@@ -63,6 +63,7 @@
   <ItemGroup>
     <Compile Include="Attributes\EntryPointAttribute.cs" />
     <Compile Include="EventArgs\TagCheckEventArgs.cs" />
+    <Compile Include="Extensions.cs" />
     <Compile Include="GlobalSuppressions.cs" />
     <Compile Include="IO\ContentFile.cs" />
     <Compile Include="IO\Plugins.cs" />
@@ -110,6 +111,8 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Resources\Music Icon.png" />
+    <None Include="Resources\Nana Manager Icon Small.png" />
+    <None Include="Resources\Nana Manager Icon Small light.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -57,6 +57,9 @@ namespace NanaManager
 		public MainWindow() {
 			InitializeComponent(); //Initialises the UI elements
 
+			UI.ThemeLightnessChanged += onLightThemeSet;
+			UI.IsLightTheme = false;
+
 			Logging.Write( "Running STAThread plugins", "Plugins", LogLevel.Info );
 			foreach ( MethodInfo mi in Plugins.NeedSTA )
 				mi.Invoke( null, null );
@@ -124,6 +127,8 @@ namespace NanaManager
 		}
 
 		private void onCloseButtonClick( object sender, RoutedEventArgs e ) => UI.CloseApplication();
+
+		private void onLightThemeSet( bool set ) => imgIcon.Source = set ? UI.LogoDark : UI.LogoLight;
 
 		private void onNotificationChange( string text, object[] _ ) {
 			lblNotif.Content = text;

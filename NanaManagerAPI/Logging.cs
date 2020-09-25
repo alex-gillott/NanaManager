@@ -65,12 +65,12 @@ namespace NanaManagerAPI
 			write( Message );
 			NewMessageAdvanced?.Invoke( Message, null, LogLevel.Undefined, DateTime.Now, null, null );
 		}
-		private static void write( string Message ) {
+		private static void write( string message ) {
 			if ( !Initialised )
 				throw new InvalidOperationException( "The logger was not initialised. Call Logging.Init() to initialise." );
-			logs.Enqueue( Message );
-			Debug.WriteLine( Message );
-			NewMessage?.Invoke( Message );
+			logs.Enqueue( message );
+			Debug.WriteLine( message );
+			NewMessage?.Invoke( message );
 		}
 
 		/// <summary>

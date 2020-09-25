@@ -65,6 +65,13 @@ namespace NanaManagerAPI.IO
 		/// </summary>
 		public static readonly string LatestLogPath = Path.Combine( LogPath, "latest.log" );
 
+		/// <summary>
+		/// Represents whether the Content File is open or not
+		/// </summary>
+		public static bool IsOpen { private set; get; }
+		/// <summary>
+		/// The ContentFile's Archive
+		/// </summary>
 		public static ZipArchive Archive;
 
 		private static readonly byte[] ZIP_SIGNATURE = new byte[] { 80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
@@ -204,7 +211,7 @@ namespace NanaManagerAPI.IO
 		public static bool Exists( string Name ) {
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
-			ZipArchiveEntry entry = Archive.GetEntry( Name );
+			ZipArchiveEntry entry = Archive?.GetEntry( Name );
 			return entry != null;
 		}
 
@@ -233,6 +240,7 @@ namespace NanaManagerAPI.IO
 				CryptographyProvider.Initialise( Password );
 				File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
 				CryptographyProvider.Terminate();
+				IsOpen = false;
 			} catch ( IOException e ) {
 				//TODO - HANDLE I/O ERROR
 				throw e;
@@ -257,6 +265,7 @@ namespace NanaManagerAPI.IO
 				File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
 				CryptographyProvider.Terminate();
 				Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
+				IsOpen = true;
 			} catch ( ArgumentNullException e ) {
 				//Path is null or byte array was empty
 				Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
