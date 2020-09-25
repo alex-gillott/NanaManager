@@ -74,9 +74,7 @@ namespace NanaManager.FileEncoders
 					Data.TagLocations.Add( index, i );
 					string name = decoder.ReadString(); //Get the name
 					int aliasCount = decoder.ReadInt32(); //Get the amount of aliases
-					int[] aliases = new int[aliasCount];
-					for ( int o = 0; o < aliasCount; o++ )
-						aliases[o] = decoder.ReadInt32(); //Get the aliase indices
+					int[] aliases = decoder.ReadInt32Array().ToArray();
 					Data.Tags[i] = new Tag( name, index, decoder.ReadInt32(), aliases ); //Last integer is the group
 					if ( hidden )
 						Data.HiddenTags[hiddenCount++] = index;
@@ -89,9 +87,7 @@ namespace NanaManager.FileEncoders
 					string uID = decoder.ReadString();
 					string fileType = decoder.ReadString();
 					tagCount = decoder.ReadInt32();
-					int[] tags = new int[tagCount];
-					for ( int o = 0; o < tagCount; o++ )
-						tags[o] = decoder.ReadInt32();
+					int[] tags = decoder.ReadInt32Array().ToArray();
 					Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[fileType]].Invoke( new object[] { uID, tags, fileType } ) );
 					UI.SetStatus( $"Loading Data - Getting Images {i + 1}/{imageCount}", progress++, operations );
 				}
@@ -122,9 +118,7 @@ namespace NanaManager.FileEncoders
 				encoder.Write( t.Index );
 				encoder.Write(t.Name);
 				int[] aliases = t.GetAliases();
-				encoder.Write( aliases.Length );
-				foreach ( int a in aliases )
-					encoder.Write( a );
+				encoder.Write( aliases );
 				encoder.Write( t.Group );
 			}
 			//Images
@@ -132,9 +126,7 @@ namespace NanaManager.FileEncoders
 				encoder.Write( img.Key );
 				encoder.Write( img.Value.FileType );
 				int[] tags = img.Value.GetTags();
-				encoder.Write( tags.Length );
-				foreach ( int t in tags )
-					encoder.Write( t );
+				encoder.Write( tags );
 			}
 
 			ContentFile.WriteFile( "nanaData", encoder.ToString() );

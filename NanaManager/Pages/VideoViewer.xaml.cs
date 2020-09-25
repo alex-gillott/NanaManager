@@ -103,6 +103,7 @@ namespace NanaManager
                 terminate = false;
                 return;
             }
+            ContentFile.SetArchiveRead();
             ZipArchiveEntry entry = ContentFile.Archive.GetEntry( id );
             string path = Path.Combine( ContentFile.TempPath, $"temp{Data.Media[id].FileType}" );
             if ( terminate ) {

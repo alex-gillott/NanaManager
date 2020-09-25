@@ -108,17 +108,22 @@ namespace NanaManagerAPI.IO
 			}
 
 			//Constructing the audio symbol
-			using MemoryStream ms = new MemoryStream();
-			Resources.Music_Icon.Save( ms, ImageFormat.Png );
-			ms.Position = 0;
-			UI.UI.AudioSymbol = new System.Windows.Media.Imaging.BitmapImage();
-			UI.UI.AudioSymbol.BeginInit();
-			UI.UI.AudioSymbol.StreamSource = ms;
-			UI.UI.AudioSymbol.CacheOption = System.Windows.Media.Imaging.BitmapCacheOption.OnLoad;
-			UI.UI.AudioSymbol.EndInit();
-			UI.UI.AudioSymbol.Freeze();
+			UI.UI.AudioSymbol = Resources.Music_Icon.ToBitmapImage( System.Windows.Media.Imaging.BitmapCacheOption.OnLoad );
 		}
 
+		public static ZipArchive SetArchiveWrite() {
+			Archive.Dispose();
+			Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
+			return Archive;
+		}
+
+		public static ZipArchive SetArchiveRead() {
+			if ( Archive.Mode != ZipArchiveMode.Read ) {
+				Archive.Dispose();
+				Archive = ZipFile.OpenRead( ContentPath );
+			}
+			return Archive;
+        }
 
 		/// <summary>
 		/// Checks if the content file can be read
@@ -146,6 +151,7 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
+			SetArchiveRead();
 			ZipArchiveEntry entry = Archive.GetEntry( Name );
 			if ( entry == null )
 				throw new FileNotFoundException( "The specified file was not found within the database", Name );
@@ -167,6 +173,7 @@ namespace NanaManagerAPI.IO
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
 			if ( Exists( Name ) ) {
+				SetArchiveWrite();
 				ZipArchiveEntry entry = Archive.GetEntry( Name );
 				using Stream entryStream = entry.Open();
 				using StreamWriter writer = new StreamWriter( entryStream );
@@ -174,6 +181,7 @@ namespace NanaManagerAPI.IO
 			}
 			else {
 					//TODO - HANDLE ERRORS
+					SetArchiveWrite();
 					string location = Path.Combine( TempPath, Name );
 					File.WriteAllText( location, Data );
 					Archive.CreateEntryFromFile( location, Name );
@@ -190,17 +198,17 @@ namespace NanaManagerAPI.IO
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
 			if ( Exists( Name ) ) {
-					ZipArchiveEntry entry = Archive.GetEntry( Name );
-					using Stream entryStream = entry.Open();
-					using StreamWriter writer = new StreamWriter( entryStream );
-					writer.Write( Data );
-				}
-			else{
-					string location = Path.Combine( TempPath, Name );
-					File.WriteAllBytes( location, Data );
-					Archive.CreateEntryFromFile( location, Name );
-					File.Delete( location );
-				}
+				ZipArchiveEntry entry = Archive.GetEntry( Name );
+				using Stream entryStream = entry.Open();
+				using StreamWriter writer = new StreamWriter( entryStream );
+				writer.Write( Data );
+			}
+			else {
+				string location = Path.Combine( TempPath, Name );
+				File.WriteAllBytes( location, Data );
+				Archive.CreateEntryFromFile( location, Name );
+				File.Delete( location );
+			}
 		}
 
 		/// <summary>
@@ -211,6 +219,7 @@ namespace NanaManagerAPI.IO
 		public static bool Exists( string Name ) {
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
+			SetArchiveRead();
 			ZipArchiveEntry entry = Archive?.GetEntry( Name );
 			return entry != null;
 		}
