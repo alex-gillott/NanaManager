@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
 using System.Windows.Media.Imaging;
 using NanaManagerAPI.Properties;
 
 namespace NanaManagerAPI.UI
 {
+    /// <summary>
+    /// Contains methods and events relating to UI control
+    /// </summary>
     public static class UI
     {
         /// <summary>
@@ -83,7 +83,13 @@ namespace NanaManagerAPI.UI
                 lightTheme = value;
             }
             get => lightTheme; }
+        /// <summary>
+        /// An image representing the logo, but Dark
+        /// </summary>
         internal static BitmapImage LogoDark = Resources.Nana_Manager_Icon_Dark.ToBitmapImage( BitmapCacheOption.OnLoad );
+        /// <summary>
+        /// An image representing the logo, but Light
+        /// </summary>
         internal static BitmapImage LogoLight = Resources.Nana_Manager_Icon_Light.ToBitmapImage( BitmapCacheOption.OnLoad );
 
         /// <summary>

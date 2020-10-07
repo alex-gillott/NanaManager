@@ -9,6 +9,9 @@ using System.Linq;
 
 namespace NanaManager.FileEncoders
 {
+	/// <summary>
+	/// The internal encoder for the application. Handles nanaData and other default files. Always called first
+	/// </summary>
 	public class BaseEncoder1_1 : IEncoder
 	{
 		public string Name { get; } = "Nana Encoder";

@@ -1,6 +1,8 @@
-﻿
-namespace NanaManagerAPI.IO
+﻿namespace NanaManagerAPI.IO
 {
+	/// <summary>
+	/// Represents a file encoder, called when loading and saving data
+	/// </summary>
 	public interface IEncoder
 	{
 		/// <summary>
@@ -37,6 +39,9 @@ namespace NanaManagerAPI.IO
 		void LoadData();
 	}
 
+	/// <summary>
+	/// Defines whether the encoder is for Data or Encryption
+	/// </summary>
 	public enum EncoderType
 	{
 		Data,

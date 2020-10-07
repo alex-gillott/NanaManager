@@ -9,6 +9,7 @@ using System.Runtime.CompilerServices;
 
 using NanaManagerAPI.IO.Cryptography;
 using NanaManagerAPI.Properties;
+using System.Diagnostics;
 
 [assembly: InternalsVisibleTo("NanaManager")]
 
@@ -80,6 +81,10 @@ namespace NanaManagerAPI.IO
 		/// A list of all active encoders. These will be run when saving and loading data
 		/// </summary>
 		public static readonly List<IEncoder> ActiveEncoders = new List<IEncoder>();
+		/// <summary>
+		/// A helper method for ensuring the right file environment is loaded. 
+		/// Can also be used for loading things before the application starts without cluttering App.xaml.cs
+		/// </summary>
 		internal static void LoadEnvironment() {
 			try {
 				if ( !Directory.Exists( HydroxaPath ) )
@@ -111,19 +116,27 @@ namespace NanaManagerAPI.IO
 			UI.UI.AudioSymbol = Resources.Music_Icon.ToBitmapImage( System.Windows.Media.Imaging.BitmapCacheOption.OnLoad );
 		}
 
+		/// <summary>
+		/// Sets <see cref="Archive"/> into Write Mode. (Single Use)
+		/// </summary>
+		/// <returns>The Archive in Write Mode</returns>
 		public static ZipArchive SetArchiveWrite() {
-			Archive.Dispose();
+			Archive.Dispose(); //Write Mode is Single Use, so it must be redefined each time
 			Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
 			return Archive;
 		}
 
+		/// <summary>
+		/// Sets <see cref="Archive"/> into Read Mode (Multi Use)
+		/// </summary>
+		/// <returns>The Archive in Read Mode</returns>
 		public static ZipArchive SetArchiveRead() {
 			if ( Archive.Mode != ZipArchiveMode.Read ) {
-				Archive.Dispose();
+				Archive.Dispose(); //Read Mode is Multi Use, so it can be kept if already defined
 				Archive = ZipFile.OpenRead( ContentPath );
 			}
 			return Archive;
-        }
+		}
 
 		/// <summary>
 		/// Checks if the content file can be read
@@ -132,18 +145,19 @@ namespace NanaManagerAPI.IO
 		public static bool CheckValidity() {
 			try {
 				if (Archive == null) {
-                    using var zipFile = ZipFile.OpenRead( ContentPath );
-                    var test = zipFile.Entries;
-                    return true;
-                }
+					using var zipFile = ZipFile.OpenRead( ContentPath );
+					var test = zipFile.Entries;
+					return true;
+				}
 				var entries = Archive.Entries;
 				return true;
 			} catch ( InvalidDataException ) {
 				return false;
 			}
 		}
+		
 		/// <summary>
-		/// Reads a file from the content file 
+		/// Reads a specified file from the content file 
 		/// </summary>
 		/// <param name="Name">The name of the file to read</param>
 		/// <returns>A byte array representation of the data</returns>
@@ -163,6 +177,7 @@ namespace NanaManagerAPI.IO
 				return data;
 			}
 		}
+		
 		/// <summary>
 		/// Writes to a file within the content file, if it exists. Creates one otherwise
 		/// </summary>
@@ -172,20 +187,20 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-			if ( Exists( Name ) ) {
+			if ( Exists( Name ) ) { //Write if exists
 				SetArchiveWrite();
 				ZipArchiveEntry entry = Archive.GetEntry( Name );
 				using Stream entryStream = entry.Open();
 				using StreamWriter writer = new StreamWriter( entryStream );
 				writer.Write( Data );
 			}
-			else {
-					//TODO - HANDLE ERRORS
-					SetArchiveWrite();
-					string location = Path.Combine( TempPath, Name );
-					File.WriteAllText( location, Data );
-					Archive.CreateEntryFromFile( location, Name );
-					File.Delete( location );
+			else { //Create if doesn't exist
+				//TODO - HANDLE ERRORS
+				SetArchiveWrite();
+				string location = Path.Combine( TempPath, Name );
+				File.WriteAllText( location, Data );
+				Archive.CreateEntryFromFile( location, Name );
+				File.Delete( location );
 			}
 		}
 		/// <summary>
@@ -197,13 +212,13 @@ namespace NanaManagerAPI.IO
 			if ( string.IsNullOrWhiteSpace( Name ) )
 				throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-			if ( Exists( Name ) ) {
+			if ( Exists( Name ) ) { //Write if Exists
 				ZipArchiveEntry entry = Archive.GetEntry( Name );
 				using Stream entryStream = entry.Open();
 				using StreamWriter writer = new StreamWriter( entryStream );
 				writer.Write( Data );
 			}
-			else {
+			else { //Create if doesn't exist
 				string location = Path.Combine( TempPath, Name );
 				File.WriteAllBytes( location, Data );
 				Archive.CreateEntryFromFile( location, Name );
@@ -245,23 +260,56 @@ namespace NanaManagerAPI.IO
 		/// <param name="Password">The password to encrypt the data with</param>
 		public static void Encrypt( string Password ) {
 			try {
+				Logging.Write( "Encrypting the content file..", "ContentFile", LogLevel.Info );
 				Archive?.Dispose();
 				CryptographyProvider.Initialise( Password );
 				File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
 				CryptographyProvider.Terminate();
 				IsOpen = false;
+			} catch ( PathTooLongException ) {
+				Logging.Write( $"File Path was too long \"{ContentPath}\"", "ContentFile", LogLevel.Error );
+				if ( Debugger.IsAttached )
+					throw;
+			} catch ( DirectoryNotFoundException ) {
+				Logging.Write( $"Could not find the content file \"{ContentPath}\"", "ContentFile", LogLevel.Error );
+				if ( Debugger.IsAttached )
+					throw;
+			} catch (ArgumentNullException) {
+				FileInfo fi = new FileInfo( ContentPath );
+				if ( fi.Length == 0 )
+					Logging.Write( "Could not Encrypt: File was empty! This should never be the case!", "ContentFile", LogLevel.Error );
+				else
+					Logging.Write( "Could not Encrypt: ContentPath was null! This should never be the case!", "ContentFile", LogLevel.Error );
+				if ( Debugger.IsAttached )
+					throw;
 			} catch ( IOException e ) {
 				//TODO - HANDLE I/O ERROR
-				throw e;
+				
+				Logging.Write( e, "ContentFile", LogLevel.Error );
+				if ( Debugger.IsAttached )
+					throw;
 			} catch ( UnauthorizedAccessException e ) {
-				//TODO - HANDLE ERROR
-				//File that is readonly
-				//File that is hidden
-				//Do not have permission
-				throw e;
+				FileInfo fi = new FileInfo( ContentPath );
+				if ( fi.IsReadOnly ) //File that is readonly
+					Logging.Write( "Could not Encrypt: File is Read Only", "ContentFile", LogLevel.Error );
+				else if ( (fi.Attributes & FileAttributes.Hidden) > 0 ) //File that is hidden
+					Logging.Write( "Coult not Encrypt: File is Hidden", "ContentFile", LogLevel.Error );
+				else {
+					try { //Do not have permission
+						System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl( RootPath );
+						Logging.Write( e, "ContentFile", LogLevel.Error ); //Shouldn't get here if expected, so just dump full error 
+					} catch ( UnauthorizedAccessException ) {
+						Logging.Write( "Could not Encrypt: Insufficient permissions - Need Write Permissions", "ContentFile", LogLevel.Error );
+					}
+				}
+
+				if ( Debugger.IsAttached )
+					throw;
 			} catch ( SecurityException e ) {
-				//TODO - HANDLE ACCESS ERROR
-				throw e;
+				Logging.Write( $"Could not Encrypt: User has insufficient permissions (Missing permission {e.Demanded}", "ContentFile", LogLevel.Error );
+				
+				if ( Debugger.IsAttached )
+					throw;
 			}
 		}
 		/// <summary>
@@ -270,45 +318,60 @@ namespace NanaManagerAPI.IO
 		/// <param name="Password">The password to decrypt the data with</param>
 		public static void Decrypt( string Password ) {
 			try {
-				CryptographyProvider.Initialise( Password );
-				File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
-				CryptographyProvider.Terminate();
-				Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
+				if ( !CheckValidity() ) {
+					CryptographyProvider.Initialise( Password );
+					File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
+					CryptographyProvider.Terminate();
+				}
 				IsOpen = true;
-			} catch ( ArgumentNullException e ) {
-				//Path is null or byte array was empty
-				Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
-				throw e;
-			} catch ( DirectoryNotFoundException e ) {
-				Logging.Write( "The Content Path was not found. Attempting to generate new files.", "ContentDecryption", LogLevel.Error );
+			} catch ( ArgumentNullException ) {
+				FileInfo fi = new FileInfo( ContentPath );
+				if ( fi.Length == 0 )
+					Logging.Write( "Could not Decrypt: File was empty! This should never be the case!", "ContentFile", LogLevel.Crash );
+				else
+					Logging.Write( "Could not Decrypt: ContentPath was null! This should never be the case!", "ContentFile", LogLevel.Crash );
+				if ( Debugger.IsAttached )
+					throw;
+			} catch ( DirectoryNotFoundException ) {
+				Logging.Write( "The Content Path was not found. Attempting to generate new files.", "ContentFile", LogLevel.Error );
 				LoadEnvironment();
-				if ( !File.Exists( ContentPath ) )
-					throw e;
-			} catch ( PathTooLongException e ) {
-				//Path was too long
-				Logging.Write( $"Content Path was too long: \"{ContentPath}\"", "ContentDecrpytion", LogLevel.Fatal );
-				throw e;
+				if ( !File.Exists( ContentPath ) ) {
+					Logging.Write( $"The Content Path was still not found: \"{ContentPath}\"", "ContentFile", LogLevel.Crash );
+					throw;
+				}
+			} catch ( PathTooLongException ) {
+				Logging.Write( $"Content Path was too long: \"{ContentPath}\"", "ContentFile", LogLevel.Crash );
+				throw;
 			} catch ( SecurityException e ) {
-				//TODO - Does not have required permissions
+				Logging.Write( $"Could not Decrypt: User has insufficient permissions (Missing permission {e.Demanded}", "ContentFile", LogLevel.Crash );
 
-				throw e;
+				if ( Debugger.IsAttached )
+					throw;
+				throw;
 			} catch ( IOException e ) {
-				Logging.Write( $"Could not decrypt file ({e.Message})\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
-				throw e;
+				Logging.Write( e, "ContentFile", LogLevel.Crash );
+				throw;
 			} catch ( UnauthorizedAccessException e ) {
-				//TODO - HANDLE ERROR
 				if ( Directory.Exists( ContentPath ) )
-					Logging.Write( $"Content Path was a directory: \"{ContentPath}\"", "ContentDecryption", LogLevel.Fatal );
+					Logging.Write( $"Content Path was a directory: \"{ContentPath}\"", "ContentFile", LogLevel.Crash );
 				else {
 					FileInfo fi = new FileInfo( ContentPath );
 
-					if ( fi.IsReadOnly )
-						Logging.Write( $"Content Path was read only: \"{ContentPath}\"", "ContentDecryption", LogLevel.Fatal );
-					//File that is readonly
-					//File that is hidden
-					//Do not have permission
+					if ( fi.IsReadOnly ) //File that is readonly
+						Logging.Write( $"Content Path was read only: \"{ContentPath}\"", "ContentFile", LogLevel.Crash );
+					else if ( (fi.Attributes & FileAttributes.Hidden) > 0 ) //File that is hidden
+						Logging.Write( "Coult not Decrypt: File is Hidden", "ContentFile", LogLevel.Crash );
+					else {
+						try { //Do not have permission
+							System.Security.AccessControl.DirectorySecurity ds = Directory.GetAccessControl( RootPath );
+							Logging.Write( e, "ContentFile", LogLevel.Error ); //Shouldn't get here if expected, so just dump full error 
+						} catch ( UnauthorizedAccessException ) {
+							Logging.Write( "Could not Decrypt: Insufficient permissions - Need Write Permissions", "ContentFile", LogLevel.Crash );
+						}
+					}
 				}
-				throw e;
+				if ( Debugger.IsAttached )
+					throw;
 			}
 		}
 	}
