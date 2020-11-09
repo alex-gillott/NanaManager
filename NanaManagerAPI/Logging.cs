@@ -166,7 +166,7 @@ namespace NanaManagerAPI
 	public enum LogLevel : byte
 	{
 		/// <summary>
-		/// Used when no log level was defined. This is meant to be used in advanced log handlers 
+		/// Used when no log level was defined. This is only meant to be used in advanced log handlers 
 		/// </summary>
 		Undefined = 255,
 		/// <summary>

@@ -121,7 +121,7 @@ namespace NanaManagerAPI.IO
 		/// </summary>
 		/// <returns>The Archive in Write Mode</returns>
 		public static ZipArchive SetArchiveWrite() {
-			Archive.Dispose(); //Write Mode is Single Use, so it must be redefined each time
+			Archive?.Dispose(); //Write Mode is Single Use, so it must be redefined each time
 			Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
 			return Archive;
 		}
@@ -131,8 +131,8 @@ namespace NanaManagerAPI.IO
 		/// </summary>
 		/// <returns>The Archive in Read Mode</returns>
 		public static ZipArchive SetArchiveRead() {
-			if ( Archive.Mode != ZipArchiveMode.Read ) {
-				Archive.Dispose(); //Read Mode is Multi Use, so it can be kept if already defined
+			if ( Archive == null || Archive.Mode != ZipArchiveMode.Read ) {
+				Archive?.Dispose(); //Read Mode is Multi Use, so it can be kept if already defined
 				Archive = ZipFile.OpenRead( ContentPath );
 			}
 			return Archive;

@@ -7,6 +7,7 @@ using NanaManagerAPI.Types;
 using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
+using System.Linq;
 
 namespace NanaManager
 {
@@ -36,25 +37,30 @@ namespace NanaManager
 				app.Run( wnd );
 
 				//This part executes after the application closes
-
-				string[] logs = Directory.GetFiles( ContentFile.LogPath );
-				if ( logs.Length > 5 ) {
-					for ( int i = 0; i < logs.Length - 5; i++ )
-						File.Delete( logs[i] );
-				}
 			} catch ( Exception e ) {
-				Logging.Write( e, "Core", LogLevel.Fatal );
+				Logging.Write( e, "Core", LogLevel.Crash );
+				try {
+					ContentFile.SetArchiveWrite();
+					ContentFile.SaveData();
+				} catch ( Exception er ) {
+					Logging.Write( "Could not save Data", "ErrorRecovery", LogLevel.Fatal );
+					Logging.Write( er, "ErrorRecovery", LogLevel.Fatal );
+
+					if ( Debugger.IsAttached )
+						throw;
+				}
 				Logging.SaveLogs();
-				string[] logs = Directory.GetFiles( ContentFile.LogPath );
-				if ( logs.Length > 5 ) {
-					for ( int i = 0; i < logs.Length - 5; i++ )
-						File.Delete( logs[i] );
-				}
-				if ( Debugger.IsAttached ) {
-					ContentFile.Archive.Dispose();
+
+				MessageBox.Show( "An error occured in the application that prevented it from running. As much data was saved as possible, and the error was logged" );
+
+				if ( Debugger.IsAttached )
 					throw;
-				}
 			} finally {
+				string[] logs = Directory.GetFiles( ContentFile.LogPath, "*.*", SearchOption.TopDirectoryOnly );
+				if ( logs.Length > 5 ) {
+					foreach ( FileInfo fi in new DirectoryInfo( ContentFile.LogPath ).GetFiles().OrderByDescending( x => x.LastWriteTime ).Skip( 5 ) )
+						fi.Delete();
+				}
 				ContentFile.Archive?.Dispose();
 			}
 		}

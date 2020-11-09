@@ -44,7 +44,7 @@ namespace NanaManagerAPI.IO
 		public decimal ReadDecimal() {
 			int[] data = new int[] { ReadInt32(), ReadInt32(), ReadInt32(), ReadInt32() };
 			return new decimal(data[0], data[1], data[2], (data[3] & 0x80000000) != 0, (byte)((data[3] >> 16) & 0x7F));
-		}
+		} 
 		public string ReadString() {
 			int length = ReadInt32();
 			int start = Location;

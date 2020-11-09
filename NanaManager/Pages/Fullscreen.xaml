@@ -6,7 +6,7 @@
 	  xmlns:local="clr-namespace:NanaManager"
 	  mc:Ignorable="d" 
 	  d:DesignHeight="450" d:DesignWidth="800"
-	  Title="Fullscreen" KeyDown="page_PreviewKeyDown" Loaded="page_Loaded">
+	  Title="Fullscreen" KeyDown="page_PreviewKeyDown" Loaded="page_Loaded" Unloaded="Page_Unloaded">
 	<Page.Resources>
 		<Storyboard x:Key="styHideMenu">
 			<DoubleAnimation To="-100" Duration="0:0:0.3" Storyboard.TargetProperty="(Grid.RenderTransform).(TranslateTransform.Y)" Storyboard.TargetName="grdMenu">

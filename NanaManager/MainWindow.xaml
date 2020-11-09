@@ -37,11 +37,13 @@
 				<Grid.ColumnDefinitions>
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
+					<ColumnDefinition Width="*" />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 					<ColumnDefinition Width="Auto" />
 				</Grid.ColumnDefinitions>
-				<Rectangle x:Name="rctTitleBar" Grid.ColumnSpan="5" Fill="{DynamicResource TitleBar}">
+				<Rectangle x:Name="rctTitleBar" Grid.ColumnSpan="7" Fill="{DynamicResource TitleBar}">
 					<Rectangle.Style>
 						<Style TargetType="Rectangle">
 							<Style.Triggers>
@@ -64,16 +66,16 @@
 						</Style>
 					</TextBlock.Style>
 				</TextBlock>
-				<Button Grid.Column="2" Click="onMinimizeButtonClick" RenderOptions.EdgeMode="Aliased" Style="{StaticResource TitleBarButtonStyle}">
+				<Button Grid.Column="4" Click="onMinimizeButtonClick" RenderOptions.EdgeMode="Aliased" Style="{StaticResource TitleBarButtonStyle}">
 					<Path Width="46" Height="25" Data="M 18,13 H 28" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
 				</Button>
-				<Button Name="btnMaximise" Grid.Column="3" Click="onMaximizeRestoreButtonClick" Style="{StaticResource TitleBarButtonStyle}">
+				<Button Name="btnMaximise" Grid.Column="5" Click="onMaximizeRestoreButtonClick" Style="{StaticResource TitleBarButtonStyle}">
 					<Path Width="46" Height="25" Data="M 18.5,8.5 H 27.5 V 17.5 H 18.5 Z" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
 				</Button>
-				<Button Name="btnRestore" Grid.Column="3" Click="onMaximizeRestoreButtonClick" Style="{StaticResource TitleBarButtonStyle}" Visibility="Collapsed">
+				<Button Name="btnRestore" Grid.Column="5" Click="onMaximizeRestoreButtonClick" Style="{StaticResource TitleBarButtonStyle}" Visibility="Collapsed">
 					<Path Width="46" Height="25" Data="M 18.5,10.5 H 25.5 V 17.5 H 18.5 Z M 20.5,10.5 V 8.5 H 27.5 V 15.5 H 25.5" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
 				</Button>
-				<Button Grid.Column="4" Click="onCloseButtonClick" Style="{StaticResource TitleBarCloseButtonStyle}">
+				<Button Grid.Column="6" Click="onCloseButtonClick" Style="{StaticResource TitleBarCloseButtonStyle}">
 					<Path Width="46" Height="25" Data="M 18,8 27,17 M 18,17 27,8" Stroke="{Binding Path=Foreground, RelativeSource={RelativeSource AncestorType={x:Type Button}}}" StrokeThickness="1" />
 				</Button>
 			</Grid>

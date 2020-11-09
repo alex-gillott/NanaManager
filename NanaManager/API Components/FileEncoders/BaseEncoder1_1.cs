@@ -119,9 +119,8 @@ namespace NanaManager.FileEncoders
 			foreach ( Tag t in Data.Tags ) {
 				encoder.Write( Data.HiddenTags.Contains( t.Index ) );
 				encoder.Write( t.Index );
-				encoder.Write(t.Name);
-				int[] aliases = t.GetAliases();
-				encoder.Write( aliases );
+				encoder.Write( t.Name );
+				encoder.Write( t.GetAliases() );
 				encoder.Write( t.Group );
 			}
 			//Images

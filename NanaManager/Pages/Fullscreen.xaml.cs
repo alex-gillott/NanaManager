@@ -75,7 +75,7 @@ namespace NanaManager
             }
         }
         private void exit_Click( object sender, RoutedEventArgs e ) {
-            UI.SetFullscreen( false );
+            //UI.SetFullscreen( false );
             Paging.LoadPreviousPage();
         }
 
@@ -96,7 +96,7 @@ namespace NanaManager
         }
 
         private void edit_Click( object sender, RoutedEventArgs e ) {
-            UI.SetFullscreen( false );
+            //UI.SetFullscreen( false );
             Import.Editing = current;
             Paging.LoadPage( Pages.Import );
             editing = true;
@@ -141,6 +141,10 @@ namespace NanaManager
 
         private void frmViewer_Loaded( object sender, RoutedEventArgs e ) {
             ((Frame)sender).Focus();
+        }
+
+        private void Page_Unloaded( object sender, RoutedEventArgs e ) {
+            UI.SetFullscreen( false );
         }
     }
 }

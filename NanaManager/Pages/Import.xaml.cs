@@ -197,6 +197,7 @@ namespace NanaManager
 			bool saved = false;
 			try {
 				string uID = Guid.NewGuid().ToString();
+				ContentFile.SetArchiveWrite();
 				ContentFile.Archive.CreateEntryFromFile( toImport[index], uID );
 				Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) ); ;
 
