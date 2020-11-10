@@ -17,7 +17,7 @@
 		<Color x:Key="InactiveTitleBarColor">#63225d</Color>
 		<Color x:Key="InactiveTextColor">#646464</Color>
 		<Color x:Key="GlassHighlightColor">#22AE006B</Color>
-		<Color x:Key="HighlightColor">#AE006B</Color>
+		<Color x:Key="HighlightColor">#DE009B</Color>
         <RadialGradientBrush x:Key="Background">
             <GradientStop Color="{DynamicResource BackgroundCentre}" Offset="0"/>
             <GradientStop Color="{DynamicResource BackgroundEdge}" Offset="1"/>
