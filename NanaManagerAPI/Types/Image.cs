@@ -40,6 +40,7 @@ namespace NanaManagerAPI.Types
 
         public BitmapImage GetSample() {
             if ( ContentFile.CheckValidity() ) {
+                ContentFile.SetArchiveRead();
                 ZipArchiveEntry entry = ContentFile.Archive.GetEntry( ID );
                 if ( entry == null )
                     throw new FileNotFoundException( "Image was not found within the database", ID );
@@ -69,6 +70,7 @@ namespace NanaManagerAPI.Types
         /// <returns>The image as a <see cref="BitmapImage"/></returns>
         public BitmapImage GetImage() {
             if ( ContentFile.CheckValidity() ) {
+                ContentFile.SetArchiveRead();
                 ZipArchiveEntry entry = ContentFile.Archive.GetEntry( ID );
                 if ( entry == null )
                     throw new FileNotFoundException( "Image was not found within the database", ID );

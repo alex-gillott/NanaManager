@@ -69,7 +69,7 @@
 				<ToggleButton x:Name="btnT4" Style="{DynamicResource Settings VButton}" Grid.Column="4"/>
 				<ToggleButton x:Name="btnT5" Style="{DynamicResource Settings VButton}" Grid.Column="5"/>
 				<ToggleButton x:Name="btnT6" Style="{DynamicResource Settings VButton}" Grid.Column="6"/>
-				<ToggleButton x:Name="btnT7" Grid.Column="7" Content="Test">
+				<ToggleButton x:Name="btnT7" Grid.Column="7">
 					<ToggleButton.Style>
 						<Style TargetType="{x:Type ToggleButton}">
 							<Setter Property="Background" Value="Transparent"/>

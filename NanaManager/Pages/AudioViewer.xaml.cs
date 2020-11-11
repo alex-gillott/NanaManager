@@ -98,6 +98,7 @@ namespace NanaManager
         }
 
         private void extract( string id ) {
+            ContentFile.SetArchiveRead();
             ZipArchiveEntry entry = ContentFile.Archive.GetEntry( id );
             string path = Path.Combine( ContentFile.TempPath, $"temp{Data.Media[id].FileType}" );
             if ( File.Exists( path ) ) File.Delete( path );
