@@ -118,8 +118,8 @@ namespace NanaManagerAPI.IO
 		}
 
 		public static ZipArchive SetArchiveRead() {
-			if ( Archive.Mode != ZipArchiveMode.Read ) {
-				Archive.Dispose();
+			if ( Archive == null || Archive.Mode != ZipArchiveMode.Read ) {
+				Archive?.Dispose();
 				Archive = ZipFile.OpenRead( ContentPath );
 			}
 			return Archive;

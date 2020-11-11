@@ -78,7 +78,8 @@ namespace NanaManager
 			renderIndex();
 		}
 		private void btnSkip_Click( object sender, RoutedEventArgs e ) {
-			checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
+			if (checkedTags.Count > index)
+				checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
 			index--;
 			if ( index == 0 )
 				btnSkip.IsEnabled = false;
@@ -86,7 +87,8 @@ namespace NanaManager
 			renderIndex();
 		}
 		private void btnBack_Click( object sender, RoutedEventArgs e ) {
-			checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
+			if (checkedTags.Count > index)
+				checkedTags[index] = tslEditor.GetCheckedTagsIndicies();
 			index++;
 			if ( index == toImport.Count - 1 )
 				btnBack.IsEnabled = false;
@@ -197,9 +199,11 @@ namespace NanaManager
 			bool saved = false;
 			try {
 				string uID = Guid.NewGuid().ToString();
+				ContentFile.SetArchiveWrite();
 				ContentFile.Archive.CreateEntryFromFile( toImport[index], uID );
 				Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[Path.GetExtension( toImport[index] )]].Invoke( new object[] { uID, tslEditor.GetCheckedTagsIndicies(), Path.GetExtension( toImport[index] ) } ) ); ;
 
+				ContentFile.SaveData();
 				GC.Collect();
 				GC.WaitForPendingFinalizers();
 				GC.Collect();
@@ -212,6 +216,7 @@ namespace NanaManager
 					 string toDelete = toImport[index];
 					 toImport.RemoveAt( index );
 					 checkedTags.RemoveAt( index );
+					 Settings.Default.ToImport.RemoveAt( index );
 					 if ( index > 0 )
 						 btnSkip_Click( null, null );
 

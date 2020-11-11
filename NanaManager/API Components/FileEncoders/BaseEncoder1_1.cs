@@ -73,7 +73,6 @@ namespace NanaManager.FileEncoders
 					int index = decoder.ReadInt32();
 					Data.TagLocations.Add( index, i );
 					string name = decoder.ReadString(); //Get the name
-					int aliasCount = decoder.ReadInt32(); //Get the amount of aliases
 					int[] aliases = decoder.ReadInt32Array().ToArray();
 					Data.Tags[i] = new Tag( name, index, decoder.ReadInt32(), aliases ); //Last integer is the group
 					if ( hidden )
@@ -86,7 +85,6 @@ namespace NanaManager.FileEncoders
 				for ( int i = 0; i < imageCount; i++ ) {
 					string uID = decoder.ReadString();
 					string fileType = decoder.ReadString();
-					tagCount = decoder.ReadInt32();
 					int[] tags = decoder.ReadInt32Array().ToArray();
 					Data.Media.Add( uID, (IMedia)Registry.MediaConstructors[Registry.ExtensionConstructors[fileType]].Invoke( new object[] { uID, tags, fileType } ) );
 					UI.SetStatus( $"Loading Data - Getting Images {i + 1}/{imageCount}", progress++, operations );

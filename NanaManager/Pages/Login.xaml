@@ -29,5 +29,6 @@
             </Border.Background>
         </Border>
         <Label x:Name="lblBadInput" Content="Your username or password was incorrect" HorizontalAlignment="Center" Height="32" Margin="0,312,0,81" VerticalAlignment="Center" Width="286" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FFFF3C3C" FontSize="14"/>
-    </Grid>
+		<Label Content="AB[CB]b0.13.8.0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource LightText}"/>
+	</Grid>
 </Page>

@@ -5,6 +5,7 @@ using System.Collections.Generic;
 
 using NanaManagerAPI.IO;
 using System.Diagnostics;
+using System.Windows;
 
 namespace NanaManagerAPI
 {
@@ -54,7 +55,11 @@ namespace NanaManagerAPI
 			int c = logs.Count;
 			for ( int i = 0; i < c; i++ ) //A variable is used because logs changes length during iteration, which would lead to only half the log being written
 				sb.AppendLine( logs.Dequeue() );
-			File.AppendAllText( ContentFile.LatestLogPath, sb.ToString() );
+			try {
+				File.AppendAllText( ContentFile.LatestLogPath, sb.ToString() );
+			} catch ( Exception ex ) {
+				MessageBox.Show( $"Failed to save logs: {ex.Message}" );
+            }
 		}
 
 		/// <summary>

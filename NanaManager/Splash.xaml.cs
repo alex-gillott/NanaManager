@@ -10,6 +10,7 @@ using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
 using NanaManagerAPI;
 using System.Threading;
+using System.Diagnostics;
 
 namespace NanaManager
 {
@@ -33,38 +34,50 @@ namespace NanaManager
         }
 
 		private void loadInternalComponents() { //TODO - Work out tasks to make this Async properly
-			ProgUpdate( 1 );
-			Logging.Write( "Loading API components", "Init", LogLevel.Info );
+			try {
+				ProgUpdate( 1 );
+				Logging.Write( "Loading API components", "Init", LogLevel.Info );
 
-			Logging.Write( "Registering Data Encoders", "Init", LogLevel.Info );
-			ContentFile.ActiveEncoders.Add( new FileEncoders.BaseEncoder1_1() );
-			ProgUpdate( 2 );
+				Logging.Write( "Registering Data Encoders", "Init", LogLevel.Info );
+				ContentFile.ActiveEncoders.Add( new FileEncoders.BaseEncoder1_1() );
+				ProgUpdate( 2 );
 
-			Logging.Write( "Registering Media Constructors", "Init", LogLevel.Info );
-			Registry.RegisterMediaConstructor( typeof( Image ), Image.CTOR_ID );
-			Registry.RegisterMediaConstructor( typeof( Audio ), Audio.CTOR_ID );
-			Registry.RegisterMediaConstructor( typeof( Video ), Video.CTOR_ID );
-			ProgUpdate( 3 );
+				Logging.Write( "Registering Media Constructors", "Init", LogLevel.Info );
+				Registry.RegisterMediaConstructor( typeof( Image ), Image.CTOR_ID );
+				Registry.RegisterMediaConstructor( typeof( Audio ), Audio.CTOR_ID );
+				Registry.RegisterMediaConstructor( typeof( Video ), Video.CTOR_ID );
+				ProgUpdate( 3 );
 
-			Logging.Write( "Registering Media Viewers", "Init", LogLevel.Info );
-			MediaHandlers.Images imhnd = new MediaHandlers.Images();
-			Registry.RegisterMediaViewer( imhnd.ID, imhnd );
-			Registry.RegisterExtensions( "Image Files", Image.CTOR_ID, imhnd.ID, imhnd.GetCompatibleTypes() );
-			MediaHandlers.Audio auhnd = new MediaHandlers.Audio();
-			Registry.RegisterMediaViewer( auhnd.ID, auhnd );
-			Registry.RegisterExtensions( "Audio Files", Audio.CTOR_ID, auhnd.ID, auhnd.GetCompatibleTypes() );
-			MediaHandlers.Video vihnd = new MediaHandlers.Video();
-			Registry.RegisterMediaViewer( vihnd.ID, vihnd );
-			Registry.RegisterExtensions( "Video Files", Video.CTOR_ID, vihnd.ID, vihnd.GetCompatibleTypes() );
-			ProgUpdate( 4 );
+				Logging.Write( "Registering Media Viewers", "Init", LogLevel.Info );
+				MediaHandlers.Images imhnd = new MediaHandlers.Images();
+				Registry.RegisterMediaViewer( imhnd.ID, imhnd );
+				Registry.RegisterExtensions( "Image Files", Image.CTOR_ID, imhnd.ID, imhnd.GetCompatibleTypes() );
+				MediaHandlers.Audio auhnd = new MediaHandlers.Audio();
+				Registry.RegisterMediaViewer( auhnd.ID, auhnd );
+				Registry.RegisterExtensions( "Audio Files", Audio.CTOR_ID, auhnd.ID, auhnd.GetCompatibleTypes() );
+				MediaHandlers.Video vihnd = new MediaHandlers.Video();
+				Registry.RegisterMediaViewer( vihnd.ID, vihnd );
+				Registry.RegisterExtensions( "Video Files", Video.CTOR_ID, vihnd.ID, vihnd.GetCompatibleTypes() );
+				ProgUpdate( 4 );
 
-			Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
-			ContentFile.CryptographyProvider = new Cryptography.Cryptography();
-			ProgUpdate( 5 );
+				Logging.Write( "Registering Cryptography Providers", "Init", LogLevel.Info );
+				ContentFile.CryptographyProvider = new Cryptography.Cryptography();
+				ProgUpdate( 5 );
 
-			Logging.Write( "Initialising Plugins", "Init", LogLevel.Info );
-			Dispatcher.Invoke(() => pgbProgress.IsIndeterminate = true );
-			Plugins.LoadPlugins();
+			} catch ( Exception ex ) {
+				Logging.Write( ex, "Preloading", LogLevel.Crash );
+				if ( Debugger.IsAttached )
+					throw;
+            }
+			try {
+				Logging.Write( "Initialising Plugins", "Init", LogLevel.Info );
+				Dispatcher.Invoke( () => pgbProgress.IsIndeterminate = true );
+				Plugins.LoadPlugins();
+			} catch ( Exception ex ) {
+				Logging.Write( ex, "Plugins", LogLevel.Error );
+				if ( Debugger.IsAttached )
+					throw;
+			}
 			Dispatcher.Invoke( () =>
 			 {
 				 MainWindow main = new MainWindow();

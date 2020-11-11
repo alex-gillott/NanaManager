@@ -23,13 +23,12 @@ namespace NanaManager
 
         private readonly MediaPlayer mediaPlayer = new MediaPlayer();
 
-        private readonly Timer intervalTimer;
+        private Timer intervalTimer;
 
         private bool elapse = false;
 
         public AudioViewer( Audio Parent ) {
             InitializeComponent();
-            intervalTimer = new Timer( 10 );
 
             Parent.RenderMedia += loadMedia;
 
@@ -38,7 +37,6 @@ namespace NanaManager
             mediaPlayer.BufferingStarted += mediaPlayer_BufferingStarted;
             mediaPlayer.BufferingEnded += mediaPlayer_BufferingEnded;
             mediaPlayer.MediaFailed += mediaPlayer_MediaFailed;
-            intervalTimer.Elapsed += intervalTimer_Elapsed;
         }
 
         private void mediaPlayer_MediaEnded( object sender, EventArgs e ) {
@@ -76,6 +74,8 @@ namespace NanaManager
             lblmaxTime.Content = $"{mediaPlayer.NaturalDuration.TimeSpan.Minutes:00}:{mediaPlayer.NaturalDuration.TimeSpan.Seconds:00}";
             sldSeek.Value = 0;
             sldSeek.Maximum = mediaPlayer.NaturalDuration.TimeSpan.Ticks;
+            intervalTimer = new Timer( 10 );
+            intervalTimer.Elapsed += intervalTimer_Elapsed;
             intervalTimer.Start();
         }
 
@@ -153,10 +153,10 @@ namespace NanaManager
         }
 
         private void page_Unloaded( object sender, RoutedEventArgs e ) {
-            intervalTimer.Stop();
-            intervalTimer.Dispose();
-            mediaPlayer.Stop();
-            mediaPlayer.Close();
+            intervalTimer?.Stop();
+            intervalTimer?.Dispose();
+            mediaPlayer?.Stop();
+            mediaPlayer?.Close();
             if ( lastViewed != null )
                 File.Delete( lastViewed );
             lastViewed = null;

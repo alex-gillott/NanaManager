@@ -83,8 +83,8 @@ namespace NanaManagerAPI.UI
                 lightTheme = value;
             }
             get => lightTheme; }
-        internal static BitmapImage LogoDark = Resources.Nana_Manager_Icon_Dark.ToBitmapImage( BitmapCacheOption.OnLoad );
-        internal static BitmapImage LogoLight = Resources.Nana_Manager_Icon_Light.ToBitmapImage( BitmapCacheOption.OnLoad );
+        public static BitmapImage LogoDark = Resources.Nana_Manager_Icon_Dark.ToBitmapImage( BitmapCacheOption.OnLoad );
+        public static BitmapImage LogoLight = Resources.Nana_Manager_Icon_Light.ToBitmapImage( BitmapCacheOption.OnLoad );
 
         /// <summary>
         /// Raises a notification to be displayed

@@ -20,6 +20,7 @@ namespace NanaManager
 		private TextBox selectAlias;
 		private readonly List<string> tagNames = new List<string>();
 		private readonly Dictionary<int, string> groupNames = new Dictionary<int, string>();
+		private bool isTyping = false;
 		public TagManager() {
 			InitializeComponent();
 		}
@@ -43,11 +44,13 @@ namespace NanaManager
 						lst.Items.RemoveAt( lst.SelectedIndex );
 					break;
 				case Key.OemPlus:
-					int newTags = 0;
-					foreach ( TextBox t in lst.Items )
-						if ( t.Text.Contains( "New Tag" ) )
-							newTags++;
-					addTag( lst, "New Tag " + newTags, new tagData( tagNames.Count, Array.Empty<int>() ) );
+					if ( !isTyping ) {
+						int newTags = 0;
+						foreach ( TextBox t in lst.Items )
+							if ( t.Text.Contains( "New Tag" ) )
+								newTags++;
+						addTag( lst, "New Tag " + newTags, new tagData( tagNames.Count, Array.Empty<int>() ) );
+					}
 					break;
 			}
 		}
@@ -394,8 +397,13 @@ namespace NanaManager
 			ctx.Items.Add( alias );
 			txt.ContextMenu = ctx;
 			txt.KeyDown += handleKeyPress;
+			txt.GotKeyboardFocus += ( _, ev ) =>
+			{
+				isTyping = true;
+			};
 			txt.LostKeyboardFocus += ( _, ev ) =>
 			{
+				isTyping = false;
 				dragInProgress = false;
 			};
 			txt.PreviewMouseLeftButtonDown += ( _, ev ) =>

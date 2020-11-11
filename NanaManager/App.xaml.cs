@@ -44,9 +44,8 @@ namespace NanaManager
 				}
 			} catch ( Exception e ) {
 				Logging.Write( e, "Core", LogLevel.Fatal );
-				Logging.SaveLogs();
 				string[] logs = Directory.GetFiles( ContentFile.LogPath );
-				if ( logs.Length > 5 ) {
+				if ( logs.Length > 4 ) {
 					for ( int i = 0; i < logs.Length - 5; i++ )
 						File.Delete( logs[i] );
 				}
@@ -55,6 +54,7 @@ namespace NanaManager
 					throw;
 				}
 			} finally {
+				Logging.SaveLogs();
 				ContentFile.Archive?.Dispose();
 			}
 		}

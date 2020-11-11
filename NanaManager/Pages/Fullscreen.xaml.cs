@@ -59,12 +59,16 @@ namespace NanaManager
             idx = Index;
         }
 
+        bool dont = false;
         //TODO - Work out how to make this handle 
         private void page_PreviewKeyDown( object sender, KeyEventArgs e ) {
             switch (e.Key) {
                 case Key.Escape:
-                    UI.SetFullscreen( false );
-                    Paging.LoadPreviousPage();
+                    if ( !dont ) {
+                        UI.SetFullscreen( false );
+                        Paging.LoadPreviousPage();
+                        dont = true;
+                    }
                     break;
                 case Key.Left:
                     previous();
@@ -141,6 +145,7 @@ namespace NanaManager
 
         private void frmViewer_Loaded( object sender, RoutedEventArgs e ) {
             ((Frame)sender).Focus();
+            dont = false;
         }
     }
 }

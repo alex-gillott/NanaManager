@@ -58,11 +58,16 @@ namespace NanaManagerAPI.IO
 							Logging.Write( $"Entry point class \"{t.Name}\" in \"{t.Namespace}\" did not contain an entry point method. THIS IS BAD, FIX IT", "Plugins", LogLevel.Error );
 					}
 
-					if ( Attribute.IsDefined( start, typeof( STAThreadAttribute ) ) )
-						NeedSTA.Add( start );
-					else if ( start != null )
-						start.Invoke( null, null );
-				} catch ( BadImageFormatException ) {
+					if ( start != null )
+						if ( Attribute.IsDefined( start, typeof( STAThreadAttribute ) ) )
+							NeedSTA.Add( start );
+						else
+							start.Invoke( null, null );
+				} catch ( ReflectionTypeLoadException ) {
+					Logging.Write( $"\"{cur}\" was a blocked assembly. Please unblock the assembly in the file properties", "Plugins", LogLevel.Error);
+					if ( Debugger.IsAttached )
+						throw;
+                } catch ( BadImageFormatException ) {
 					Logging.Write( $"\"{cur}\" was not a valid assembly", "Plugins", LogLevel.Error );
 					if ( Debugger.IsAttached )
 						throw;
