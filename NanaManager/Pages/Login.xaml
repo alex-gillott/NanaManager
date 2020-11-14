@@ -7,28 +7,28 @@
       mc:Ignorable="d" 
       d:DesignHeight="425" d:DesignWidth="800"
       Title="Login" Loaded="page_Loaded">
-    <Grid>
-        <TextBox x:Name="tbxUsername" Tag="Username" HorizontalAlignment="Center" Margin="317,172,317,221" TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Bottom" FontSize="16" Foreground="White" Background="{x:Null}" BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" Height="32" Width="166" Padding="0" CaretBrush="{DynamicResource CaretColor}" KeyDown="tbxUsername_KeyDown" SelectionBrush="{DynamicResource TextHighlightColor}" SelectionTextBrush="#FF424242"/>
-        <PasswordBox x:Name="tbxPassword" HorizontalAlignment="Center" Margin="0,50,0,0" VerticalAlignment="Center" VerticalContentAlignment="Bottom" FontSize="16" Foreground="White" Background="{x:Null}" BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" Height="32" Width="166" Padding="0" CaretBrush="White" SelectionBrush="#FFFF2121" SelectionTextBrush="#FF424242" KeyDown="tbxPassword_KeyDown"/>
-        <Button Content="Login" Style="{DynamicResource Primary Button}" FontSize="19" HorizontalAlignment="Center" Height="39" Margin="0,150,0,0" VerticalAlignment="Center" Width="166" Click="button_Click_1"/>
-        <Label Content="Username" HorizontalAlignment="Center" Margin="0,0,260,50" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" FontSize="18"/>
-        <Label Content="Password" HorizontalAlignment="Center" Margin="0,50,255,0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" FontSize="18"/>
-        <Button Content="Change Login" Style="{DynamicResource Primary Button}" HorizontalAlignment="Left" Height="39" Margin="10,376,596,10" VerticalAlignment="Bottom" Width="194" FontSize="18" Click="button_Click"/>
+	<Grid>
+		<TextBox x:Name="tbxUsername" Tag="Username" HorizontalAlignment="Center" Margin="317,172,317,221" TextWrapping="Wrap" VerticalAlignment="Center" VerticalContentAlignment="Bottom" FontSize="16" Foreground="White" Background="{x:Null}" BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" Height="32" Width="166" Padding="0" CaretBrush="{DynamicResource CaretColor}" KeyDown="tbxUsername_KeyDown" SelectionBrush="{DynamicResource TextHighlightColor}" SelectionTextBrush="#FF424242"/>
+		<PasswordBox x:Name="tbxPassword" HorizontalAlignment="Center" Margin="0,50,0,0" VerticalAlignment="Center" VerticalContentAlignment="Bottom" FontSize="16" Foreground="White" Background="{x:Null}" BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" Height="32" Width="166" Padding="0" CaretBrush="White" SelectionBrush="#FFFF2121" SelectionTextBrush="#FF424242" KeyDown="tbxPassword_KeyDown"/>
+		<Button Content="Login" Style="{DynamicResource Primary Button}" FontSize="19" HorizontalAlignment="Center" Height="39" Margin="0,150,0,0" VerticalAlignment="Center" Width="166" Click="button_Click_1"/>
+		<Label Content="Username" HorizontalAlignment="Center" Margin="0,0,260,50" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" FontSize="18"/>
+		<Label Content="Password" HorizontalAlignment="Center" Margin="0,50,255,0" VerticalAlignment="Center" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="White" FontSize="18"/>
+		<Button Content="Change Login" Style="{DynamicResource Primary Button}" HorizontalAlignment="Left" Height="39" Margin="10,376,596,10" VerticalAlignment="Bottom" Width="194" FontSize="18" Click="button_Click"/>
 		<Image HorizontalAlignment="Center" Height="164" Margin="0,3,0,258" VerticalAlignment="Center" Width="350" Source="../Resources/Nana Manager Logo.png" Stretch="UniformToFill"/>
 		<Border BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" HorizontalAlignment="Center" Height="32" Margin="483,172,285,221" VerticalAlignment="Center" Width="32">
-            <Border.Background>
-                <ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/Username.png"/>
-            </Border.Background>
-        </Border>
-        <Border BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" HorizontalAlignment="Center" Height="32" Margin="483,222,285,171" VerticalAlignment="Center" Width="32">
-            <Border.BindingGroup>
-                <BindingGroup/>
-            </Border.BindingGroup>
-            <Border.Background>
+			<Border.Background>
+				<ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/Username.png"/>
+			</Border.Background>
+		</Border>
+		<Border BorderBrush="#FF6C0243" BorderThickness="0,0,0,2" HorizontalAlignment="Center" Height="32" Margin="483,222,285,171" VerticalAlignment="Center" Width="32">
+			<Border.BindingGroup>
+				<BindingGroup/>
+			</Border.BindingGroup>
+			<Border.Background>
 				<ImageBrush ImageSource="pack://siteoforigin:,,,/Resources/PasswordShow.png"/>
-            </Border.Background>
-        </Border>
-        <Label x:Name="lblBadInput" Content="Your username or password was incorrect" HorizontalAlignment="Center" Height="32" Margin="0,312,0,81" VerticalAlignment="Center" Width="286" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FFFF3C3C" FontSize="14"/>
-		<Label Content="AB[CB]b0.13.8.0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource LightText}"/>
+			</Border.Background>
+		</Border>
+		<Label x:Name="lblBadInput" Content="Your username or password was incorrect" HorizontalAlignment="Center" Height="32" Margin="0,312,0,81" VerticalAlignment="Center" Width="286" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" Foreground="#FFFF3C3C" FontSize="14"/>
+		<Label Content="GB[SELFBUILD]b0.13.8.0" HorizontalAlignment="Right" VerticalAlignment="Bottom" Foreground="{DynamicResource LightText}"/>
 	</Grid>
 </Page>

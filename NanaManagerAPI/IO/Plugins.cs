@@ -47,7 +47,7 @@ namespace NanaManagerAPI.IO
 				string cur = toOpen.Dequeue();
 				Logging.Write( $"Attempting to load \"{cur}\"", "Plugins" );
 				try {
-					Assembly dll = Assembly.LoadFile( cur );
+					Assembly dll = Assembly.LoadFrom( cur );
 					Type[] types = dll.GetTypes();
 					MethodInfo start = null;
 					foreach ( var (t, methods) in from Type t in types where Attribute.IsDefined( t, typeof( EntryPointAttribute ) ) let methods = t.GetMethods() select (t, methods) ) {
@@ -61,9 +61,10 @@ namespace NanaManagerAPI.IO
 					if ( start != null )
 						if ( Attribute.IsDefined( start, typeof( STAThreadAttribute ) ) )
 							NeedSTA.Add( start );
-						else
+						else {
 							start.Invoke( null, null );
-				} catch ( ReflectionTypeLoadException ) {
+						}
+				} catch ( ReflectionTypeLoadException e ) {
 					Logging.Write( $"\"{cur}\" was a blocked assembly. Please unblock the assembly in the file properties", "Plugins", LogLevel.Error);
 					if ( Debugger.IsAttached )
 						throw;
