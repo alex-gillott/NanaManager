@@ -1,11 +1,10 @@
-﻿using System.Text;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Controls;
-using System.Security.Cryptography;
-
-using NanaManagerAPI.IO;
+﻿using NanaManagerAPI.IO;
 using NanaManagerAPI.UI;
+using System.Security.Cryptography;
+using System.Text;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 
 namespace NanaManager
 {
@@ -17,13 +16,14 @@ namespace NanaManager
         public Register() {
             InitializeComponent();
         }
+
         private void tbxUsername_KeyDown( object sender, KeyEventArgs e ) {
             if ( e.Key == Key.Enter )
                 tbxPassword.Focus();
         }
 
         private void tbxPassword_KeyDown( object sender, KeyEventArgs e ) {
-            if ( e.Key == Key.Enter && !string.IsNullOrWhiteSpace(tbxUsername.Text) && !string.IsNullOrWhiteSpace(tbxPassword.Password) )
+            if ( e.Key == Key.Enter && !string.IsNullOrWhiteSpace( tbxUsername.Text ) && !string.IsNullOrWhiteSpace( tbxPassword.Password ) )
                 add( tbxUsername.Text, tbxPassword.Password );
         }
 
@@ -42,14 +42,14 @@ namespace NanaManager
                 sb.Append( (char)((byte)username[i] ^ key[i % key.Length]) );
             Properties.Settings.Default.Username = sb.ToString();
             Properties.Settings.Default.Save();
-            
+
             ContentFile.Encrypt( password );
             MessageBox.Show( "Registered your user!" );
-            Paging.LoadPage(Pages.Login);
+            Paging.LoadPage( Pages.Login );
         }
 
         private void button_Click( object sender, RoutedEventArgs e ) {
-            if ( !string.IsNullOrWhiteSpace(tbxUsername.Text) && !string.IsNullOrWhiteSpace(tbxPassword.Password) )
+            if ( !string.IsNullOrWhiteSpace( tbxUsername.Text ) && !string.IsNullOrWhiteSpace( tbxPassword.Password ) )
                 add( tbxUsername.Text, tbxPassword.Password );
         }
     }

@@ -1,16 +1,15 @@
-﻿using System;
-using System.IO;
-using System.Timers;
-using System.Windows;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.IO.Compression;
-using System.Windows.Controls;
-using System.Windows.Media.Animation;
-
+﻿using NanaManager.MediaHandlers;
 using NanaManagerAPI;
 using NanaManagerAPI.IO;
-using NanaManager.MediaHandlers;
+using System;
+using System.IO;
+using System.IO.Compression;
+using System.Timers;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using System.Windows.Media;
+using System.Windows.Media.Animation;
 
 namespace NanaManager
 {

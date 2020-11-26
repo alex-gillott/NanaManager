@@ -1,7 +1,7 @@
-﻿using System.Windows;
-using System.Windows.Controls;
-using NanaManagerAPI;
+﻿using NanaManagerAPI;
 using NanaManagerAPI.UI;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace NanaManager
 {
@@ -12,17 +12,19 @@ namespace NanaManager
     {
         private bool crash = false;
 
-        private const string RETURN_MSG = @"Unfortunately, a part of the program messed up and couldn't continue working. 
+        private const string RETURN_MSG = @"Unfortunately, a part of the program messed up and couldn't continue working.
 This is fine, however! Simply press the Return button to return to the Viewer.
 
-The error was saved to the logs. 
+The error was saved to the logs.
 Please report the issue to the plugin developer or Nana Manager developers, as we would greatly appreciate it!";
-        private const string FATAL_MSG = @"Unfortuantely, the viewer messed up and couldn't continue working. 
+
+        private const string FATAL_MSG = @"Unfortuantely, the viewer messed up and couldn't continue working.
 This is fine, however! Your stuff is safe, and will still be there when you log back in. However, we must restart the application.
 
-The error was saved to the logs. 
-It's important that you report the issue to the plugin developer or Nana Manager developers, 
+The error was saved to the logs.
+It's important that you report the issue to the plugin developer or Nana Manager developers,
 so that this kind of error may be fixed!";
+
         public Error() {
             InitializeComponent();
             txtMsg.Text = string.Format( txtMsg.Text, System.IO.Directory.GetCurrentDirectory() );

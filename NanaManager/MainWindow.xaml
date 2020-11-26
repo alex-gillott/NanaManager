@@ -9,11 +9,11 @@
         Title="Nana Manager" Height="450" Width="800" VerticalContentAlignment="Stretch" HorizontalContentAlignment="Stretch" AllowsTransparency="True" WindowStyle="None" MinWidth="800" MinHeight="450" Foreground="White" Background="#FF200C27" Closing="window_Closing" StateChanged="window_StateChanged" WindowStartupLocation="CenterScreen">
 	<Window.Resources>
 		<Storyboard x:Key="blinkScreen">
-			<DoubleAnimation AutoReverse="True" Duration="0:0:0.2" To="0" From="1" Storyboard.TargetName="frmMain" Storyboard.TargetProperty="Opacity"/>
+			<DoubleAnimation AutoReverse="True" Duration="0:0:0.2" To="0" From="1" Storyboard.TargetName="frmMain" Storyboard.TargetProperty="Opacity" />
 		</Storyboard>
 	</Window.Resources>
 	<WindowChrome.WindowChrome>
-		<WindowChrome x:Name="wchChrome" CaptionHeight="25" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}"/>
+		<WindowChrome x:Name="wchChrome" CaptionHeight="25" ResizeBorderThickness="{x:Static SystemParameters.WindowResizeBorderThickness}" />
 	</WindowChrome.WindowChrome>
 	<Border CornerRadius="10" BorderThickness="1" Background="{DynamicResource ResourceKey=Background}">
 		<Border.Style>
@@ -27,10 +27,10 @@
 		</Border.Style>
 		<Grid Background="Transparent" Margin="-1">
 			<Grid.RowDefinitions>
-				<RowDefinition Height="25"/>
-				<RowDefinition Height="71*"/>
+				<RowDefinition Height="25" />
+				<RowDefinition Height="71*" />
 			</Grid.RowDefinitions>
-			<Frame Grid.ColumnSpan="5" x:Name="frmMain" Margin="0" Grid.Row="1" Grid.RowSpan="2" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch"/>
+			<Frame Grid.ColumnSpan="5" x:Name="frmMain" Margin="0" Grid.Row="1" Grid.RowSpan="2" SandboxExternalContent="True" ScrollViewer.CanContentScroll="True" NavigationUIVisibility="Hidden" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch" />
 			<!--#region TitleBar-->
 			<!-- Paths by Microsoft-->
 			<Grid x:Name="grdTitle">
@@ -46,19 +46,19 @@
 						<Style TargetType="Rectangle">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
-									<Setter Property="Fill" Value="{DynamicResource TitleBarInactive}"/>
+									<Setter Property="Fill" Value="{DynamicResource TitleBarInactive}" />
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
 					</Rectangle.Style>
 				</Rectangle>
-				<Image x:Name="imgIcon" Grid.Column="0" HorizontalAlignment="Center" Source="pack://siteoforigin:,,,/Resources/Nana Manager Icon Small.png" Stretch="UniformToFill"/>
+				<Image x:Name="imgIcon" Grid.Column="0" HorizontalAlignment="Center" Source="pack://siteoforigin:,,,/Resources/Nana Manager Icon Small.png" Stretch="UniformToFill" />
 				<TextBlock Grid.Column="1" Margin="4 0 0 0" VerticalAlignment="Center" FontSize="14" Text="{Binding ElementName=wndMain, Path=Title}" Foreground="{DynamicResource LightText}">
 					<TextBlock.Style>
 						<Style TargetType="TextBlock">
 							<Style.Triggers>
 								<DataTrigger Binding="{Binding IsActive, RelativeSource={RelativeSource AncestorType=Window}}" Value="False">
-									<Setter Property="Foreground" Value="{DynamicResource TitleBarInactiveText}"/>
+									<Setter Property="Foreground" Value="{DynamicResource TitleBarInactiveText}" />
 								</DataTrigger>
 							</Style.Triggers>
 						</Style>
@@ -80,11 +80,11 @@
 
 			<!--#endregion-->
 			<Border Visibility="Collapsed" x:Name="bdrNotif" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top" MouseEnter="bdrNotif_MouseEnter" MouseLeave="bdrNotif_MouseLeave">
-				<Label x:Name="lblNotif" FontSize="18" Content="Sorting by Tag" Foreground="{DynamicResource LightText}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center"/>
+				<Label x:Name="lblNotif" FontSize="18" Content="Sorting by Tag" Foreground="{DynamicResource LightText}" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" />
 			</Border>
 			<Border Visibility="Collapsed" x:Name="bdrNotifList" Grid.Row="1" Height="40" Background="{DynamicResource BlackGlass}" CornerRadius="0,10,10,10" MaxWidth="300" HorizontalAlignment="Left" VerticalAlignment="Top">
 				<ScrollViewer>
-					<StackPanel x:Name="stkNotifList" Orientation="Vertical" Width="300" MouseLeave="stkNotifList_MouseLeave"/>
+					<StackPanel x:Name="stkNotifList" Orientation="Vertical" Width="300" MouseLeave="stkNotifList_MouseLeave" />
 				</ScrollViewer>
 			</Border>
 		</Grid>

@@ -1,10 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace NanaManagerAPI.EventArgs
+﻿namespace NanaManagerAPI.EventArgs
 {
     /// <summary>
     /// Event Arguments for a tag toggling
@@ -15,10 +9,12 @@ namespace NanaManagerAPI.EventArgs
         /// True if the tag was checked or unchecked
         /// </summary>
         public bool IsActive;
+
         /// <summary>
         /// True if the toggle was a rejection
         /// </summary>
         public bool Rejection;
+
         /// <summary>
         /// The tag that was toggled
         /// </summary>

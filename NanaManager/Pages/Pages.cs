@@ -1,6 +1,7 @@
 ﻿namespace NanaManager
 {
 #pragma warning disable IDE1006 // Naming Styles because const wants all caps in my VS, and I want these to basically be string enums which aren't caps
+
     internal static class Pages
     {
         public const string Import = "hydroxa.nanaManager:pg_in";
@@ -23,5 +24,6 @@
         public const string SoonSettings = "hydroxa.nanaManager:pg_soonSets";
         public const string TagsSettings = "hydroxa.nanaManager:pg_tagSets";
     }
+
 #pragma warning restore IDE1006 // Naming Styles
 }

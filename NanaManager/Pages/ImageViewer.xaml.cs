@@ -1,13 +1,13 @@
-﻿using NanaManagerAPI;
+﻿using NanaManager.MediaHandlers;
+using NanaManagerAPI;
 using NanaManagerAPI.Threading;
-using NanaManager.MediaHandlers;
 using System;
+using System.Linq;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Linq;
-using System.Windows.Input;
 
 namespace NanaManager
 {
@@ -17,15 +17,16 @@ namespace NanaManager
     public partial class ImageViewer : Page
     {
         private delegate void imageHandler( BitmapImage B );
+
         private event imageHandler OnImageLoaded;
 
-        NanaManagerAPI.Types.Image img;
-        string toLoad;
+        private NanaManagerAPI.Types.Image img;
+        private string toLoad;
 
         private readonly ScaleTransform imgST;
         private readonly TranslateTransform imgTT;
 
-        public ImageViewer(Images Parent) {
+        public ImageViewer( Images Parent ) {
             InitializeComponent();
             Parent.RenderMedia += loadMedia;
             OnImageLoaded += imageLoaded;
@@ -34,13 +35,13 @@ namespace NanaManager
             imgTT = (TranslateTransform)((TransformGroup)imgView.RenderTransform).Children.First( tr => tr is TranslateTransform );
         }
 
-        private void loadMedia(string id, bool edit) {
+        private void loadMedia( string id, bool edit ) {
             RenderOptions.SetBitmapScalingMode( imgView, BitmapScalingMode.NearestNeighbor );
             if ( edit ) {
                 BackgroundWorker worker = new BackgroundWorker();
                 img = Data.Media[id] as NanaManagerAPI.Types.Image;
                 imgView.Source = img.GetSample();
-                worker.DelegateThread(loadHiRes);
+                worker.DelegateThread( loadHiRes );
             }
             else {
                 img = null;
@@ -64,7 +65,7 @@ namespace NanaManager
             {
                 RenderOptions.SetBitmapScalingMode( imgView, BitmapScalingMode.Fant );
                 imgView.Source = b;
-                
+
                 imgST.ScaleX = imgST.ScaleY = 1;
                 imgTT.X = imgTT.Y = 0;
             } ) );
@@ -116,7 +117,7 @@ namespace NanaManager
         }
 
         private void imgView_MouseMove( object sender, MouseEventArgs e ) {
-            if (imgView.IsMouseCaptured) {
+            if ( imgView.IsMouseCaptured ) {
                 Vector v = start - e.GetPosition( bdrImg );
                 imgTT.X = origin.X - (v.X / imgST.ScaleX);
                 imgTT.Y = origin.Y - (v.Y / imgST.ScaleY);

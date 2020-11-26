@@ -1,9 +1,8 @@
-﻿using System.IO;
+﻿using NanaManagerAPI.IO;
+using NanaManagerAPI.Media;
+using System.IO;
 using System.IO.Compression;
 using System.Windows.Media.Imaging;
-
-using NanaManagerAPI.Media;
-using NanaManagerAPI.IO;
 
 namespace NanaManagerAPI.Types
 {
@@ -64,6 +63,7 @@ namespace NanaManagerAPI.Types
             else
                 throw new FileFormatException( "The content file is not in a readable state" );
         }
+
         /// <summary>
         /// Gets the <see cref="BitmapImage"/> referred to by this data
         /// </summary>

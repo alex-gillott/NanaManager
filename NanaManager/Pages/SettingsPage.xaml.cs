@@ -1,9 +1,7 @@
-﻿using System.Windows;
+﻿using NanaManagerAPI.UI;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Documents;
-using NanaManager.SettingsPages;
-using NanaManagerAPI.UI;
 
 namespace NanaManager
 {
@@ -21,7 +19,7 @@ namespace NanaManager
         }
 
         private void resetButtons() {
-            foreach ( object c in grdSettings.Children ) //Can easily add new buttons, in case philosophy changes or 
+            foreach ( object c in grdSettings.Children ) //Can easily add new buttons, in case philosophy changes or
                 if ( c is ToggleButton button ) //          a new settings group is made. This just means we don't
                     button.IsChecked = false;//             have to add a new manual set each time.
         }
@@ -31,7 +29,7 @@ namespace NanaManager
             ToggleButton b = sender as ToggleButton;
             b.IsChecked = true;
             SettingsTab set = Registry.SettingsTabs[Pages.InvalidSettings];
-                if ( Registry.SettingsTabs.ContainsKey( b.Tag as string ) )
+            if ( Registry.SettingsTabs.ContainsKey( b.Tag as string ) )
                 set = Registry.SettingsTabs[b.Tag as string];
             frmSettings.Content = set.Display;
             lblTitle.Content = set.Title;

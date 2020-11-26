@@ -1,10 +1,6 @@
-﻿using System;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Collections.Generic;
+﻿using NanaManagerAPI.Properties;
+using System;
 using System.Windows.Media.Imaging;
-using NanaManagerAPI.Properties;
 
 namespace NanaManagerAPI.UI
 {
@@ -23,6 +19,7 @@ namespace NanaManagerAPI.UI
         /// <param name="Search">The search terms used</param>
         /// <param name="Index">Where in the list it is</param>
         public delegate void LoadMedia( string Current, int[] Search, int[] Reject, int Index );
+
         /// <summary>
         /// An event handler for when the program's status changes
         /// </summary>
@@ -30,38 +27,45 @@ namespace NanaManagerAPI.UI
         /// <param name="Progress">Progress into completing the task. -1 if indeterminate</param>
         /// <param name="Maximum">Target progress value. Can be null if indeterminate</param>
         public delegate void StatusChange( string Status, double Progress, double? Maximum );
+
         /// <summary>
         /// An event handler for loading a piece of media
         /// </summary>
         /// <param name="ID">The ID of the file</param>
         public delegate void MediaLoader( string ID, bool Editing );
+
         /// <summary>
         /// Encapsulates delegates that process notifications when sent
         /// </summary>
         /// <param name="Text">The text to display with the notification</param>
         /// <param name="Additional">Any additional information to pass to the Handlers</param>
         public delegate void NotificationHandler( string Text, object[] Additional );
-        
+
         /// <summary>
         /// Fires whenever a notification is to be displayed
         /// </summary>
         public static event NotificationHandler NotificationRaised;
+
         /// <summary>
         /// The event for when the program's status changes
         /// </summary>
         public static event StatusChange StatusChanged;
+
         /// <summary>
         /// Raises whenever the screen mode is to be changed
         /// </summary>
         public static event SetterDelegate Fullscreen;
+
         /// <summary>
         /// Raises whenever a media object is to be displayed
         /// </summary>
         public static event LoadMedia MediaOpened;
+
         /// <summary>
         /// Raises whenever the application is closed
         /// </summary>
         public static event Action WindowClosed;
+
         /// <summary>
         /// Raises whenever the <see cref="IsLightTheme"/> property is set
         /// </summary>
@@ -73,16 +77,20 @@ namespace NanaManagerAPI.UI
         public static BitmapImage AudioSymbol;
 
         private static bool lightTheme;
+
         /// <summary>
         /// Determines whether the current theme is a light theme. Changes certain static elements to fit light themes better
         /// </summary>
-        public static bool IsLightTheme { 
+        public static bool IsLightTheme
+        {
             set
             {
                 ThemeLightnessChanged?.Invoke( value );
                 lightTheme = value;
             }
-            get => lightTheme; }
+            get => lightTheme;
+        }
+
         public static BitmapImage LogoDark = Resources.Nana_Manager_Icon_Dark.ToBitmapImage( BitmapCacheOption.OnLoad );
         public static BitmapImage LogoLight = Resources.Nana_Manager_Icon_Light.ToBitmapImage( BitmapCacheOption.OnLoad );
 
@@ -98,6 +106,7 @@ namespace NanaManagerAPI.UI
         /// </summary>
         /// <param name="Status">The status message</param>
         public static void SetStatus( string Status ) => StatusChanged?.Invoke( Status, -1, null );
+
         /// <summary>
         /// Sets the status with progress monitored
         /// </summary>
@@ -105,12 +114,13 @@ namespace NanaManagerAPI.UI
         /// <param name="Progress">How far into the operation</param>
         /// <param name="Maximum">The target value for Progress</param>
         public static void SetStatus( string Status, double Progress, double Maximum ) => StatusChanged?.Invoke( Status, Progress, Maximum );
+
         /// <summary>
         /// Sets the application into fullscreen if true
         /// </summary>
         /// <param name="Value">Whether to use Fullscreen or Windowed</param>
         public static void SetFullscreen( bool Value ) => Fullscreen?.Invoke( Value );
-        
+
         /// <summary>
         /// Opens the specified media with any search queries and the index the media is found in said search
         /// </summary>

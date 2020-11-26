@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 
 namespace NanaManagerAPI.UI
@@ -16,18 +13,22 @@ namespace NanaManagerAPI.UI
         /// The parent <see cref="SettingsTab"/>, if this tab is subordinate
         /// </summary>
         public readonly SettingsTab Parent;
+
         /// <summary>
         /// The ID of the <see cref="SettingsTab"/>
         /// </summary>
         public readonly string ID;
+
         /// <summary>
         /// The title displayed for the <see cref="SettingsTab"/>
         /// </summary>
         public string Title { get; private set; }
+
         /// <summary>
         /// The <see cref="Page"/> that is displayed when the tab is selected
         /// </summary>
         public readonly Page Display;
+
         private StringCollection Subordinates = new StringCollection();
 
         /// <summary>
@@ -36,11 +37,11 @@ namespace NanaManagerAPI.UI
         /// <param name="ID">The ID of the <see cref="SettingsTab"/></param>
         /// <param name="Title">The title to be displayed</param>
         /// <param name="Display">The display of the tab</param>
-        public SettingsTab(string ID, string Title, Page Display) {
+        public SettingsTab( string ID, string Title, Page Display ) {
             if ( string.IsNullOrWhiteSpace( ID ) )
                 throw new ArgumentNullException( nameof( ID ), "The ID was null or whitespace" );
             if ( string.IsNullOrEmpty( Title ) )
-                throw new ArgumentNullException( nameof( Title ), "The Title did not have any content");
+                throw new ArgumentNullException( nameof( Title ), "The Title did not have any content" );
 
             this.ID = ID;
             this.Title = Title;
@@ -53,7 +54,7 @@ namespace NanaManagerAPI.UI
         /// <param name="ID">The ID of the <see cref="SettingsTab"/></param>
         /// <param name="Title">The title to be displayed</param>
         /// <param name="Subordinates">The tabs to be used as Subordinates</param>
-        public SettingsTab(string ID, string Title, params SettingsTab[] Subordinates ) {
+        public SettingsTab( string ID, string Title, params SettingsTab[] Subordinates ) {
             if ( string.IsNullOrWhiteSpace( ID ) )
                 throw new ArgumentNullException( nameof( ID ), "The ID was null or whitespace" );
             if ( string.IsNullOrEmpty( Title ) )
@@ -80,9 +81,9 @@ namespace NanaManagerAPI.UI
         /// </summary>
         /// <param name="ID">The ID of the <see cref="SettingsTab"/></param>
         /// <param name="Title">The title to be displayed</param>
-        /// <param name="Display">The display of the tab</param> 
+        /// <param name="Display">The display of the tab</param>
         /// <param name="Subordinates">The tabs to be used as Subordinates</param>
-        public SettingsTab(string ID, string Title, Page Display, params SettingsTab[] Subordinates) {
+        public SettingsTab( string ID, string Title, Page Display, params SettingsTab[] Subordinates ) {
             if ( string.IsNullOrWhiteSpace( ID ) )
                 throw new ArgumentNullException( nameof( ID ), "The ID was null or whitespace" );
             if ( string.IsNullOrEmpty( Title ) )
@@ -109,9 +110,9 @@ namespace NanaManagerAPI.UI
         /// Sets the title to the provided string
         /// </summary>
         /// <param name="NewTitle">The text to set the title to</param>
-        public void SetTitle(string NewTitle) {
+        public void SetTitle( string NewTitle ) {
             if ( string.IsNullOrEmpty( NewTitle ) )
-                throw new ArgumentNullException( nameof( NewTitle ), "The provided text had no content");
+                throw new ArgumentNullException( nameof( NewTitle ), "The provided text had no content" );
             Title = NewTitle;
         }
     }

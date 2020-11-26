@@ -1,13 +1,12 @@
-﻿using System;
-using System.Windows;
-using System.Threading;
-using System.IO.Compression;
-using System.Windows.Controls;
-
-using NanaManagerAPI.Threading;
+﻿using NanaManagerAPI;
 using NanaManagerAPI.IO;
+using NanaManagerAPI.Threading;
 using NanaManagerAPI.UI;
-using NanaManagerAPI;
+using System;
+using System.IO.Compression;
+using System.Threading;
+using System.Windows;
+using System.Windows.Controls;
 
 namespace NanaManager
 {
@@ -20,6 +19,7 @@ namespace NanaManager
 
         private readonly BackgroundWorker bgWork = new BackgroundWorker();
         private Thread waitThread;
+
         public Welcome() {
             InitializeComponent();
             UI.StatusChanged += onStatusChange;
@@ -58,7 +58,8 @@ namespace NanaManager
                         Paging.LoadPage( Pages.Viewer );
                 } );
                 waitThread.Start();
-            } else
+            }
+            else
                 Paging.LoadPage( Pages.Viewer );
         }
     }

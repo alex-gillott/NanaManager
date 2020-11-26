@@ -1,21 +1,18 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using NanaManagerAPI;
+using NanaManagerAPI.IO;
+using NanaManagerAPI.Media;
+using NanaManagerAPI.UI;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows;
-using Microsoft.Win32;
-using System.Diagnostics;
+using System.Windows.Controls;
 using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Controls;
-using System.Collections.Generic;
 using System.Windows.Media.Animation;
-
-using NanaManagerAPI;
-using NanaManagerAPI.IO;
-using NanaManagerAPI.UI;
-using NanaManagerAPI.Types;
-using NanaManagerAPI.Media;
-using System.Configuration;
 
 namespace NanaManager
 {
@@ -44,14 +41,17 @@ namespace NanaManager
         }
 
         #region VariablesInit
+
         public static List<int> LoadedIndices = new List<int>();
 
         private readonly OpenFileDialog ofd = new OpenFileDialog();
 
         private bool menuOpen = false;
-        #endregion
+
+        #endregion VariablesInit
 
         #region MenuButton
+
         private void image_MouseUp( object sender, MouseButtonEventArgs e ) {
             elpMenuButton.Fill = (Brush)Application.Current.Resources["MenuButtonHighlight"];
             if ( menuOpen )
@@ -60,12 +60,17 @@ namespace NanaManager
                 ((Storyboard)Resources["stbOpenMenu"]).Begin();
             menuOpen = !menuOpen;
         }
+
         private void image_MouseLeave( object sender, MouseEventArgs e ) => elpMenuButton.Fill = (Brush)Application.Current.Resources["MenuButtonIdle"];
+
         private void image_MouseEnter( object sender, MouseEventArgs e ) => elpMenuButton.Fill = (Brush)Application.Current.Resources["MenuButtonHighlight"];
+
         private void image_MouseDown( object sender, MouseButtonEventArgs e ) => elpMenuButton.Fill = (Brush)Application.Current.Resources["MenuButtonPressed"];
-        #endregion
+
+        #endregion MenuButton
 
         #region ImageDisplay
+
         private void fillListView( int[] tags, int[] reject ) {
             lstImages.Items.Clear();
 
@@ -115,14 +120,17 @@ namespace NanaManager
             foreach ( string id in Data.SearchForAll( tags, reject ) )
                 lstImages.Items.Add( new System.Windows.Controls.Image() { Tag = id, Source = Data.Media[id].GetSample(), Width = 100, Height = 100 } );
         }
-        #endregion
+
+        #endregion ImageDisplay
 
         #region Events
+
         private void page_Loaded( object sender, RoutedEventArgs e ) {
             ((Storyboard)Resources["stbCloseMenuFast"]).Begin();
             menuOpen = false;
             lstImages.Dispatcher.BeginInvoke( new Action( () => fillListView( Search.SearchTags, Search.RejectedTags ) ) );
         }
+
         private void btnImport_Click( object sender, RoutedEventArgs e ) {
             bool? import = ofd.ShowDialog();
             if ( import == true ) {
@@ -131,7 +139,9 @@ namespace NanaManager
                 Paging.LoadPage( Pages.Import );
             }
         }
+
         private void btnSearch_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.Search );
+
         private void lstImages_MouseDoubleClick( object sender, MouseButtonEventArgs e ) {
             if ( lstImages.SelectedIndex > -1 ) {
                 UI.OpenMedia( (string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag, Search.SearchTags, Search.RejectedTags, lstImages.SelectedIndex );
@@ -139,10 +149,12 @@ namespace NanaManager
                 Paging.LoadPage( Pages.Fullscreen );
             }
         }
+
         private void btnEdit_Click( object sender, RoutedEventArgs e ) {
             Import.Editing = (string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag;
             Paging.LoadPage( Pages.Import );
         }
+
         private void btnExport_Click( object sender, RoutedEventArgs e ) {
             if ( lstImages.SelectedIndex > -1 ) {
                 IMedia m = Data.Media[(string)((System.Windows.Controls.Image)lstImages.SelectedItem).Tag];
@@ -150,11 +162,15 @@ namespace NanaManager
                 Process.Start( ContentFile.ExportPath );
             }
         }
-        private void lstImages_PreviewMouseDown( object sender, MouseButtonEventArgs e ) => lstImages.SelectedIndex = -1;
-        private void lstImages_SelectionChanged( object sender, SelectionChangedEventArgs e ) => btnEdit.IsEnabled = btnExport.IsEnabled = lstImages.SelectedIndex != -1;
-        private void btnTags_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.TagManager );
-        private void btnSettings_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.Settings );
-        #endregion
 
+        private void lstImages_PreviewMouseDown( object sender, MouseButtonEventArgs e ) => lstImages.SelectedIndex = -1;
+
+        private void lstImages_SelectionChanged( object sender, SelectionChangedEventArgs e ) => btnEdit.IsEnabled = btnExport.IsEnabled = lstImages.SelectedIndex != -1;
+
+        private void btnTags_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.TagManager );
+
+        private void btnSettings_Click( object sender, RoutedEventArgs e ) => Paging.LoadPage( Pages.Settings );
+
+        #endregion Events
     }
 }

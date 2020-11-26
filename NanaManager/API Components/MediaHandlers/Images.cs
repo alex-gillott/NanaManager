@@ -1,7 +1,6 @@
-﻿using System.Windows.Controls;
-
-using NanaManagerAPI.Media;
+﻿using NanaManagerAPI.Media;
 using NanaManagerAPI.UI;
+using System.Windows.Controls;
 
 namespace NanaManager.MediaHandlers
 {

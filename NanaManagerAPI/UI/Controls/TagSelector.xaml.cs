@@ -1,24 +1,13 @@
-﻿using System;
+﻿using NanaManagerAPI.EventArgs;
+using NanaManagerAPI.Types;
+using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics.Tracing;
 using System.Linq;
-using System.Text;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
 using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using NanaManagerAPI.Types;
-using NanaManagerAPI.EventArgs;
 
 namespace NanaManagerAPI.UI.Controls
 {
@@ -36,6 +25,7 @@ namespace NanaManagerAPI.UI.Controls
         /// <param name="Sender">The origin of the event</param>
         /// <param name="EventData">The information of the tag that was checked</param>
         public delegate void CheckedTagHandler( object Sender, TagCheckEventArgs EventData );
+
         /// <summary>
         /// Fires whenever a tag is toggled
         /// </summary>
@@ -43,39 +33,47 @@ namespace NanaManagerAPI.UI.Controls
 
         #region DependencyProperties
 
-
         public bool DoAliases
         {
             get { return (bool)GetValue( DoAliasesProperty ); }
             set { SetValue( DoAliasesProperty, value ); }
         }
+
         public static readonly DependencyProperty DoAliasesProperty = DependencyProperty.Register( "DoAliases", typeof( bool ), typeof( TagSelector ), new PropertyMetadata( true ) );
+
         public bool ShowHiddenTags
         {
             get => (bool)GetValue( ShowHiddenTagsProperty );
             set => SetValue( ShowHiddenTagsProperty, value );
         }
+
         public static readonly DependencyProperty ShowHiddenTagsProperty = DependencyProperty.Register( "ShowHiddenTags", typeof( bool ), typeof( TagSelector ), new PropertyMetadata( false ) );
+
         public Brush GroupBoxBrush
         {
             get { return (Brush)GetValue( GroupBoxBrushProperty ); }
             set { SetValue( GroupBoxBrushProperty, value ); }
         }
+
         public static readonly DependencyProperty GroupBoxBrushProperty = DependencyProperty.Register( "GroupBoxBrush", typeof( Brush ), typeof( TagSelector ), new PropertyMetadata( new SolidColorBrush( Color.FromArgb( 255, 0, 0, 0 ) ) ) );
+
         public Brush LoadingBrush
         {
             get { return (Brush)GetValue( LoadingBrushProperty ); }
             set { SetValue( LoadingBrushProperty, value ); }
         }
+
         public static readonly DependencyProperty LoadingBrushProperty = DependencyProperty.Register( "LoadingBrush", typeof( Brush ), typeof( TagSelector ), new PropertyMetadata( new SolidColorBrush( Color.FromArgb( 255, 0, 0, 0 ) ) ) );
+
         public bool AllowRejection
         {
             get { return (bool)GetValue( AllowRejectionProperty ); }
             set { SetValue( AllowRejectionProperty, value ); }
         }
+
         public static readonly DependencyProperty AllowRejectionProperty = DependencyProperty.Register( "AllowRefection", typeof( bool ), typeof( TagSelector ), new PropertyMetadata( false ) );
 
-        #endregion
+        #endregion DependencyProperties
 
         private readonly Dictionary<int, ListBox> groups = new Dictionary<int, ListBox>();
         private readonly List<int> checkedTags = new List<int>();
@@ -86,6 +84,7 @@ namespace NanaManagerAPI.UI.Controls
         }
 
         #region Events
+
         private void gb_MouseLeftButtonDown( object sender, System.EventArgs ev ) {
             GroupBox gb = (GroupBox)sender;
             bool? c = (bool?)gb.Tag;
@@ -100,6 +99,7 @@ namespace NanaManagerAPI.UI.Controls
                 gb.Tag = c;
             }
         }
+
         private void gb_MouseRightButtonDown( object sender, System.EventArgs ev ) {
             if ( AllowRejection ) {
                 GroupBox gb = (GroupBox)sender;
@@ -128,6 +128,7 @@ namespace NanaManagerAPI.UI.Controls
                 }
             }
         }
+
         private void tag_MouseRightButtonDown( object sender, System.EventArgs ev ) {
             if ( AllowRejection ) {
                 ToggleButton b = (ToggleButton)sender;
@@ -149,6 +150,7 @@ namespace NanaManagerAPI.UI.Controls
                 }
             }
         }
+
         private void tag_Checked( object sender, System.EventArgs ev ) {
             ToggleButton b = (ToggleButton)sender;
             int id = (int)b.Tag;
@@ -164,6 +166,7 @@ namespace NanaManagerAPI.UI.Controls
                         CheckTags( t );
             }
         }
+
         private void tag_Unchecked( object sender, System.EventArgs ev ) {
             ToggleButton b = (ToggleButton)sender;
             int id = (int)b.Tag;
@@ -175,9 +178,11 @@ namespace NanaManagerAPI.UI.Controls
                     TagChecked?.Invoke( this, new TagCheckEventArgs() { IsActive = false, TagIndex = id } );
             }
         }
-        #endregion
+
+        #endregion Events
 
         #region Generation
+
         private void loadInformation() {
             Dispatcher.Invoke( () => bdrLoading.Visibility = Visibility.Visible );
 
@@ -202,6 +207,7 @@ namespace NanaManagerAPI.UI.Controls
             Dispatcher.Invoke( () => bdrLoading.Visibility = Visibility.Collapsed );
             init = true;
         }
+
         private void addGroup( int key, string name ) {
             GroupBox gb = new GroupBox() { Header = name, Style = (Style)Resources["Tag Groupbox"], Margin = new Thickness( 10, 0, 0, 10 ), Width = 171, FontSize = 18, Tag = false };
             gb.MouseLeftButtonDown += gb_MouseLeftButtonDown;
@@ -212,6 +218,7 @@ namespace NanaManagerAPI.UI.Controls
             groups.Add( key, content );
             stkGroups.Children.Add( gb );
         }
+
         private void addTag( int t ) {
             ToggleButton tag = new ToggleButton() { Content = Data.Tags[Data.TagLocations[t]].Name, Style = (Style)Resources["Tag Button"], Tag = t };
             tag.MouseRightButtonDown += tag_MouseRightButtonDown;
@@ -219,19 +226,26 @@ namespace NanaManagerAPI.UI.Controls
             tag.Unchecked += tag_Unchecked;
             groups[Data.Tags[Data.TagLocations[t]].Group].Items.Add( tag );
         }
-        #endregion
+
+        #endregion Generation
+
         #region Events
+
         private void userControl_Loaded( object sender, RoutedEventArgs e ) {
             init = false;
             stkGroups.Dispatcher.BeginInvoke( new Action( loadInformation ) );
         }
-        #endregion
+
+        #endregion Events
+
         #region Methods
+
         /// <summary>
         /// Returns the indicies of the tags that are currently active
         /// </summary>
         /// <returns></returns>
         public int[] GetCheckedTagsIndicies() => checkedTags.ToArray();
+
         /// <summary>
         /// Returns the tags that are currently active
         /// </summary>
@@ -242,11 +256,13 @@ namespace NanaManagerAPI.UI.Controls
                 tags[i] = Data.Tags[Data.TagLocations[checkedTags[i]]];
             return tags;
         }
+
         /// <summary>
         /// Returns the indicies of the tags that currently have been rejected
         /// </summary>
         /// <returns></returns>
         public int[] GetRejectedTagsIndicies() => rejected.ToArray();
+
         /// <summary>
         /// Returns the tags that currenthly have been rejected
         /// </summary>
@@ -257,6 +273,7 @@ namespace NanaManagerAPI.UI.Controls
                 tags[i] = Data.Tags[Data.TagLocations[rejected[i]]];
             return tags;
         }
+
         /// <summary>
         /// Unchecks all tags without raising events
         /// </summary>
@@ -267,6 +284,7 @@ namespace NanaManagerAPI.UI.Controls
             checkedTags.Clear();
             clearing = false;
         }
+
         /// <summary>
         /// Checks all tags within the list
         /// </summary>
@@ -283,6 +301,7 @@ namespace NanaManagerAPI.UI.Controls
                          }
              } );
         }
+
         /// <summary>
         /// Unchecks all tags within the list
         /// </summary>
@@ -299,6 +318,7 @@ namespace NanaManagerAPI.UI.Controls
                         }
             } );
         }
+
         /// <summary>
         /// Unrejects all tags within the list. Does nothing if rejection is disabled
         /// </summary>
@@ -317,6 +337,7 @@ namespace NanaManagerAPI.UI.Controls
                 }
             } );
         }
+
         /// <summary>
         /// Rejects all tags within the list. Does nothing if rejection is disabled
         /// </summary>
@@ -335,14 +356,16 @@ namespace NanaManagerAPI.UI.Controls
                 }
             } );
         }
+
         public void Reload() {
             loadInformation();
             int[] toCheck = checkedTags.ToArray();
             int[] toReject = rejected.ToArray();
-            
+
             CheckTags( toCheck );
             RejectTags( toReject );
         }
-        #endregion
+
+        #endregion Methods
     }
 }

@@ -1,15 +1,15 @@
-﻿using System;
+﻿using NanaManager.MediaHandlers;
+using NanaManagerAPI;
+using NanaManagerAPI.IO;
+using System;
 using System.IO;
+using System.IO.Compression;
 using System.Timers;
 using System.Windows;
-using System.Windows.Input;
-using System.IO.Compression;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
 
-using NanaManager.MediaHandlers;
-using NanaManagerAPI.IO;
-using NanaManagerAPI;
 namespace NanaManager
 {
     /// <summary>
@@ -88,8 +88,8 @@ namespace NanaManager
             lblLoading.Content = "Loading..";
             bdrLoading.Visibility = Visibility.Visible;
             if ( editing ) {
-                extractThread = new System.Threading.Thread( new System.Threading.ParameterizedThreadStart(extract));
-                extractThread.Start(id);
+                extractThread = new System.Threading.Thread( new System.Threading.ParameterizedThreadStart( extract ) );
+                extractThread.Start( id );
             }
             else {
                 mediaPlayer.Source = new Uri( id );

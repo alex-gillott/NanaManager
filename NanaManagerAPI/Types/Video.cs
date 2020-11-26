@@ -1,12 +1,10 @@
-﻿using System.IO;
+﻿using Microsoft.WindowsAPICodePack.Shell;
+using NanaManagerAPI.IO;
+using NanaManagerAPI.Media;
 using System.Drawing;
+using System.IO;
 using System.IO.Compression;
 using System.Windows.Media.Imaging;
-using Microsoft.WindowsAPICodePack.Shell;
-
-using NanaManagerAPI.Media;
-using NanaManagerAPI.IO;
-using System.Drawing.Imaging;
 
 namespace NanaManagerAPI.Types
 {
@@ -39,7 +37,7 @@ namespace NanaManagerAPI.Types
         public int[] GetTags() => tags;
 
         public BitmapImage GetSample() {
-            if (thumbnail == null) {
+            if ( thumbnail == null ) {
                 ContentFile.SetArchiveRead();
                 ZipArchiveEntry entry = ContentFile.Archive.GetEntry( ID );
                 if ( entry == null )

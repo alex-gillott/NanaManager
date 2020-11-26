@@ -1,21 +1,8 @@
-﻿using System;
+﻿using NanaManagerAPI.UI;
 using System.Collections.Generic;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Controls.Primitives;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-using NanaManagerAPI.UI;
 
 namespace NanaManager.SettingsPages
 {
@@ -65,21 +52,22 @@ namespace NanaManager.SettingsPages
                     btn.Content = Registry.SettingsTabs[id].Title;
                     btn.Tag = id;
                 }
-            } else {
-                for (int i = 0; i < pages.Count; i++ ) {
+            }
+            else {
+                for ( int i = 0; i < pages.Count; i++ ) {
                     ToggleButton btn = buttons[i];
                     string id = pages[i];
                     btn.Content = Registry.SettingsTabs[id].Title;
                     btn.Tag = id;
                 }
-                for (int i = pages.Count; i < 7; i++ )
+                for ( int i = pages.Count; i < 7; i++ )
                     buttons[i].IsEnabled = false;
             }
         }
 
         private void handlePluginClick( object sender, RoutedEventArgs e ) {
             string id = (string)((ToggleButton)sender).Tag;
-            switch (id) {
+            switch ( id ) {
                 case "hydroxa.nanaManager:cmd_prev":
                     if ( starting > 0 ) {
                         starting--;
@@ -89,6 +77,7 @@ namespace NanaManager.SettingsPages
                             btnT1.IsEnabled = false;
                     }
                     break;
+
                 case "hydroxa.nanaManager:cmd_next":
                     if ( starting < upperBound ) {
                         starting++;
@@ -98,6 +87,7 @@ namespace NanaManager.SettingsPages
                             btnT7.IsEnabled = false;
                     }
                     break;
+
                 default:
                     frmSettings.Content = Registry.SettingsTabs[id].Display;
                     break;
@@ -105,7 +95,7 @@ namespace NanaManager.SettingsPages
         }
 
         private void resetButtons() {
-            foreach ( object c in grdSettings.Children ) //Can easily add new buttons, in case philosophy changes or 
+            foreach ( object c in grdSettings.Children ) //Can easily add new buttons, in case philosophy changes or
                 if ( c is ToggleButton button ) //          a new settings group is made. This just means we don't
                     button.IsChecked = false;//             have to add a new manual set each time.
         }

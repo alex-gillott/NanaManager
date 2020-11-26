@@ -10,9 +10,9 @@
         Title="Splash" Height="300" Width="300" ResizeMode="CanMinimize" WindowStyle="None" WindowStartupLocation="CenterScreen" Background="Transparent" ContentRendered="window_ContentRendered" AllowsTransparency="True">
 	<Border Background="{DynamicResource Background}" CornerRadius="20">
 		<Grid>
-			<Label Content="Nana Manager" Foreground="{DynamicResource LightText}" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="25" Height="100"/>
-			<Label Content="Loading.." Foreground="{DynamicResource LightText}" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="20" Height="100" Margin="0,42,0,0"/>
-			<ProgressBar x:Name="pgbProgress" Margin="5,0,5,80" VerticalAlignment="Bottom" Height="30"/>
+			<Label Content="Nana Manager" Foreground="{DynamicResource LightText}" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="25" Height="100" />
+			<Label Content="Loading.." Foreground="{DynamicResource LightText}" VerticalAlignment="Top" VerticalContentAlignment="Center" HorizontalContentAlignment="Center" FontSize="20" Height="100" Margin="0,42,0,0" />
+			<ProgressBar x:Name="pgbProgress" Margin="5,0,5,80" VerticalAlignment="Bottom" Height="30" />
 		</Grid>
 	</Border>
 </Window>

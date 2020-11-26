@@ -1,6 +1,5 @@
-﻿using System.Text;
-
-using NanaManagerAPI.IO.Cryptography;
+﻿using NanaManagerAPI.IO.Cryptography;
+using System.Text;
 
 namespace NanaManager.Cryptography
 {
@@ -24,6 +23,7 @@ namespace NanaManager.Cryptography
         public byte[] Decrypt( byte[] Data ) {
             return Data;
         }
+
         public string Decrypt( string Data ) => Encoding.UTF8.GetString( Decrypt( Encoding.UTF8.GetBytes( Data ) ) );
     }
 }

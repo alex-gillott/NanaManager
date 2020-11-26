@@ -1,7 +1,7 @@
 ﻿using System;
-using System.Windows.Controls;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Windows.Controls;
 
 namespace NanaManagerAPI.UI
 {
@@ -24,6 +24,7 @@ namespace NanaManagerAPI.UI
         /// </summary>
         /// <param name="NewPage">The <see cref="Page"/> to switch to</param>
         public delegate void PageHandler( Page NewPage, string ID );
+
         /// <summary>
         /// Triggers whenever the focused page changes
         /// </summary>
@@ -53,7 +54,7 @@ namespace NanaManagerAPI.UI
         public static void AddPage( string ID, Page Page ) {
             try {
                 pages.Add( ID, Page );
-                Logging.Write( $"Successfully added page \"{ID}\"" , "Paging" );
+                Logging.Write( $"Successfully added page \"{ID}\"", "Paging" );
             } catch ( ArgumentNullException ex ) {
                 Logging.Write( string.Format( ADD_NULL_KEY_FORMAT, Page.GetType().Assembly.GetName().Name, ex.StackTrace ), "Paging", LogLevel.Error );
                 throw new ArgumentNullException( "Page ID was null or empty.", ex );
@@ -62,14 +63,14 @@ namespace NanaManagerAPI.UI
                 throw new ArgumentException( $"Page ID {ID} already exists.", ex );
             }
         }
-        
+
         /// <summary>
         /// Removes the <see cref="Page"/> under the specified ID
         /// </summary>
         /// <param name="ID">The ID of the <see cref="Page"/> to remove</param>
         public static bool RemovePage( string ID ) {
             try {
-                Logging.Write($"Attempting to remove page \"{ID}\"", "Paging");
+                Logging.Write( $"Attempting to remove page \"{ID}\"", "Paging" );
                 return pages.Remove( ID );
             } catch ( ArgumentNullException ex ) {
                 Logging.Write( string.Format( REMOVE_NULL_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Error );
@@ -102,7 +103,7 @@ namespace NanaManagerAPI.UI
             try {
                 PageChanged?.Invoke( GetPage( ID ), ID );
                 history.Push( ID );
-                Logging.Write($"Changed to page \"{ID}\"", "Paging");
+                Logging.Write( $"Changed to page \"{ID}\"", "Paging" );
             } catch ( ArgumentNullException ex ) {
                 Logging.Write( string.Format( LOAD_NULL_PAGE_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Fatal );
             } catch ( KeyNotFoundException ex ) {
