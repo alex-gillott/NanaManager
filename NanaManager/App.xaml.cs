@@ -22,7 +22,7 @@ namespace NanaManager
 #pragma warning disable IDE1006 // Naming Styles
 		[STAThread]
 		[LoaderOptimization( LoaderOptimization.MultiDomain )]
-		static void Main( string[] args ) {
+		static void Main( ) {
 #pragma warning restore IDE1006 // Naming Styles
 
 			ContentFile.LoadEnvironment();

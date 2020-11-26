@@ -64,7 +64,7 @@ namespace NanaManagerAPI.IO
 						else {
 							start.Invoke( null, null );
 						}
-				} catch ( ReflectionTypeLoadException e ) {
+				} catch ( ReflectionTypeLoadException ) {
 					Logging.Write( $"\"{cur}\" was a blocked assembly. Please unblock the assembly in the file properties", "Plugins", LogLevel.Error);
 					if ( Debugger.IsAttached )
 						throw;

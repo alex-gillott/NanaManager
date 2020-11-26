@@ -213,7 +213,7 @@ namespace NanaManager
 			}
 		}
 		private bool dragInProgress = false;
-		private void gb_MouseMove(object sender, MouseEventArgs e) { //Seriously, this needs fixing. It's a patch mess
+		private void gb_MouseMove(object sender, MouseEventArgs e) { //Seriously, this needs fixing. It's a patchy mess
 			if ( e.LeftButton == MouseButtonState.Pressed && selectAlias == null && !dragInProgress ) {
 				dragInProgress = true;
 				ListView parent = (ListView)sender;

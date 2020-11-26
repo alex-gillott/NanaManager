@@ -114,7 +114,7 @@ namespace NanaManagerAPI.UI
         /// Returns the current <see cref="Page"/> loaded
         /// </summary>
         /// <returns>The currently loaded <see cref="Page"/></returns>
-        public static string GetCurrentPage() => history.Peek();
+        public static string GetCurrentPage() => history.Count > 0 ? history.Peek() : null;
 
         /// <summary>
         /// Loads the <see cref="Page"/> loaded before the current <see cref="Page"/>

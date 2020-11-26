@@ -59,6 +59,8 @@ namespace NanaManagerAPI
 				File.AppendAllText( ContentFile.LatestLogPath, sb.ToString() );
 			} catch ( Exception ex ) {
 				MessageBox.Show( $"Failed to save logs: {ex.Message}" );
+				if (Debugger.IsAttached)
+					throw;
             }
 		}
 
