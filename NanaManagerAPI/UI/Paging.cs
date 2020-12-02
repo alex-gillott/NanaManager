@@ -10,14 +10,14 @@ namespace NanaManagerAPI.UI
     /// </summary>
     public static class Paging
     {
-        private const string ADD_NULL_KEY_FORMAT = "{0} tried to add a new page with a null key\nStack Trace:\n\t{1}";
-        private const string ADD_EXISTING_KEY_FORMAT = "{0} tried to add a new page with the existing key \"{1}\"\nStack Trace:\n\t{2}";
-        private const string REMOVE_NULL_KEY_FORMAT = "{0} tried to remove a page with a null key\nStack Trace:\n\t{1}";
-        private const string CHECK_NULL_KEY_FORMAT = "{0} tried to check the existence of a page with a null key\nStack Trace:\n\t{1}";
-        private const string GET_NULL_KEY_FORMAT = "{0} tried to get a page with a null key\nStack Trace:\n\t{1}";
-        private const string GET_NONEXISTENT_KEY_FORMAT = "{0} tried to get a page with the non-exisistent key \"{1}\"\nStack Trace:\n\t{2}";
-        private const string LOAD_NULL_PAGE_FORMAT = "{0} tried to load a page with a null key\nStack Trace:\n\t{1}";
-        private const string LOAD_INVALID_PAGE_FORMAT = "{0} tried to load an invalid page \"{1}\"\nStack Trace:\n\t{2}";
+        private const string ADD_NULL_KEY_FORMAT = "{0} tried to add a new page with a null key\nStack Trace:\n{1}";
+        private const string ADD_EXISTING_KEY_FORMAT = "{0} tried to add a new page with the existing key \"{1}\"\nStack Trace:\n{2}";
+        private const string REMOVE_NULL_KEY_FORMAT = "{0} tried to remove a page with a null key\nStack Trace:\n{1}";
+        private const string CHECK_NULL_KEY_FORMAT = "{0} tried to check the existence of a page with a null key\nStack Trace:\n{1}";
+        private const string GET_NULL_KEY_FORMAT = "{0} tried to get a page with a null key\nStack Trace:\n{1}";
+        private const string GET_NONEXISTENT_KEY_FORMAT = "{0} tried to get a page with the non-exisistent key \"{1}\"\nStack Trace:\n{2}";
+        private const string LOAD_NULL_PAGE_FORMAT = "{0} tried to load a page with a null key\nStack Trace:\n{1}";
+        private const string LOAD_INVALID_PAGE_FORMAT = "{0} tried to load an invalid page \"{1}\"\nStack Trace:\n{2}";
 
         /// <summary>
         /// Handles switching to a new <see cref="Page"/>
@@ -73,7 +73,7 @@ namespace NanaManagerAPI.UI
                 Logging.Write( $"Attempting to remove page \"{ID}\"", "Paging" );
                 return pages.Remove( ID );
             } catch ( ArgumentNullException ex ) {
-                Logging.Write( string.Format( REMOVE_NULL_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Error );
+                Logging.Write( string.Format( REMOVE_NULL_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, Environment.StackTrace ), "Paging", LogLevel.Error );
                 throw new ArgumentNullException( "Page ID was null.", ex );
             }
         }
@@ -87,10 +87,10 @@ namespace NanaManagerAPI.UI
             try {
                 return pages[ID];
             } catch ( ArgumentNullException ex ) {
-                Logging.Write( string.Format( GET_NULL_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Error );
+                Logging.Write( string.Format( GET_NULL_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, Environment.StackTrace ), "Paging", LogLevel.Error );
                 throw new ArgumentNullException( "Page ID was null.", ex );
             } catch ( KeyNotFoundException ex ) {
-                Logging.Write( string.Format( GET_NONEXISTENT_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ID, ex.StackTrace ), "Paging", LogLevel.Error );
+                Logging.Write( string.Format( GET_NONEXISTENT_KEY_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ID, Environment.StackTrace ), "Paging", LogLevel.Error );
                 throw new KeyNotFoundException( "The specified page did not exist.", ex );
             }
         }
@@ -104,10 +104,10 @@ namespace NanaManagerAPI.UI
                 PageChanged?.Invoke( GetPage( ID ), ID );
                 history.Push( ID );
                 Logging.Write( $"Changed to page \"{ID}\"", "Paging" );
-            } catch ( ArgumentNullException ex ) {
-                Logging.Write( string.Format( LOAD_NULL_PAGE_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ex.StackTrace ), "Paging", LogLevel.Fatal );
-            } catch ( KeyNotFoundException ex ) {
-                Logging.Write( string.Format( LOAD_INVALID_PAGE_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ID, ex.StackTrace ), "Paging", LogLevel.Fatal );
+            } catch ( ArgumentNullException) {
+                Logging.Write( string.Format( LOAD_NULL_PAGE_FORMAT, Assembly.GetCallingAssembly().GetName().Name, Environment.StackTrace ), "Paging", LogLevel.Fatal );
+            } catch ( KeyNotFoundException ) {
+                Logging.Write( string.Format( LOAD_INVALID_PAGE_FORMAT, Assembly.GetCallingAssembly().GetName().Name, ID, Environment.StackTrace ), "Paging", LogLevel.Fatal );
             }
         }
 

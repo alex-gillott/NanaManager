@@ -29,7 +29,7 @@ namespace NanaManager
 
         private void add( string username, string password ) {
             byte[] pass = Encoding.ASCII.GetBytes( password );
-            HMACSHA512 hmac1 = new HMACSHA512( pass );
+            HMACSHA512 hmac1 = new HMACSHA512( new byte[] { 0xBA, 0x43, 0xB7, 0x3E, 0xCB } );
             StringBuilder sb = new StringBuilder();
             byte[] passHash = hmac1.ComputeHash( pass );
             foreach ( byte b in passHash )
