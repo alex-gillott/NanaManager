@@ -29,16 +29,15 @@ namespace NanaManager
 
         #region Paging
 
-        private void onNewPage( Page newPage, string iD ) {
+        private void onNewPage( Page newPage, string iD ) { //Handles when the page changes
             switch ( iD ) {
-                case Pages.Welcome:
+                case Pages.Welcome: //Specifically animate if the page is the Welcome page (Loading)
                     Dispatcher.Invoke( () => //As this on a separate thread, invoke the animation through the UI thread
                     {
                         frmMain.Content = newPage; //Show the welcome page
                         ((Storyboard)Resources["blinkScreen"]).Begin();
                     }, System.Windows.Threading.DispatcherPriority.Render ); //Process this operation at the same priority as rendering
                     return;
-
                 default:
                     frmMain.Dispatcher.Invoke( (Action)(() => frmMain.Content = newPage) ); //Invoke page change on UI thread, as this is a separate thread
                     break;
@@ -47,9 +46,15 @@ namespace NanaManager
 
         #endregion Paging
 
-        public static bool ImportOnLogin = false;
-        public bool IsFullscreen = false;
-        public bool Maximised = false;
+        public static bool ImportOnLogin = false; //For shell integration. Currently unused, but is in prospect
+        ///<summary>
+        ///Is true when the screen is in Fullscreen mode
+        //</summary>
+        public bool IsFullscreen { private set; get; } = false;
+        ///<summary>
+        ///Is true when the screen is maximised
+        ///</sumary>
+        public bool Maximised { private set; get; } = false;
         public Size PrevSize;
         public Point PrevLoc;
 
