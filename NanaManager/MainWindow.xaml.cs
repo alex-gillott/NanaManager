@@ -193,7 +193,7 @@ namespace NanaManager
             if ( fullscreen ) {
                 Logging.Write( "Changing to Fullscreen mode", "UI" );
                 WindowState = WindowState.Maximized;
-                Grid.SetRow( frmMain, 0 );
+                Grid.SetRow( frmMain, 0 ); //Fill the window with the frame
 
                 grdTitle.Visibility = Visibility.Collapsed;
                 wchChrome.CaptionHeight = 0; //Hide the window chrome
@@ -201,7 +201,7 @@ namespace NanaManager
             }
             else {
                 Logging.Write( "Leaving Fullscreen mode", "UI" );
-                Grid.SetRow( frmMain, 1 );
+                Grid.SetRow( frmMain, 1 ); //Make space for the window chrome
                 grdTitle.Visibility = Visibility.Visible;
                 wchChrome.CaptionHeight = 25;
                 if ( Maximised ) {
@@ -235,7 +235,8 @@ namespace NanaManager
                     var sc = System.Windows.Forms.Screen.FromPoint( new System.Drawing.Point( (int)Left, (int)Top ) );
                     MaxHeight = sc.WorkingArea.Height + 7;
                     MaxWidth = sc.WorkingArea.Width + 7;
-                }
+                } else
+                    Maximised = false; //Considering fullscreen to be a different window state
             }
             else {
                 MaxHeight = MaxWidth = double.PositiveInfinity;
