@@ -18,8 +18,8 @@ namespace NanaManager.MediaHandlers
         internal event UI.MediaLoader RenderMedia;
 
         public void LoadMedia( string Path, bool Editing ) {
-            Display = new ImageViewer( this );
-            RenderMedia.Invoke( Path, Editing );
+            Display = new ImageViewer( this ); //Opens the image viewer
+            RenderMedia.Invoke( Path, Editing ); //Loads the media onto the screen
         }
     }
 }
