@@ -17,10 +17,10 @@ namespace NanaManager
     /// </summary>
     public partial class TagManager : Page
     {
-        private TextBox selectAlias;
-        private readonly List<string> tagNames = new List<string>();
-        private readonly Dictionary<int, string> groupNames = new Dictionary<int, string>();
-        private bool isTyping = false;
+        private TextBox selectAlias; //The tag which will be aliased to
+        private readonly List<string> tagNames = new List<string>(); //All current tag names
+        private readonly Dictionary<int, string> groupNames = new Dictionary<int, string>(); //All current group names
+        private bool isTyping = false; //If the user is typing within a tag
 
         public TagManager() {
             InitializeComponent();
@@ -29,26 +29,26 @@ namespace NanaManager
         #region Events
 
         private void stackPanel_Loaded( object sender, RoutedEventArgs e ) {
-            stkGroups.Children.Clear();
-            groupNames.Clear();
-            createGroup( "Misc" );
+            stkGroups.Children.Clear(); //Clears the group visuals
+            groupNames.Clear(); //Clears the groups
+            createGroup( "Misc" ); //Visualises the default "Misc" group
             foreach ( KeyValuePair<int, string> s in Data.Groups )
-                createGroup( s.Value );
+                createGroup( s.Value ); //Visualises all groups
 
             foreach ( Tag t in Data.Tags )
-                addTag( getContent( t.Group == -1 ? "Misc" : Data.Groups[t.Group] ), t.Name, new tagData( t.Index, t.GetAliases() ) );
+                addTag( getContent( t.Group == -1 ? "Misc" : Data.Groups[t.Group] ), t.Name, new tagData( t.Index, t.GetAliases() ) ); //Visualises all tags in their respective locations
         }
 
         private void handleListKeyPress( object sender, KeyEventArgs e ) {
             ListBox lst = sender as ListBox;
             switch ( e.Key ) {
-                case Key.Delete:
-                    if ( lst.SelectedItems.Count > 0 )
+                case Key.Delete: //If the delete key is pressed, delete the selected tag
+                    if ( !isTyping && lst.SelectedItems.Count > 0 )
                         lst.Items.RemoveAt( lst.SelectedIndex );
                     break;
 
                 case Key.OemPlus:
-                    if ( !isTyping ) {
+                    if ( !isTyping ) { //If the plus key is pressed, Add 
                         int newTags = 0;
                         foreach ( TextBox t in lst.Items )
                             if ( t.Text.Contains( "New Tag" ) )
