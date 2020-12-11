@@ -15,7 +15,7 @@ namespace NanaManager
     /// <summary>
     /// Interaction logic for TagManager.xaml
     /// </summary>
-    public partial class TagManager : Page
+    public partial class TagManager : Page //TODO - CLEAN THIS THING UP, IT'S UGLY
     {
         private TextBox selectAlias; //The tag which will be aliased to
         private readonly List<string> tagNames = new List<string>(); //All current tag names
@@ -39,8 +39,8 @@ namespace NanaManager
                 addTag( getContent( t.Group == -1 ? "Misc" : Data.Groups[t.Group] ), t.Name, new tagData( t.Index, t.GetAliases() ) ); //Visualises all tags in their respective locations
         }
 
-        private void handleListKeyPress( object sender, KeyEventArgs e ) {
-            ListBox lst = sender as ListBox;
+        private void handleListKeyPress( object sender, KeyEventArgs e ) { //Handles keypresses on the groups
+            ListBox lst = sender as ListBox; //The list box representing the group
             switch ( e.Key ) {
                 case Key.Delete: //If the delete key is pressed, delete the selected tag
                     if ( !isTyping && lst.SelectedItems.Count > 0 )
@@ -48,77 +48,66 @@ namespace NanaManager
                     break;
 
                 case Key.OemPlus:
-                    if ( !isTyping ) { //If the plus key is pressed, Add 
-                        int newTags = 0;
+                    if ( !isTyping ) { //If the plus key is pressed, add a tag to the selected group
+                        int newTags = 1;
                         foreach ( TextBox t in lst.Items )
                             if ( t.Text.Contains( "New Tag" ) )
-                                newTags++;
+                                newTags++; //New Tag 1,2,3,4...
                         addTag( lst, "New Tag " + newTags, new tagData( tagNames.Count, Array.Empty<int>() ) );
                     }
                     break;
             }
         }
 
-        private void handleKeyPress( object sender, KeyEventArgs e ) {
+        private void handleKeyPress( object sender, KeyEventArgs e ) { //Handles keypresses on tags
             TextBox txt = sender as TextBox;
             switch ( e.Key ) {
                 case Key.Enter:
-                    if ( string.IsNullOrEmpty( txt.Text ) )
-                        (txt.Parent as ListBox).Items.Remove( txt );
-                    else {
-                        stkGroups.Focus();
-                        e.Handled = true;
+                        //(txt.Parent as ListBox).Items.Remove( txt ); //Deletes the tag if saved with an empty name
+                    //else { //Depricated because weird usage
+                    if ( !string.IsNullOrEmpty( txt.Text ) )
+                        stkGroups.Focus(); //Sets focus to the groupbox, and not the tag
+                        e.Handled = true; //Tells the handler to not process the key further
                     }
                     break;
             }
         }
 
-        private void btnNewGroup_Click( object sender, RoutedEventArgs e ) {
+        private void btnNewGroup_Click( object sender, RoutedEventArgs e ) { //Fires whenever the new group button is clicked
             int newGroups = 0;
-            foreach ( GroupBox gb in stkGroups.Children )
-                if ( gb.HeaderTemplate?.LoadContent() is TextBox tx && tx.Text.Contains( "New Group" ) )
+            foreach ( GroupBox gb in stkGroups.Children ) 
+                if ( gb.HeaderTemplate?.LoadContent() is TextBox tx && tx.Text.Contains( "New Group" ) ) //Counts all children of the stackpanel that are a groupbox and have a header containing "New Group"
                     newGroups++;
 
-            createGroup( "New Group " + newGroups );
+            createGroup( "New Group " + newGroups ); //Create a new with the desired name
         }
 
-        private void btnDone_Click( object sender, RoutedEventArgs e ) {
-            bool foundMisc = false;
-            foreach ( KeyValuePair<int, string> name in groupNames ) {
-                if ( (foundMisc && name.Value == "Misc") || string.IsNullOrEmpty( name.Value ) ) {
-                    MessageBox.Show( $"Cannot have a group named \"{(string.IsNullOrEmpty( name.Value ) ? "nothing" : name.Value)}\"" );
+        private void btnDone_Click( object sender, RoutedEventArgs e ) { //Fires whenever the Done button is clicked (Finalise edits)
+            bool foundMisc = false; //Tracks whether the group box misc has been iterated past. If 
+            foreach ( string name in groupNames.Values ) { //Iterates through all loaded groups to check their naming
+                if ( (foundMisc && name == "Misc") || string.IsNullOrEmpty( name ) ) { //Check if the name is misc or empty, as such user defined names are not desired
+                    MessageBox.Show( $"Cannot have a group \"{(string.IsNullOrEmpty( name.Value ) ? "with an empty name" : $"named {name}")}\"" ); //Alerts the user that they  have invalid names
                     return;
                 }
-                else if ( name.Value == "Misc" )
-                    foundMisc = true;
+                else if ( name == "Misc" )
+                    foundMisc = true; //Prevents the user getting notified of the default Misc group
             }
             List<string> toReplaceG = new List<string>();
             Dictionary<int, Tag> toReplaceT = new Dictionary<int, Tag>();
-            foreach ( KeyValuePair<int, string> gbName in groupNames ) {
-                GroupBox gb = getGroupBox( gbName.Value );
-                if ( gbName.Value == "Misc" )
+            
+            foreach ( string gbName in groupNames.Values ) { //
+                GroupBox gb = getGroupBox( gbName );
+                if ( gbName == "Misc" )
                     foreach ( TextBox tx in ((ListView)gb.Content).Items )
-                        if ( tx.Text.Contains( "," ) || tx.Text.Contains( "@" ) ) {
-                            MessageBox.Show( "Tag names cannot contain commas (,) or at symbols (@)" );
-                            tx.Select( 0, 0 );
-                            return;
-                        }
-                        else
-                            toReplaceT[((tagData)tx.Tag).tagIndex] = new Tag( tx.Text, ((tagData)tx.Tag).tagIndex, -1, ((tagData)tx.Tag).aliases.ToArray() );
+                        toReplaceT[((tagData)tx.Tag).tagIndex] = new Tag( tx.Text, ((tagData)tx.Tag).tagIndex, -1, ((tagData)tx.Tag).aliases.ToArray() ); //Adds the tag to the new tag dictionary with Misc group
                 else {
                     foreach ( TextBox tx in ((ListView)gb.Content).Items )
-                        if ( tx.Text.Contains( "," ) || tx.Text.Contains( "@" ) ) {
-                            MessageBox.Show( "Tag names cannot contain commas (,) or at symbols (@)" );
-                            tx.Select( 0, 0 );
-                            return;
-                        }
-                        else
-                            toReplaceT[((tagData)tx.Tag).tagIndex] = new Tag( tx.Text, ((tagData)tx.Tag).tagIndex, toReplaceG.Count, ((tagData)tx.Tag).aliases.ToArray() );
-                    toReplaceG.Add( gbName.Value );
+                        toReplaceT[((tagData)tx.Tag).tagIndex] = new Tag( tx.Text, ((tagData)tx.Tag).tagIndex, toReplaceG.Count, ((tagData)tx.Tag).aliases.ToArray() ); //Adds the tag to the new tag dictionary with the current group
+                    toReplaceG.Add( gbName.Value ); //Adds the group to the dictionary
                 }
             }
 
-            Data.Tags = new Tag[toReplaceT.Count];
+            Data.Tags = new Tag[toReplaceT.Count]; //Instances the tag array
             Data.TagLocations.Clear();
             Data.Groups.Clear();
             List<int> hiddenKeep = new List<int>();
