@@ -8,7 +8,7 @@ using System.Runtime.CompilerServices;
 using System.Security;
 using System.Windows;
 
-[assembly: InternalsVisibleTo( "NanaManager" )]
+[assembly: InternalsVisibleTo( "NanaManager" )] //Allows the application to access internal objects (Not visible to anything besides this assembly and friend assemblies)
 
 namespace NanaManagerAPI.IO
 {
@@ -18,7 +18,7 @@ namespace NanaManagerAPI.IO
     public static class ContentFile
     {
         private const int ERROR_DRIVE_MISSING = 0x001;
-        private const int ERROR_INVALID_PATH = 0x002;
+        private const int ERROR_INVALID_PATH = 0x002; //Error codes
         private const int ERROR_GENERIC_IO = 0x003;
 
         /// <summary>
@@ -29,6 +29,9 @@ namespace NanaManagerAPI.IO
         /// <returns>The data resultant of the cryptographic function</returns>
         public delegate byte[] CryptographyFunction( byte[] Data, string Password );
 
+        ///<summary>
+        /// The provider class for cryptography. This class is referenced and called upon whenever the content file is encrypted or decrypted
+        ///</summary>
         public static ICryptographyProvider CryptographyProvider;
 
         /// <summary>
@@ -81,13 +84,16 @@ namespace NanaManagerAPI.IO
         /// </summary>
         public static ZipArchive Archive;
 
-        private static readonly byte[] ZIP_SIGNATURE = new byte[] { 80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 };
+        private static readonly byte[] ZIP_SIGNATURE = new byte[] { 80, 75, 5, 6, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }; //The signature for an empty zip file
 
         /// <summary>
         /// A list of all active encoders. These will be run when saving and loading data
         /// </summary>
         public static readonly List<IEncoder> ActiveEncoders = new List<IEncoder>();
 
+        ///<summary>
+        /// Generates the required folders and files, if missing
+        ///</summary>
         internal static void LoadEnvironment() {
             try {
                 if ( !Directory.Exists( HydroxaPath ) )
@@ -115,20 +121,28 @@ namespace NanaManagerAPI.IO
                 Environment.Exit( ERROR_GENERIC_IO );
             }
 
-            //Constructing the audio symbol
-            UI.UI.AudioSymbol = Resources.Music_Icon.ToBitmapImage( System.Windows.Media.Imaging.BitmapCacheOption.OnLoad );
+            //Loads the icon for audio files
+            UI.UI.AudioSymbol = Resources.Music_Icon.ToBitmapImage( System.Windows.Media.Imaging.BitmapCacheOption.OnDemand );
         }
 
+        ///<summary>
+        /// Sets the archive to Write Mode. Call for every new file you write to (Can only write once!)
+        ///</summary>
+        /// <returns>A reference to the archive in write mode. Can also be accessed via <see cref="ContentFile.Archive"/></returns>
         public static ZipArchive SetArchiveWrite() {
-            Archive.Dispose();
-            Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
+            Archive?.Dispose(); //Dispose the existing archive if instanced, as to free up consumed resources
+            Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update ); //Open the archive in Update mode, to signify to add new objects
             return Archive;
         }
 
+        ///<summary>
+        /// Sets the archive to Read Mode. Call whenever performing a batch of reading (Can read indefinitely)
+        ///</summary>
+        /// <returns>A reference to the archive in read mode. Can also be accessed via <see cref="ContentFile.Archive"/></returns>
         public static ZipArchive SetArchiveRead() {
-            if ( Archive == null || Archive.Mode != ZipArchiveMode.Read ) {
-                Archive?.Dispose();
-                Archive = ZipFile.OpenRead( ContentPath );
+            if ( Archive == null || Archive.Mode != ZipArchiveMode.Read ) { //Don't do anything if the archive already exists in read mode, otherwise instance
+                Archive?.Dispose(); //Ensure the archive is disposed, to minimise resource consumption
+                Archive = ZipFile.OpenRead( ContentPath ); //Open the archive in Read mode, to allow reading of information from the archive
             }
             return Archive;
         }
@@ -139,14 +153,14 @@ namespace NanaManagerAPI.IO
         /// <returns>Returns true if the content file can be read. False if corrupt or encrypted</returns>
         public static bool CheckValidity() {
             try {
-                if ( Archive == null ) {
+                if ( Archive == null ) { //If the archive has not yet been instanced, create a temporary instance for the validity check
                     using var zipFile = ZipFile.OpenRead( ContentPath );
-                    var test = zipFile.Entries;
-                    return true;
+                    var test = zipFile.Entries; //Attempt to read the entries. If this errs, it is not a valid file to read
+                    return true; //Returning stops further execution, so the next part will not execute
                 }
-                var entries = Archive.Entries;
+                var entries = Archive.Entries; //Attempt to read the entries. Erring will return false, otherwise execution will continue
                 return true;
-            } catch ( InvalidDataException ) {
+            } catch ( InvalidDataException ) { //The expected error to occur from reading. If this is a different error, it will be thrown because something actually went wrong.
                 return false;
             }
         }
@@ -157,18 +171,18 @@ namespace NanaManagerAPI.IO
         /// <param name="Name">The name of the file to read</param>
         /// <returns>A byte array representation of the data</returns>
         public static byte[] ReadFile( string Name ) {
-            if ( string.IsNullOrWhiteSpace( Name ) )
-                throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
+            if ( string.IsNullOrWhiteSpace( Name ) ) //TODO - Maybe replace with regex "[\\/:"*?<>|]+" for general invalid file names?
+                throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) ); //Throw if the name given was null or whitespace
 
             SetArchiveRead();
-            ZipArchiveEntry entry = Archive.GetEntry( Name );
-            if ( entry == null )
+            ZipArchiveEntry entry = Archive.GetEntry( Name ); //Try to get the file from the archive
+            if ( entry == null ) //If the entry is null, it did not exist and so throw an exception
                 throw new FileNotFoundException( "The specified file was not found within the database", Name );
-            else {
-                string location = Path.Combine( TempPath, Name );
+            else { 
+                string location = Path.Combine( TempPath, Name ); //Extract the file, to give it an EoF to read from
                 entry.ExtractToFile( location ); //TODO - HANDLE ERRORS
-                byte[] data = File.ReadAllBytes( location );
-                File.Delete( location );
+                byte[] data = File.ReadAllBytes( location ); //Read the relevant data
+                File.Delete( location ); //Delete the extracted file (Unextracted is still inside the archive)
                 return data;
             }
         }
@@ -179,13 +193,13 @@ namespace NanaManagerAPI.IO
         /// <param name="Name">The name of the file</param>
         /// <param name="Data">The data to write</param>
         public static void WriteFile( string Name, string Data ) {
-            if ( string.IsNullOrWhiteSpace( Name ) )
+            if ( string.IsNullOrWhiteSpace( Name ) ) //See comment on ln174 and ln175
                 throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
-            if ( Exists( Name ) ) {
-                SetArchiveWrite();
-                ZipArchiveEntry entry = Archive.GetEntry( Name );
-                using Stream entryStream = entry.Open();
+            if ( Exists( Name ) ) { //Checks if the file exists inside the archive
+                SetArchiveWrite(); 
+                ZipArchiveEntry entry = Archive.GetEntry( Name ); 
+                using Stream entryStream = entry.Open(); //Open the existing entry and overwrite with the new data
                 using StreamWriter writer = new StreamWriter( entryStream );
                 writer.Write( Data );
             }
@@ -193,9 +207,9 @@ namespace NanaManagerAPI.IO
                 //TODO - HANDLE ERRORS
                 SetArchiveWrite();
                 string location = Path.Combine( TempPath, Name );
-                File.WriteAllText( location, Data );
+                File.WriteAllText( location, Data ); //Create temporary file and write to it, then compress into the archive
                 Archive.CreateEntryFromFile( location, Name );
-                File.Delete( location );
+                File.Delete( location ); .//Delete the temporary file
             }
         }
 
