@@ -219,7 +219,7 @@ namespace NanaManagerAPI.IO
         /// <param name="Name">The name of the file</param>
         /// <param name="Data">The data to write</param>
         public static void WriteFile( string Name, byte[] Data ) {
-            if ( string.IsNullOrWhiteSpace( Name ) )
+            if ( string.IsNullOrWhiteSpace( Name ) ) //See comments for method on ln 195. Identical, but uses byte arrays instead
                 throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
 
             if ( Exists( Name ) ) {
@@ -242,11 +242,11 @@ namespace NanaManagerAPI.IO
         /// <param name="Name">The name of the file to check</param>
         /// <returns>True if the file exists</returns>
         public static bool Exists( string Name ) {
-            if ( string.IsNullOrWhiteSpace( Name ) )
-                throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) );
-            SetArchiveRead();
-            ZipArchiveEntry entry = Archive?.GetEntry( Name );
-            return entry != null;
+            if ( string.IsNullOrWhiteSpace( Name ) ) //Confirms that the name is actually a valid file name
+                throw new ArgumentException( "File name cannot be null or whitespace", nameof( Name ) ); //TODO - Make valid file name method
+            SetArchiveRead(); //Sets archive in read mode
+            ZipArchiveEntry entry = Archive.GetEntry( Name ); //Attempts to get the entry from the archive
+            return entry != null; //If entry is null, the file does not exist
         }
 
         /// <summary>
@@ -254,7 +254,7 @@ namespace NanaManagerAPI.IO
         /// </summary>
         public static void SaveData() {
             foreach ( IEncoder encoder in ActiveEncoders )
-                encoder.SaveData();
+                encoder.SaveData(); //Iterate through all registered encoders to save their relevant data
         }
 
         /// <summary>
@@ -262,7 +262,7 @@ namespace NanaManagerAPI.IO
         /// </summary>
         public static void LoadData() {
             foreach ( IEncoder encoder in ActiveEncoders )
-                encoder.LoadData();
+                encoder.LoadData(); //Iterate through all registered encoders to load their relevant data
         }
 
         /// <summary>
@@ -271,23 +271,26 @@ namespace NanaManagerAPI.IO
         /// <param name="Password">The password to encrypt the data with</param>
         public static void Encrypt( string Password ) {
             try {
-                Archive?.Dispose();
-                CryptographyProvider.Initialise( Password );
-                File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) );
-                CryptographyProvider.Terminate();
-                IsOpen = false;
+                Archive?.Dispose(); //Dispose the archive to open it up for encryption
+                CryptographyProvider.Initialise( Password ); //Initialise the current cryptography provider with the provided password 
+                File.WriteAllBytes( ContentPath, CryptographyProvider.Encrypt( File.ReadAllBytes( ContentPath ) ) ); //Encrypt the data and write the data to the path
+                CryptographyProvider.Terminate(); //Close the cryptography provider, allowing it to dispose and clean up anything it uses for next execution
+                IsOpen = false; //Mark the archive as closed
             } catch ( IOException e ) {
                 //TODO - HANDLE I/O ERROR
-                throw e;
+                if (Debugger.IsAttached)
+                    throw;
             } catch ( UnauthorizedAccessException e ) {
                 //TODO - HANDLE ERROR
                 //File that is readonly
                 //File that is hidden
                 //Do not have permission
-                throw e;
+                if (Debugger.IsAttached)
+                    throw;
             } catch ( SecurityException e ) {
                 //TODO - HANDLE ACCESS ERROR
-                throw e;
+                if (Debugger.IsAttached)
+                    throw;
             }
         }
 
@@ -297,45 +300,47 @@ namespace NanaManagerAPI.IO
         /// <param name="Password">The password to decrypt the data with</param>
         public static void Decrypt( string Password ) {
             try {
-                CryptographyProvider.Initialise( Password );
-                File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) );
-                CryptographyProvider.Terminate();
-                Archive = ZipFile.Open( ContentPath, ZipArchiveMode.Update );
-                IsOpen = true;
+                CryptographyProvider.Initialise( Password ); //Intialise the current cryptography provider with the provided password
+                File.WriteAllBytes( ContentPath, CryptographyProvider.Decrypt( File.ReadAllBytes( ContentPath ) ) ); //Decrypt the data and write the data to the path
+                CryptographyProvider.Terminate(); //Close the cryptography provider, allowing it to dispose and clean up anything it uses for next execution
+                IsOpen = true; //Marks the archive as open, and ready to read
             } catch ( ArgumentNullException e ) {
                 //Path is null or byte array was empty
-                Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
-                throw e;
+                Logging.Write( $"Attempted to write an empty array to the file\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Crash );
+                throw;
             } catch ( DirectoryNotFoundException e ) {
-                Logging.Write( "The Content Path was not found. Attempting to generate new files.", "ContentDecryption", LogLevel.Error );
+                Logging.Write( "The Content Path was not found. Attempting to generate new files.", "ContentDecryption", LogLevel.Warn );
                 LoadEnvironment();
-                if ( !File.Exists( ContentPath ) )
-                    throw e;
+                if ( !File.Exists( ContentPath ) ) {
+                    Logging.Write( "Could not generate the Content Path!!", "ContentDecryption", LogLevel.Crash);
+                    throw;
+                }
             } catch ( PathTooLongException e ) {
                 //Path was too long
-                Logging.Write( $"Content Path was too long: \"{ContentPath}\"", "ContentDecrpytion", LogLevel.Fatal );
-                throw e;
+                Logging.Write( $"Content Path was too long: \"{ContentPath}\"", "ContentDecryption", LogLevel.Crash );
+                throw;
             } catch ( SecurityException e ) {
                 //TODO - Does not have required permissions
+                Logging.Write( "tempmsg - Do not have required permissions", "ContentDecryption", LogLevel.Crash );
 
-                throw e;
+                throw;
             } catch ( IOException e ) {
-                Logging.Write( $"Could not decrypt file ({e.Message})\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Fatal );
-                throw e;
+                Logging.Write( $"Could not decrypt file ({e.Message})\nStack Trace:\n\t{e.StackTrace}", "ContentDecryption", LogLevel.Crash );
+                throw;
             } catch ( UnauthorizedAccessException e ) {
                 //TODO - HANDLE ERROR
                 if ( Directory.Exists( ContentPath ) )
-                    Logging.Write( $"Content Path was a directory: \"{ContentPath}\"", "ContentDecryption", LogLevel.Fatal );
+                    Logging.Write( $"Content Path was a directory: \"{ContentPath}\"", "ContentDecryption", LogLevel.Crash );
                 else {
                     FileInfo fi = new FileInfo( ContentPath );
 
                     if ( fi.IsReadOnly )
-                        Logging.Write( $"Content Path was read only: \"{ContentPath}\"", "ContentDecryption", LogLevel.Fatal );
+                        Logging.Write( $"Content Path was read only: \"{ContentPath}\"", "ContentDecryption", LogLevel.Crash );
                     //File that is readonly
                     //File that is hidden
                     //Do not have permission
                 }
-                throw e;
+                throw;
             }
         }
     }
