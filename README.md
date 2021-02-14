@@ -10,7 +10,8 @@ The executables inside the source code are now out of date and will be removed a
 
 ## Contributing
 ~~Pull requests are welcome. For major changes, please open an issue first to discuss what you would like to change.~~
-Contributions are currently not welcome, as this is a school project. Once the project is submitted, contributions will be welcome!
+Pull Requests are currently not welcome, as this is a school project. Once the project is submitted, they will be welcome! Submitting issue reports are welcome, however, 
+so feel free to do that.
 
 Please make sure to update tests as appropriate.
 
