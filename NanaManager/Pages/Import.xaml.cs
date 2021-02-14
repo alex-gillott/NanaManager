@@ -248,7 +248,7 @@ namespace NanaManager
                 if ( saved )
                     MessageBox.Show( "Could not remove file from original position. Data saved" );
                 else
-                    MessageBox.Show( "Could not save data. The error was recorded and your image was recovered" );
+                    MessageBox.Show( "Could not save data. The error was recorded and your media was recovered" );
             }
         }
 
